@@ -66,3 +66,5 @@ The owner will supply Firebase, Supabase, Redis and AI configuration later. No r
 - **P2-T03 completed** Health tests pass for success, missing dependencies and redacted check failures.
 
 - **P2-T04 completed** Validated strict body/query schemas and clean unexpected-error responses.
+
+- **P2-T05 completed** HTTP policy tests pass for CORS preflight, headers, JSON and byte limits.

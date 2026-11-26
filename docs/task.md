@@ -224,7 +224,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
   - **Accept when** Malformed input is rejected before a service runs and unexpected errors return a generic response.
   - **Verify** Exercise bad pagination, an injected owner field, and a thrown internal exception using test fixtures.
 
-- [ ] **P2-T05 · Protect the HTTP boundary** (MVP)
+- [x] **P2-T05 · Protect the HTTP boundary** (MVP)
   - **Work and purpose** Configure Helmet, allowed CORS origins and headers, request body limits, and proxy trust appropriate to the deployment. Allow authorized frontend preflight requests.
   - **Files** `server/src/app.ts`, `server/config/env.ts`, `server/tests/http-policy.test.ts` · **Depends on** P2-T03, P2-T04
   - **Output** A documented HTTP policy with integration coverage.

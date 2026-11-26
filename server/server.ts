@@ -3,7 +3,7 @@ import { parseEnvironment } from './config/env.ts';
 
 const environment = parseEnvironment(process.env);
 
-const server = createApp().listen(environment.PORT, '0.0.0.0');
+const server = createApp(undefined, environment).listen(environment.PORT, '0.0.0.0');
 function shutdown() {
   server.close(() => process.exit(0));
 }
