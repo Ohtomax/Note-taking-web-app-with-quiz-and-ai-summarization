@@ -7,3 +7,7 @@ Each completion entry records the verification performed. Git history provides t
 - **P1-T01 completed** Traced the six-step learner journey and mapped all feature groups to tasks. Files docs/ROADMAP.md.
 
 - **P1-T02 completed** Traced the live SmileCheck policy flow across seven source layers. Files docs/ARCHITECTURE.md.
+
+- **P1-T03 completed** Checked official compatibility guides and registry metadata against Node 24. Files docs/ARCHITECTURE.md, docs/TESTING.md.
+
+- **P1-T03 completed** Checked official compatibility guides and registry metadata against Node 24. Files docs/ARCHITECTURE.md, docs/TESTING.md.

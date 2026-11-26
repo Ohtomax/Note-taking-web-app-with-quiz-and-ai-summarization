@@ -44,7 +44,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
   - **Accept when** A contributor can name and place a new notes endpoint and matching React hook using actual examples.
   - **Verify** Trace one existing request from its React caller to its database query and compare it with the proposed layout.
 
-- [ ] **P1-T03 · Check stack and dependency compatibility** (MVP)
+- [x] **P1-T03 · Check stack and dependency compatibility** (MVP)
   - **Work and purpose** Check Node, TypeScript, React/Vite, Express, Prisma and the PostgreSQL adapter together. Identify the minimum editor, charts, and test dependencies that the scope justifies.
   - **Files** `docs/ARCHITECTURE.md`, `docs/TESTING.md` · **Depends on** P1-T01
   - **Output** A supported version matrix with reasons for additions.
