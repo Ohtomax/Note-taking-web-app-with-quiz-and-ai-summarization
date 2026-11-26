@@ -65,7 +65,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
   - **Accept when** Every private resource traces back to a verified Firebase UID and has a defined absent-or-inaccessible response.
   - **Verify** Walk through a two-account example involving a note, a quiz attempt, and an analytics query.
 
-- [ ] **P1-T06 · Design the relational schema** (MVP)
+- [x] **P1-T06 · Design the relational schema** (MVP)
   - **Work and purpose** Describe the brief’s thirteen model candidates, keys, relations, unique constraints, timestamps, indexes, and referential actions. Model project ownership and immutable history in the ER diagram.
   - **Files** `docs/DATABASE.md` · **Depends on** P1-T04, P1-T05
   - **Output** An ER diagram and model-by-model data dictionary.

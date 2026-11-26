@@ -15,3 +15,5 @@ Each completion entry records the verification performed. Git history provides t
 - **P1-T04 completed** Traced note and AI requests through system and folder diagrams. Files docs/ARCHITECTURE.md, docs/DEPLOYMENT.md.
 
 - **P1-T05 completed** Reviewed two-account note, attempt, analytics and move authorization. Files docs/SECURITY.md.
+
+- **P1-T06 completed** Reviewed thirteen models and traced two sources and two version-bound attempts. Files docs/DATABASE.md.
