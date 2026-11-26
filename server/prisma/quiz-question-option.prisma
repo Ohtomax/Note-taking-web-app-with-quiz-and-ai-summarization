@@ -1,0 +1,10 @@
+model QuizQuestionOption {
+  id         String       @id @default(uuid()) @db.Uuid
+  questionId String       @db.Uuid
+  question   QuizQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  position   Int
+  text       String       @db.Text
+  isCorrect  Boolean
+
+  @@unique([questionId, position])
+}

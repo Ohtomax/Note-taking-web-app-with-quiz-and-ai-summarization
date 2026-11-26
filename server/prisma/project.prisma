@@ -1,4 +1,5 @@
 model Project {
+  quizzes     Quiz[]
   id          String    @id @default(uuid()) @db.Uuid
   ownerId     String    @db.Uuid
   owner       User      @relation(fields: [ownerId], references: [id], onDelete: Restrict)

@@ -78,3 +78,5 @@ The owner will supply Firebase, Supabase, Redis and AI configuration later. No r
 - **P2-T09 completed** Validated/generated schema and passed local FK, UID and ownership database tests.
 
 - **P2-T10 completed** Two-source database fixture preserves citations after source edits and deletion.
+
+- **P2-T11 completed** Local fixtures preserve independent version keys and source revisions.

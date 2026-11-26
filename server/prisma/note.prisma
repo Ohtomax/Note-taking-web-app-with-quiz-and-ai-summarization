@@ -1,4 +1,5 @@
 model Note {
+  quizSources          QuizSource[]
   summarySources       SummarySource[]
   id                   String          @id @default(uuid()) @db.Uuid
   projectId            String          @db.Uuid

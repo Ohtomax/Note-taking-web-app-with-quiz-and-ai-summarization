@@ -1,0 +1,15 @@
+model QuizSource {
+  id            String      @id @default(uuid()) @db.Uuid
+  quizVersionId String      @db.Uuid
+  quizVersion   QuizVersion @relation(fields: [quizVersionId], references: [id], onDelete: Cascade)
+  noteId        String?     @db.Uuid
+  note          Note?       @relation(fields: [noteId], references: [id], onDelete: SetNull)
+  sourceKey     String      @db.VarChar(100)
+  noteTitle     String      @db.VarChar(200)
+  revision      Int
+  contentHash   String      @db.VarChar(64)
+  rangeStart    Int?
+  rangeEnd      Int?
+
+  @@unique([quizVersionId, sourceKey])
+}

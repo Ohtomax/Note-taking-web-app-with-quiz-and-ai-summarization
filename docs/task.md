@@ -266,7 +266,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
   - **Accept when** A saved summary can cite two notes and retain meaningful provenance when a source changes.
   - **Verify** Create a two-source fixture, edit one source, then exercise the approved deletion behavior and inspect the links.
 
-- [ ] **P2-T11 · Model versioned quizzes and questions** (MVP)
+- [x] **P2-T11 · Model versioned quizzes and questions** (MVP)
   - **Work and purpose** Separate quiz identity from immutable versions. Relate generation sources to their version, preserve option IDs and grading keys, and enforce question ordering and key uniqueness.
   - **Files** `server/prisma/quiz.prisma`, `server/prisma/quiz-source.prisma`, `server/prisma/quiz-version.prisma`, `server/prisma/quiz-question.prisma`, `server/prisma/quiz-question-option.prisma` · **Depends on** P2-T09
   - **Output** Versioned quiz, source, question, and option definitions.

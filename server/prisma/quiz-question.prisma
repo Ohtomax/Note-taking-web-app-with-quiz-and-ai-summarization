@@ -1,0 +1,22 @@
+enum QuestionType {
+  MULTIPLE_CHOICE
+  TRUE_FALSE
+  IDENTIFICATION
+  MULTIPLE_SELECT
+}
+
+model QuizQuestion {
+  id              String               @id @default(uuid()) @db.Uuid
+  versionId       String               @db.Uuid
+  version         QuizVersion          @relation(fields: [versionId], references: [id], onDelete: Restrict)
+  position        Int
+  type            QuestionType
+  prompt          String               @db.Text
+  explanation     String?              @db.Text
+  acceptedAnswers Json                 @default("[]")
+  sourceKeys      Json                 @default("[]")
+  options         QuizQuestionOption[]
+
+  @@unique([versionId, position])
+  @@unique([id, versionId])
+}
