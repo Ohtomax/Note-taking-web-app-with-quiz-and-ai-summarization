@@ -114,7 +114,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
   - **Accept when** Overall accuracy weights answered questions while mean attempt percentage weights completed attempts equally.
   - **Verify** Use completed attempts scoring 1/1 and 1/3 with all questions answered. Confirm 50% accuracy and about 66.7% mean score.
 
-- [ ] **P1-T13 · Review security and data exposure risks** (MVP)
+- [x] **P1-T13 · Review security and data exposure risks** (MVP)
   - **Work and purpose** Map untrusted inputs and trust boundaries to controls and tests. Include rich text, forged owner fields, private note exposure to AI, premature exam feedback, leaked logs, and provider cost abuse.
   - **Files** `docs/SECURITY.md`, `docs/TESTING.md` · **Depends on** P1-T05, P1-T07, P1-T10, P1-T11
   - **Output** A threat model linking each material risk to a control, owner, and verification scenario.
