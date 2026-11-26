@@ -5,6 +5,7 @@ enum Role {
 }
 
 model User {
+  aiUsage     AIUsage[]
   id          String    @id @default(uuid()) @db.Uuid
   firebaseUid String    @unique @db.VarChar(128)
   displayName String    @default("") @db.VarChar(100)

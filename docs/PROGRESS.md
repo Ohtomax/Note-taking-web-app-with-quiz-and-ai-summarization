@@ -82,3 +82,5 @@ The owner will supply Firebase, Supabase, Redis and AI configuration later. No r
 - **P2-T11 completed** Local fixtures preserve independent version keys and source revisions.
 
 - **P2-T12 completed** Database rejects cross-version/duplicate answers and retains independent retakes.
+
+- **P2-T13 completed** Usage database tests verify per-user keys, duplicate rejection and token totals.

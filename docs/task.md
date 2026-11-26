@@ -280,7 +280,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
   - **Accept when** Retakes receive distinct attempt IDs, duplicate logical answers fail, and a mismatched version/question association is rejected.
   - **Verify** Create two attempts for one version, try inserting a duplicate answer and a question from another version, and check constraints.
 
-- [ ] **P2-T13 · Model AI usage and request identity** (MVP)
+- [x] **P2-T13 · Model AI usage and request identity** (MVP)
   - **Work and purpose** Record owner, operation, model, generation identity, status, timestamps, token usage and cost inputs. Plan reservation and settlement fields for concurrent calls and failed generations.
   - **Files** `server/prisma/ai-usage.prisma`, `docs/DATABASE.md` · **Depends on** P2-T09
   - **Output** An owner-scoped usage ledger with a unique request identity.

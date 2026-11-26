@@ -1,0 +1,35 @@
+enum AIOperation {
+  SUMMARY
+  QUIZ
+}
+
+enum AIStatus {
+  RESERVED
+  RUNNING
+  SUCCEEDED
+  FAILED
+  UNCERTAIN
+}
+
+model AIUsage {
+  id             String      @id @default(uuid()) @db.Uuid
+  userId         String      @db.Uuid
+  user           User        @relation(fields: [userId], references: [id], onDelete: Restrict)
+  requestKey     String      @db.VarChar(128)
+  inputHash      String      @db.VarChar(64)
+  operation      AIOperation
+  provider       String      @db.VarChar(50)
+  model          String      @db.VarChar(100)
+  status         AIStatus    @default(RESERVED)
+  inputTokens    Int?
+  outputTokens   Int?
+  reservedTokens Int         @default(0)
+  leaseExpiresAt DateTime?   @db.Timestamptz(6)
+  estimatedCost  Decimal?    @db.Decimal(16, 8)
+  pricingVersion String?     @db.VarChar(50)
+  resultId       String?     @db.Uuid
+  createdAt      DateTime    @default(now()) @db.Timestamptz(6)
+  updatedAt      DateTime    @updatedAt @db.Timestamptz(6)
+
+  @@unique([userId, requestKey])
+}
