@@ -203,7 +203,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
   - **Accept when** Tests fail early on an unsafe database target and clean up their own records.
   - **Verify** Run the harness twice, including an intentionally failing sample, and confirm deterministic cleanup.
 
-- [ ] **P2-T02 · Validate runtime configuration** (MVP)
+- [x] **P2-T02 · Validate runtime configuration** (MVP)
   - **Work and purpose** Parse server settings with Zod at startup. Handle optional provider keys until AI is enabled, and validate required CORS, Firebase, Redis, and database settings by environment.
   - **Files** `server/config/env.ts`, `server/.env.example`, `server/tests/config.test.ts` · **Depends on** None
   - **Output** Typed configuration and a redacted startup failure.

@@ -47,3 +47,7 @@ All production errors have safe messages and correlation IDs. Helmet, explicit C
 Use verified database TLS with the Supabase CA. Keep privileged credentials server-side and application DB access least-privileged. If a pg SSL object is supplied, ensure URL options do not replace it. Dependency audits and a non-root runtime image are release requirements. The user-facing generation form identifies external processing.
 
 The design review traced Bob's rejected access, a malicious note, malformed AI keys, duplicate finalization and a delayed old-user response. These are planned test cases. Passing runtime security tests requires Phase 2 and subsequent feature implementation.
+
+## Phase 2 configuration status
+
+Local startup allows missing infrastructure settings so owner account setup can be deferred. Production requires PostgreSQL, the CA path, Redis and Firebase Admin settings. Invalid configuration reports setting names only. Unconfigured dependencies will make readiness fail and private operations return 503. Zod 3 is retained per the project rules. The current registry audit reports GHSA-mrhx-c7xc-m3w5 against that line. Limit request bytes before validation and bound collection sizes. A patched major upgrade needs a recorded compatibility decision before release.

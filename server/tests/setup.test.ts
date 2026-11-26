@@ -5,7 +5,9 @@ import { join } from 'node:path';
 import { assertTestDatabase, withFixtureDirectory } from './setup.ts';
 
 test('database guard rejects remote and ordinary databases', () => {
-  assert.throws(() => assertTestDatabase('postgres://x@remote/study_test_' + 'a'.repeat(32)));
+  assert.throws(() =>
+    assertTestDatabase('postgres://x@remote/study_test_' + 'a'.repeat(32)),
+  );
   assert.throws(() => assertTestDatabase('postgres://x@localhost/postgres'));
   assert.equal(
     assertTestDatabase('postgres://x@127.0.0.1/study_test_' + 'a'.repeat(32)).hostname,
