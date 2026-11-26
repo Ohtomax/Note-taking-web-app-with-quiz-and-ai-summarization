@@ -58,7 +58,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
   - **Accept when** Reviewers can trace a note read and an AI request to the component that authorizes each operation.
   - **Verify** Follow both requests on the diagram and identify each network hop and credential.
 
-- [ ] **P1-T05 · Design authentication and ownership** (MVP)
+- [x] **P1-T05 · Design authentication and ownership** (MVP)
   - **Work and purpose** Map token acquisition, verification, user synchronization, and owner-scoped repository queries. Cover nested resources, both ends of a note move, and account changes in the browser.
   - **Files** `docs/SECURITY.md`, `docs/ARCHITECTURE.md` · **Depends on** P1-T04
   - **Output** An identity sequence and resource ownership table.
