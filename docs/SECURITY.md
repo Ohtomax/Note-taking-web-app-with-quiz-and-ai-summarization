@@ -55,3 +55,7 @@ Local startup allows missing infrastructure settings so owner account setup can 
 ## Rate limiter implementation
 
 Private API groups use distinct RedisStore prefixes with express-rate-limit and ioredis. Profile reads/writes allow 60 requests/minute/IP, auth 10, generation 5 and general reads 120 as initial values. Counter storage failures fail closed. Public health probes remain process/dependency diagnostics without accessing study data. MemoryStore is used only as an injected test store. Hosted Redis configuration and two-instance Redis verification are deferred because no Redis service is configured.
+
+## Firebase integration status
+
+Firebase Admin verifies ID tokens with revocation checking and returns selected identity fields only. The middleware exposes only clean 401 errors for invalid credentials. Missing Admin configuration yields 503 and grants no identity. The test suite injects a verifier to cover missing/expired/wrong-project scenarios. Real Firebase token issuance and provider-console setup are deferred to the owner. Enable email/password and authorized reset domains later. Outside test mode, FIREBASE_AUTH_EMULATOR_HOST is rejected before a configured verifier is created.
