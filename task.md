@@ -37,7 +37,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
   - **Accept when** Every required feature has a phase and the learner can complete the journey using MVP items alone.
   - **Verify** Trace one learner from an empty account to two scored attempts.
 
-- [ ] **P1-T02 · Review SmileCheck conventions** (MVP)
+- [x] **P1-T02 · Review SmileCheck conventions** (MVP)
   - **Work and purpose** Inspect a representative SmileCheck route, controller, service, repository, validator, error handler, and React feature. Record file paths and examples the study platform can follow. Request samples if the reference is unavailable.
   - **Files** `docs/ARCHITECTURE.md` · **Depends on** None
   - **Output** A short conventions guide grounded in source files.
