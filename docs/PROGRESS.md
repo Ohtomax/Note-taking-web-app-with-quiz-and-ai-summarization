@@ -41,3 +41,6 @@ Each completion entry records the verification performed. Git history provides t
 - **P1-T17 completed** Passed strict typecheck, build, compiled alias HTTP and dev watch startup. Files server, docs/ARCHITECTURE.md, docs/ROADMAP.md.
 
 - **P1-T17 completed** Passed strict typecheck, build, compiled alias HTTP and dev watch startup. Files server, docs/ARCHITECTURE.md, docs/ROADMAP.md.
+
+- **P1-T18 partial** React/Vite/Tailwind/router scaffold passes strict checking and production build. Development and preview servers each return HTTP 200 with the expected HTML entry. The browser connector is unavailable and native Computer Use stopped because it could not establish the current URL confidently. Visual rendering remains unverified, so P1-T18 stays unchecked. Continue independent initialization work under the owner's authorization. Files client/. Browser verification can be completed later when access is available.
+
