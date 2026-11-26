@@ -2,7 +2,10 @@ import type { ErrorRequestHandler } from 'express';
 import { ServiceError } from '@/utils/error-handler/ServiceError.js';
 
 export const ApiHandleError: ErrorRequestHandler = (error: unknown, _req, res, _next) => {
-  if (res.headersSent) return;
+  if (res.headersSent) {
+    _next(error);
+    return;
+  }
   const requestId = res.locals.requestId as string | undefined;
   if (error instanceof ServiceError) {
     res

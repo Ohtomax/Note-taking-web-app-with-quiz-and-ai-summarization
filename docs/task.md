@@ -322,7 +322,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
   - **Accept when** Wrong-owner and missing IDs receive the same public resource response. Supplied owner or role fields grant no access.
   - **Verify** Use seeded accounts and projects to exercise owner, other-owner, missing, and forged-field cases directly at the API.
 
-- [ ] **P2-T19 · Expose current-user profile endpoints** (MVP)
+- [x] **P2-T19 · Expose current-user profile endpoints** (MVP)
   - **Work and purpose** Add authenticated profile read and update routes with allow-listed editable fields. Return the client profile shape and keep credentials and provider-owned fields outside the response/update contract.
   - **Files** `server/src/routes/user.routes.ts`, `server/src/controllers/user.controller.ts`, `server/src/services/user.service.ts`, `server/src/utils/input-validators/user.ts` · **Depends on** P2-T17, P2-T18
   - **Output** Working read and update operations for the current user.

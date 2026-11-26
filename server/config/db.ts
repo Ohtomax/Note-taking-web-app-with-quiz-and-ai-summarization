@@ -1,5 +1,10 @@
 import { readFileSync } from 'node:fs';
 import type { PoolConfig } from 'pg';
+import { PrismaPg } from '@prisma/adapter-pg';
+import { PrismaClient } from '@/generated/prisma/client.js';
+
+export const createDatabase = (connectionString: string, caPath: string) =>
+  new PrismaClient({ adapter: new PrismaPg(createPoolConfig(connectionString, caPath)) });
 
 export const createPoolConfig = (
   connectionString: string,

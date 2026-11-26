@@ -94,3 +94,5 @@ The owner will supply Firebase, Supabase, Redis and AI configuration later. No r
 - **P2-T17 completed** Eight parallel local sign-ins produce one user and preserve edited profile fields.
 
 - **P2-T18 completed** Two-user repository checks reject foreign, missing and mismatched nested IDs.
+
+- **P2-T19 completed** Profile endpoints pass local API checks with strict fields and verified-user IDs.

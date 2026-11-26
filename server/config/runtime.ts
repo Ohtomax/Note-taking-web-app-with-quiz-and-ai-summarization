@@ -1,0 +1,50 @@
+import { deleteApp } from 'firebase-admin/app';
+import { createDatabase } from './db.ts';
+import { createFirebaseVerifier } from './firebase.ts';
+import { createRedis } from './redis.ts';
+import type { Environment } from './env.ts';
+import {
+  createApiLimiter,
+  createRedisStore,
+  rateLimits,
+} from '@/utils/rate-limiter/apiLimiter.js';
+import { createUserRepository } from '@/repositories/user.repository.js';
+import { createUserService } from '@/services/user.service.js';
+import type { AppServices } from '@/app.js';
+
+export const createRuntime = async (environment: Environment) => {
+  const firebase = createFirebaseVerifier(environment);
+  const database =
+    environment.DATABASE_URL && environment.DATABASE_CA_PATH
+      ? createDatabase(environment.DATABASE_URL, environment.DATABASE_CA_PATH)
+      : undefined;
+  const redis = environment.REDIS_URL ? createRedis(environment.REDIS_URL) : undefined;
+  if (redis) {
+    await redis.connect().catch(() => {});
+  }
+  let services: AppServices | undefined;
+  if (database && firebase.app && redis?.status === 'ready') {
+    services = {
+      userService: createUserService(createUserRepository(database)),
+      verifyToken: firebase.verify,
+      rateLimiter: createApiLimiter(
+        createRedisStore(redis, 'profile'),
+        rateLimits.profile,
+      ),
+    };
+  }
+  return {
+    services,
+    checkReadiness: async () => {
+      if (!services || !database || !redis || redis.status !== 'ready') return false;
+      await redis.ping();
+      await database.user.findFirst({ select: { id: true } });
+      return true;
+    },
+    close: async () => {
+      redis?.disconnect();
+      await database?.$disconnect();
+      if (firebase.app) await deleteApp(firebase.app);
+    },
+  };
+};
