@@ -27,3 +27,5 @@ Each completion entry records the verification performed. Git history provides t
 - **P1-T10 completed** Walked passage and three-chunk success, failure and duplicate generation states. Files docs/AI_INTEGRATION.md, docs/API.md.
 
 - **P1-T11 completed** Hand-graded four types and traced version edits, disclosure and retry rules. Files docs/QUIZ_SYSTEM.md.
+
+- **P1-T12 completed** Recalculated weighted accuracy, mean scores, skips and version-based grouping. Files docs/ANALYTICS.md.

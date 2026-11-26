@@ -107,7 +107,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
   - **Accept when** A retake can use the same version without AI, and a completed result remains reproducible after an edit.
   - **Verify** Hand-grade each question type and trace a practice answer, exam submission, and subsequent quiz edit.
 
-- [ ] **P1-T12 · Define analytics and activity measures** (MVP)
+- [x] **P1-T12 · Define analytics and activity measures** (MVP)
   - **Work and purpose** Document global, project, and quiz metrics. Specify denominators, unanswered items, eligible statuses, version grouping, elapsed time, ties, and empty states. Evaluate a lightweight chart option against the planned views.
   - **Files** `docs/ANALYTICS.md` · **Depends on** P1-T06, P1-T11
   - **Output** A metric dictionary with worked examples and chart choices.
