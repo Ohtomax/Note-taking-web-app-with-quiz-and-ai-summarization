@@ -190,7 +190,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
 
 **Objective** Establish a verified identity and an ownership-enforcing database/API boundary for all later features.
 
-**Prerequisites** Phase 1 complete, local toolchains usable, and isolated PostgreSQL, Redis, and Firebase test configuration available.
+**Prerequisites** The owner authorized Phase 2 on 2026-11-26 while Phase 1 browser verification remains deferred. Use the local toolchains and disposable test fixtures. Secret collection, hosted URLs, provider account setup and deployment are explicitly deferred.
 
 **Deliverables** A protected Express API, version-controlled Prisma schema and migrations, profile synchronization, reusable validation, and two-account regression fixtures.
 
@@ -287,7 +287,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
   - **Accept when** Repeated use of an idempotency key for the same user cannot create two ledger entries, and different users may use the same key independently.
   - **Verify** Insert matching and distinct user/key pairs and aggregate a known input/output usage fixture.
 
-- [ ] **P2-T14 · Add indexes for scoped lists and history** (MVP)
+- [x] **P2-T14 · Add indexes for scoped lists and history** (MVP)
   - **Work and purpose** Match indexes to project ownership, note lists, source links, version lookups, attempt timelines, and usage windows. Select a search strategy appropriate to the approved database and scope.
   - **Files** `server/prisma/`, `docs/DATABASE.md` · **Depends on** P2-T09, P2-T10, P2-T11, P2-T12, P2-T13
   - **Output** An index inventory mapping index order to query shape.
@@ -329,7 +329,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
   - **Accept when** A user can edit their own permitted profile fields and cannot select an arbitrary account or set its role.
   - **Verify** Read and edit a test profile, then send another UID and a role field and verify neither account gains privileges.
 
-- [ ] **P2-T20 · Establish the cross-user regression suite** (MVP)
+- [x] **P2-T20 · Establish the cross-user regression suite** (MVP)
   - **Work and purpose** Build a reusable two-user fixture with similar project and child data. Test identity verification and authorized query boundaries and provide fixture helpers for future feature endpoints.
   - **Files** `server/tests/fixtures/`, `server/tests/ownership.test.ts`, `docs/TESTING.md` · **Depends on** P2-T05, P2-T06, P2-T07, P2-T15, P2-T18, P2-T19
   - **Output** A repeatable authentication and ownership suite.

@@ -67,3 +67,7 @@ Reviewed cases include a checklist round-trip through JSON and plain text, two u
 ## Implemented index inventory
 
 Project indexes ownerId/deletedAt/updatedAt/id for owned paginated lists. Note indexes projectId/deletedAt/pinned/updatedAt/id plus title and creation-order variants. Summary uses projectId/generatedAt/id and Quiz uses projectId/deletedAt/updatedAt/id. Source joins index noteId for stale-source checks. Attempts index versionId/startedAt/id and status/startedAt for history/expiry. Usage indexes userId/createdAt/status and status/leaseExpiresAt. Unique quizId/version and questionId/position constraints also provide lookup indexes. Bounded substring search will begin with Prisma contains/insensitive filters on owned notes, with full-text/trigram indexing only after measured need. Stable pagination tests include 25 records with identical timestamps. Production-sized query plan measurement remains a later optimization check.
+
+## Local query-plan check
+
+A read-only EXPLAIN of the owner-scoped Project list with deletedAt filtering, stable updatedAt/id ordering and LIMIT 20 selected the Project_ownerId_deletedAt_updatedAt_id_idx index in the disposable PostgreSQL fixture. The separate tied-timestamp fixture confirms bounded paging without duplicates. Large-scale benchmarking belongs to Phase 6 and does not block this index implementation.

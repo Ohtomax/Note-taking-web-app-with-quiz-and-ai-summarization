@@ -2,7 +2,7 @@
 
 Organize study notes by project, turn them into summaries and quizzes, and track what you learn across quiz attempts. For example, a student preparing for a networking exam could select their OSI model and TCP/IP notes, generate a combined study guide, and retake a quiz a week later to see which concepts still need practice.
 
-The repository contains a buildable Phase 1 frontend and backend scaffold, plus the [project brief](./docs/PROJECT_BRIEF.md), [task checklist](./docs/task.md) and [verification log](./docs/PROGRESS.md). Feature implementation starts in later phases. Browser rendering verification is still pending.
+The repository contains the frontend scaffold and Phase 2 backend foundation, plus the [project brief](./docs/PROJECT_BRIEF.md), [task checklist](./docs/task.md) and [verification log](./docs/PROGRESS.md). Hosted configuration and Phase 1 browser rendering verification remain deferred.
 
 ## Planned study workflow
 
@@ -50,7 +50,7 @@ npm run build
 npm run dev
 ```
 
-The development listener uses port 3001. Visiting its root returns a JSON 404 with code NOT_FOUND because study routes begin in Phase 2. Stop the process with Ctrl+C. To run compiled output instead, use npm start after npm run build.
+The development listener uses port 3001. GET /api/health/live returns 200. GET /api/health/ready and private APIs return 503 while infrastructure settings are blank. With configured dependencies, GET/PATCH /api/v1/me verifies Firebase identity and accesses the current user's profile. The root returns a JSON 404. Stop with Ctrl+C. Use npm start after npm run build to run compiled output.
 
 Open a second terminal at the repository root for the frontend.
 
@@ -68,7 +68,7 @@ Open http://127.0.0.1:5173/ for the frontend. Stop it with Ctrl+C. To serve the 
 
 Environment templates live in client/.env.example and server/.env.example. Populate local .env files when the relevant features are implemented. Keep real credentials out of Git. The [environment reference](./docs/DEPLOYMENT.md#environment-reference) identifies when each setting becomes necessary.
 
-The scaffold currently has lint, formatting, type and build checks. Feature test suites are scheduled in the [testing plan](./docs/TESTING.md). Authentication, database migrations, rich-text editing and AI generation are planned features.
+Run npm test in server/ for the credential-free suite. Database tests use npm run test:db with an isolated loopback STUDY_TEST_DATABASE_URL named study_test_<uuid>, as described in the [testing plan](./docs/TESTING.md). Prisma Client is generated during installation and build. Application scripts load server/.env when it exists. Rich-text editing and AI generation belong to later phases.
 
 ## Design documents
 

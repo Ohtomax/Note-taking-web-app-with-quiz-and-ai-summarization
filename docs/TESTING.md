@@ -44,3 +44,7 @@ Run npm test in server/ for credential-free HTTP and service tests. Token verifi
 ## Local PostgreSQL fixture
 
 Phase 2 schema checks use a newly initialized disposable PostgreSQL 18 cluster bound to 127.0.0.1 on a separate test port. It contains synthetic data only and uses a random study_test_<uuid> database. No hosted URL or owner secret is read. Pass its URL explicitly as STUDY_TEST_DATABASE_URL to npm run test:db. The fixture module validates loopback and database name before constructing a client. Data tests roll back their transactions and disconnect on failure. Runtime connections retain verified TLS, while this isolated loopback-only fixture uses its separate test adapter.
+
+## Phase 2 verification results
+
+The credential-free suite passes 17 tests. The isolated PostgreSQL suite passes 13 tests against the initial migration, including two-account ownership for projects, notes, summaries, quizzes, versions, questions, options, source links, attempts, answers and AI usage. Profile HTTP tests execute the actual limiter, token middleware, user synchronization, role guard, validator, controller, service and Prisma repository with an injected token verifier. Feature routes for projects/notes/quizzes are introduced in later phases and will reuse these fixtures. Hosted Redis sharing, real Firebase token issuance and Supabase CA verification remain deferred.

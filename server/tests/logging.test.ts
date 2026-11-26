@@ -22,4 +22,11 @@ test('request logging permits only metadata with server-generated correlation ID
     'requestId',
     'status',
   ]);
+  const failed = await request(app)
+    .get('/api/health/ready')
+    .set('Authorization', 'Bearer private-marker');
+  assert.equal(failed.status, 503);
+  assert.equal(entries[1]?.event, 'request_failed');
+  assert.equal(entries[1]?.requestId, failed.headers['x-request-id']);
+  assert.equal(JSON.stringify(entries).includes('private-marker'), false);
 });

@@ -59,3 +59,7 @@ Private API groups use distinct RedisStore prefixes with express-rate-limit and 
 ## Firebase integration status
 
 Firebase Admin verifies ID tokens with revocation checking and returns selected identity fields only. The middleware exposes only clean 401 errors for invalid credentials. Missing Admin configuration yields 503 and grants no identity. The test suite injects a verifier to cover missing/expired/wrong-project scenarios. Real Firebase token issuance and provider-console setup are deferred to the owner. Enable email/password and authorized reset domains later. Outside test mode, FIREBASE_AUTH_EMULATOR_HOST is rejected before a configured verifier is created.
+
+## Current dependency audit
+
+The Phase 2 audit reports four high-severity package findings representing two advisory chains. Zod 3 has GHSA-mrhx-c7xc-m3w5. The Prisma configuration dependency chain includes effect with GHSA-7589-6fvf-x4pw, also reported through @prisma/config and prisma. Audit proposes incompatible major changes and no forced downgrade/upgrade was applied. Keep request size limits active and resolve the version-policy decision before a production release. This is an outstanding release risk, not a passing audit.

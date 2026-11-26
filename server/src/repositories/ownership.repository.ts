@@ -1,6 +1,59 @@
 import type { PrismaClient } from '@/generated/prisma/client.js';
 
-export const createOwnershipRepository = (prisma: PrismaClient) => ({
+type OwnershipDatabase = Pick<
+  PrismaClient,
+  | 'project'
+  | 'note'
+  | 'summary'
+  | 'quiz'
+  | 'quizQuestion'
+  | 'quizAttempt'
+  | 'aIUsage'
+  | 'quizVersion'
+  | 'quizQuestionOption'
+  | 'quizAttemptAnswer'
+  | 'summarySource'
+  | 'quizSource'
+>;
+
+export const createOwnershipRepository = (prisma: OwnershipDatabase) => ({
+  version: (ownerId: string, quizId: string, versionId: string) =>
+    prisma.quizVersion.findFirst({
+      where: { id: versionId, quizId, quiz: { project: { ownerId } } },
+      select: { id: true },
+    }),
+  option: (ownerId: string, questionId: string, optionId: string) =>
+    prisma.quizQuestionOption.findFirst({
+      where: {
+        id: optionId,
+        questionId,
+        question: { version: { quiz: { project: { ownerId } } } },
+      },
+      select: { id: true },
+    }),
+  answer: (ownerId: string, attemptId: string, answerId: string) =>
+    prisma.quizAttemptAnswer.findFirst({
+      where: {
+        id: answerId,
+        attemptId,
+        attempt: { version: { quiz: { project: { ownerId } } } },
+      },
+      select: { id: true },
+    }),
+  summarySource: (ownerId: string, summaryId: string, sourceId: string) =>
+    prisma.summarySource.findFirst({
+      where: { id: sourceId, summaryId, summary: { project: { ownerId } } },
+      select: { id: true },
+    }),
+  quizSource: (ownerId: string, versionId: string, sourceId: string) =>
+    prisma.quizSource.findFirst({
+      where: {
+        id: sourceId,
+        quizVersionId: versionId,
+        quizVersion: { quiz: { project: { ownerId } } },
+      },
+      select: { id: true },
+    }),
   project: (ownerId: string, projectId: string) =>
     prisma.project.findFirst({
       where: { id: projectId, ownerId, deletedAt: null },
