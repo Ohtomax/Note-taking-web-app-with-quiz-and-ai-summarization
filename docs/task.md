@@ -294,7 +294,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
   - **Accept when** Common lists support bounded pagination and stable ordering, including items with tied timestamps.
   - **Verify** Seed representative data, inspect plans and confirm paging produces neither gaps nor duplicate rows.
 
-- [ ] **P2-T15 · Create and rehearse the initial migrations** (MVP)
+- [x] **P2-T15 · Create and rehearse the initial migrations** (MVP)
   - **Work and purpose** Generate and review migrations in dependency order. Check referential actions against retention rules and rehearse deployment and recovery against a disposable PostgreSQL database.
   - **Files** `server/prisma/migrations/`, `docs/DATABASE.md`, `docs/DEPLOYMENT.md` · **Depends on** P2-T14
   - **Output** Version-controlled migrations and repeatable migration instructions.

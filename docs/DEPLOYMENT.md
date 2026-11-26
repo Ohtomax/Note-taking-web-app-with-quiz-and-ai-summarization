@@ -47,3 +47,7 @@ Never prefix privileged keys with VITE_. Phase 2 will implement runtime schema v
 ## Deferred Phase 2 infrastructure
 
 Per the owner's instruction, collecting URLs/keys, connecting to hosted Supabase/Firebase/Redis and deployment are skipped. prisma.config.ts uses an explicit unconfigured localhost placeholder for offline schema commands only. No automatic migration or schema push runs on app startup. Runtime database construction requires an actual supplied connection string and trusted CA. URL SSL override parameters are removed before pg receives the verified TLS object. The live certificate acceptance/rejection check remains pending.
+
+## Initial migration rehearsal
+
+The initial migration was generated with prisma migrate diff --from-empty --to-schema ./prisma --script. It was applied to a new empty disposable local database using prisma migrate deploy. A second run reported no pending migrations, and the database fixture suite passed against the migrated schema. No hosted or production migration was attempted. Before a later hosted deployment, supply DIRECT_URL locally through the approved secret mechanism, review the migration, back up the target and run the documented Phase 6 release procedure.

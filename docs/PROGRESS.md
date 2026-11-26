@@ -86,3 +86,5 @@ The owner will supply Firebase, Supabase, Redis and AI configuration later. No r
 - **P2-T13 completed** Usage database tests verify per-user keys, duplicate rejection and token totals.
 
 - **P2-T14 implemented, live check deferred** Indexes and tied-timestamp paging validated; production-scale plan review deferred.
+
+- **P2-T15 completed** Initial migration applied to empty local database; repeat and nine constraints pass.
