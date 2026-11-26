@@ -45,3 +45,5 @@ Each completion entry records the verification performed. Git history provides t
 - **P1-T18 partial** React/Vite/Tailwind/router scaffold passes strict checking and production build. Development and preview servers each return HTTP 200 with the expected HTML entry. The browser connector is unavailable and native Computer Use stopped because it could not establish the current URL confidently. Visual rendering remains unverified, so P1-T18 stays unchecked. Continue independent initialization work under the owner's authorization. Files client/. Browser verification can be completed later when access is available.
 
 - **P1-T19 completed** Checked environment coverage and verified a private marker is absent from build. Files client/.env.example, server/.env.example, docs/DEPLOYMENT.md.
+
+- **P1-T20 completed** Passed both lint/format/type/build suites and unused-variable rejection probes. Files .prettierrc.json, server, client, docs/ARCHITECTURE.md.

@@ -163,7 +163,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
   - **Accept when** Every expected setting has a purpose and no privileged value is exposed to the client build.
   - **Verify** Compare example keys with the architecture and inspect the built frontend using nonsecret test markers.
 
-- [ ] **P1-T20 · Set up linting and formatting** (MVP)
+- [x] **P1-T20 · Set up linting and formatting** (MVP)
   - **Work and purpose** Configure ESLint and Prettier for both projects, using the language and naming conventions established in the review.
   - **Files** `client/package.json`, `server/package.json`, `client/eslint.config.js`, `server/eslint.config.js`, `.prettierrc.json` · **Depends on** P1-T02, P1-T17, P1-T18
   - **Output** Repeatable lint and format-check commands.

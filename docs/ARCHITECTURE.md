@@ -110,3 +110,7 @@ Autosave debounces and serializes changes per note. PATCH includes expectedRevis
 ## Scaffold verification adjustment
 
 TypeScript 5.9 rejects alias imports ending in .ts when rewriteRelativeImportExtensions is enabled (TS2877). Use .js for @/ imports under NodeNext, as observed in SmileCheck. Relative imports may use .ts and are rewritten by TypeScript. tsc-alias converts emitted aliases into runnable relative paths. Both tsx watch and compiled startup were verified locally.
+
+## Formatting and lint baseline
+
+ESLint 10, typescript-eslint 8 and Prettier 3 are pinned in each package. React lint rules check hooks and refresh boundaries. Both projects use single quotes, trailing commas, 90-column formatting and LF endings. Both lint and format checks pass. A disposable unused-variable probe failed lint as expected in each project and was removed. The initial ESLint 9 dependency reported end-of-support, so it was replaced with compatible ESLint 10 before the task commit.

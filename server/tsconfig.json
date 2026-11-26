@@ -13,19 +13,9 @@
     "verbatimModuleSyntax": true,
     "rewriteRelativeImportExtensions": true,
     "paths": {
-      "@/*": [
-        "./src/*"
-      ]
+      "@/*": ["./src/*"]
     }
   },
-  "include": [
-    "server.ts",
-    "src/**/*.ts",
-    "config/**/*.ts"
-  ],
-  "exclude": [
-    "dist",
-    "node_modules",
-    "tests"
-  ]
+  "include": ["server.ts", "src/**/*.ts", "config/**/*.ts"],
+  "exclude": ["dist", "node_modules", "tests"]
 }

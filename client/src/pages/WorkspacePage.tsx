@@ -9,8 +9,8 @@ export default function WorkspacePage() {
           Organize your notes, build study guides, and practice what you learn.
         </p>
         <p className="mt-8 border-t border-slate-100 pt-6 text-sm text-slate-500">
-          The project foundation is ready. Note-taking and study features will
-          arrive in the next development phases.
+          The project foundation is ready. Note-taking and study features will arrive in
+          the next development phases.
         </p>
       </section>
     </main>
