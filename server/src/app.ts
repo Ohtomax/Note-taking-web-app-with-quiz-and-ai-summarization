@@ -4,13 +4,17 @@ import cors from 'cors';
 import { parseEnvironment, type Environment } from '../config/env.ts';
 import { ApiHandleError } from '@/utils/error-handler/apiErrorHandler.js';
 import { createHealthRouter, type ReadinessCheck } from '@/routes/health.routes.js';
+import { requestLogger } from '@/middlewares/requestLogger.js';
+import type { LogWriter } from '@/utils/logger.js';
 
 export function createApp(
   checkReadiness: ReadinessCheck = async () => false,
   environment: Environment = parseEnvironment({}),
+  logWriter?: LogWriter,
 ) {
   const app = express();
   app.disable('x-powered-by');
+  app.use(requestLogger(logWriter));
   app.set('trust proxy', environment.TRUST_PROXY_HOPS);
   app.use(helmet());
   app.use(

@@ -238,7 +238,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
   - **Accept when** Requests above the configured threshold receive the documented response across two app instances.
   - **Verify** Use a test Redis instance, split requests across two clients, and exercise store loss and window expiry.
 
-- [ ] **P2-T07 · Redact application and error logs** (MVP)
+- [x] **P2-T07 · Redact application and error logs** (MVP)
   - **Work and purpose** Use structured logging with request IDs. Exclude bearer tokens, note bodies, prompts, answers, credential material, and personal profile fields from routine and error logs.
   - **Files** `server/src/utils/logger.ts`, `server/src/app.ts`, `server/tests/logging.test.ts` · **Depends on** P2-T03, P2-T04
   - **Output** Correlatable request logs with controlled fields.

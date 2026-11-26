@@ -3,10 +3,11 @@ import { ServiceError } from '@/utils/error-handler/ServiceError.js';
 
 export const ApiHandleError: ErrorRequestHandler = (error: unknown, _req, res, _next) => {
   if (res.headersSent) return;
+  const requestId = res.locals.requestId as string | undefined;
   if (error instanceof ServiceError) {
     res
       .status(error.status)
-      .json({ error: { code: error.code, message: error.message } });
+      .json({ error: { code: error.code, message: error.message }, requestId });
     return;
   }
   const bodyError = error as { type?: unknown };
@@ -24,5 +25,8 @@ export const ApiHandleError: ErrorRequestHandler = (error: unknown, _req, res, _
   }
   res
     .status(500)
-    .json({ error: { code: 'INTERNAL_ERROR', message: 'Internal server error' } });
+    .json({
+      error: { code: 'INTERNAL_ERROR', message: 'Internal server error' },
+      requestId,
+    });
 };
