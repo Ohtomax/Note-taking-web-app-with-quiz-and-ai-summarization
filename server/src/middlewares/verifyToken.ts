@@ -15,7 +15,12 @@ export const createVerifyToken =
       return;
     }
     try {
-      req.user = verifiedIdentitySchema.parse(await verify(header.data.slice(7)));
+      const identity = verifiedIdentitySchema.parse(await verify(header.data.slice(7)));
+      req.user = {
+        uid: identity.uid,
+        ...(identity.email ? { email: identity.email } : {}),
+        ...(identity.name ? { name: identity.name } : {}),
+      };
       next();
     } catch (error) {
       if (error instanceof ServiceError && error.status === 503) {

@@ -315,7 +315,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
   - **Accept when** Two concurrent requests for one new UID create exactly one profile and later sign-ins preserve edits.
   - **Verify** Send parallel authenticated requests in the integration harness, edit a display field, and sign in again.
 
-- [ ] **P2-T18 · Enforce resource ownership consistently** (MVP)
+- [x] **P2-T18 · Enforce resource ownership consistently** (MVP)
   - **Work and purpose** Resolve the application user from the verified UID. Apply the database-backed role guard on protected route groups and scope project, child, attempt, and usage queries to their ownership chain.
   - **Files** `server/src/middlewares/`, `server/src/repositories/`, `docs/SECURITY.md` · **Depends on** P2-T04, P2-T06, P2-T17
   - **Output** Reusable ownership queries and protected route composition.
