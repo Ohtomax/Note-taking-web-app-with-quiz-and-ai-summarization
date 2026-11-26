@@ -170,7 +170,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
   - **Accept when** Both projects pass the checks and a deliberately unused variable is reported in a disposable sample.
   - **Verify** Run both checks from a clean checkout, then verify the sample detects the intended issue.
 
-- [ ] **P1-T21 · Document and rehearse local setup** (MVP)
+- [x] **P1-T21 · Document and rehearse local setup** (MVP)
   - **Work and purpose** Write exact install, configure, build, run, test, and stop instructions for the agreed layout. Identify which services are required at this stage.
   - **Files** `README.md`, `docs/TESTING.md`, `docs/PROGRESS.md` · **Depends on** P1-T17, P1-T18, P1-T19, P1-T20
   - **Output** An onboarding guide with verified commands and recorded results.

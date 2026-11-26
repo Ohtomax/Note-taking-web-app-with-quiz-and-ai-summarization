@@ -50,3 +50,11 @@ Each completion entry records the verification performed. Git history provides t
 
 - **P1-T20 follow-up** The clean checkout exposed Windows autocrlf overriding the LF formatter policy. Added .gitattributes to enforce LF on checkout. The clean-install rehearsal is being repeated before P1-T21 is completed.
 
+
+## Phase 1 status
+
+Twenty task acceptance records are complete after the local rehearsal. P1-T18 remains partial because browser rendering could not be inspected. The React implementation, strict build and HTTP startup checks are complete, and its scaffold was pushed separately. The phase completion gate remains open for that verification.
+
+The owner will supply Firebase, Supabase, Redis and AI configuration later. No real credentials were requested or committed. The Groq provider choice is a documented candidate pending a live quality pilot. Phase 2 has not started.
+
+- **P1-T21 completed** Fresh checkout passed install, lint, format, types, builds and both HTTP startups. Files README.md, docs/TESTING.md.

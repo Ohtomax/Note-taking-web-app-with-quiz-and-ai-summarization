@@ -21,3 +21,18 @@ Mock responses cover invalid schema, invented source IDs, duplicate quiz items a
 Use synthetic records and unique test database names. Abort if a production target is detected. External Firebase/AI values are supplied later by the owner. Default automated AI tests use a deterministic mock service with recorded token counts. Set exact expected answers and query aggregates in fixtures.
 
 For a migration failure stop deployment, retain the previous compatible application build and inspect the migration history. Restore a backup into an isolated database before considering data recovery. For provider loss return a safe failed/uncertain generation state, reconcile billed usage, preserve original notes and let saved artifacts remain readable. Simulate both cases before production.
+
+## Phase 1 commands
+
+From each of server/ and client/, run npm ci, npm run lint, npm run format:check, npm run typecheck and npm run build. The lockfile defines the exact installation. Run server npm start and verify a 404 JSON NOT_FOUND response at its root. This confirms the bootstrap listener and emitted imports. Run client npm run dev and npm run preview and inspect their startup/HTTP entry responses.
+
+The scaffold has no feature test script yet. Unit/integration/component/browser suites are introduced with their respective Phase 2–5 fixtures. Type/build and HTTP startup checks verify the scaffold boundary only. Live Firebase, database and AI tests await owner configuration. Browser rendering remains pending because both available browser automation paths failed.
+
+
+## Clean-checkout rehearsal on 2026-11-26
+
+Node 24.12.0 and npm 11.6.2. A fresh local clone with hardlinks disabled ran npm ci followed by lint, format:check, typecheck and build in both packages. Every command exited 0. Both installs reported zero known vulnerabilities at the check time.
+
+The compiled server was started with PORT=3002 and returned the expected 404 JSON NOT_FOUND. The client production preview at port 4174 returned 200 and its HTML referenced the built entry. Existing working-copy dev servers were checked at ports 3001 and 5173, and preview at 4173. These are HTTP/startup results. Visual browser rendering remains unverified as recorded under P1-T18.
+
+The first fresh checkout revealed CRLF conflicts with Prettier's LF setting. The P1-T20 follow-up added .gitattributes, and the successful rehearsal used that commit. Documentation relative links were also checked against actual files. Per the owner's direction, external account credentials and live-service checks are deferred.

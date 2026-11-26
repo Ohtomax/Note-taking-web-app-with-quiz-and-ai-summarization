@@ -2,7 +2,7 @@
 
 Organize study notes by project, turn them into summaries and quizzes, and track what you learn across quiz attempts. For example, a student preparing for a networking exam could select their OSI model and TCP/IP notes, generate a combined study guide, and retake a quiz a week later to see which concepts still need practice.
 
-**Project status:** Planning. This repository contains the [full project brief](./PROJECT_BRIEF.md). The first milestone is to review and approve the architecture, database design, and six-phase roadmap before starting implementation.
+The repository contains a buildable Phase 1 frontend and backend scaffold, plus the [project brief](./docs/PROJECT_BRIEF.md), [task checklist](./docs/task.md) and [verification log](./docs/PROGRESS.md). Feature implementation starts in later phases. Browser rendering verification is still pending.
 
 ## Planned study workflow
 
@@ -32,4 +32,51 @@ Organize study notes by project, turn them into summaries and quizzes, and track
 | 5 | Build the study interfaces, quiz attempts, history, and analytics. |
 | 6 | Verify the complete workflow, optimize performance, and deploy. |
 
-The [development roadmap](./PROJECT_BRIEF.md#9-development-roadmap--divide-and-conquer) lists the work for each phase. The [development workflow](./PROJECT_BRIEF.md#11-development-workflow-and-rules) calls for testing each task and getting approval before moving to the next one.
+The [roadmap](./docs/ROADMAP.md) maps requirements to tasks. The owner authorized all Phase 1 tasks and one push per task. Later phases require another instruction.
+
+## Local setup
+
+Use Node 24.12.0 or a newer Node 24 release and npm. Phase 1 startup works with defaults and requires no Firebase, database, Redis or AI credentials.
+
+Install and check the server from the repository root.
+
+```powershell
+cd server
+npm ci
+npm run lint
+npm run format:check
+npm run typecheck
+npm run build
+npm run dev
+```
+
+The development listener uses port 3001. Visiting its root returns a JSON 404 with code NOT_FOUND because study routes begin in Phase 2. Stop the process with Ctrl+C. To run compiled output instead, use npm start after npm run build.
+
+Open a second terminal at the repository root for the frontend.
+
+```powershell
+cd client
+npm ci
+npm run lint
+npm run format:check
+npm run typecheck
+npm run build
+npm run dev
+```
+
+Open http://127.0.0.1:5173/ for the frontend. Stop it with Ctrl+C. To serve the production build locally, run npm run preview and open http://127.0.0.1:4173/. Preview serves the static build and is intended for local verification.
+
+Environment templates live in client/.env.example and server/.env.example. Populate local .env files when the relevant features are implemented. Keep real credentials out of Git. The [environment reference](./docs/DEPLOYMENT.md#environment-reference) identifies when each setting becomes necessary.
+
+The scaffold currently has lint, formatting, type and build checks. Feature test suites are scheduled in the [testing plan](./docs/TESTING.md). Authentication, database migrations, rich-text editing and AI generation are planned features.
+
+## Design documents
+
+- [Architecture and source conventions](./docs/ARCHITECTURE.md)
+- [Database and retention](./docs/DATABASE.md)
+- [API contract](./docs/API.md)
+- [Security and ownership](./docs/SECURITY.md)
+- [AI integration and cost estimates](./docs/AI_INTEGRATION.md)
+- [Quiz scoring and history](./docs/QUIZ_SYSTEM.md)
+- [Analytics definitions](./docs/ANALYTICS.md)
+- [Deployment and recovery](./docs/DEPLOYMENT.md)
