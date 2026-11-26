@@ -47,3 +47,6 @@ Each completion entry records the verification performed. Git history provides t
 - **P1-T19 completed** Checked environment coverage and verified a private marker is absent from build. Files client/.env.example, server/.env.example, docs/DEPLOYMENT.md.
 
 - **P1-T20 completed** Passed both lint/format/type/build suites and unused-variable rejection probes. Files .prettierrc.json, server, client, docs/ARCHITECTURE.md.
+
+- **P1-T20 follow-up** The clean checkout exposed Windows autocrlf overriding the LF formatter policy. Added .gitattributes to enforce LF on checkout. The clean-install rehearsal is being repeated before P1-T21 is completed.
+
