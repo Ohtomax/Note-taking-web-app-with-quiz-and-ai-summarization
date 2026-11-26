@@ -100,7 +100,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
   - **Accept when** Each eligible chunk is accounted for, source references survive reduction, and an interrupted request has a recovery path.
   - **Verify** Walk a three-chunk folder through success, failure after chunk two, and a repeated request.
 
-- [ ] **P1-T11 · Specify scoring, versioning, and disclosure** (MVP)
+- [x] **P1-T11 · Specify scoring, versioning, and disclosure** (MVP)
   - **Work and purpose** Define typed answer keys, accepted identification variants, normalization limits, and mode-specific responses. Pin attempts to immutable versions and specify in-progress, abandoned, and completed transitions.
   - **Files** `docs/QUIZ_SYSTEM.md`, `docs/API.md` · **Depends on** P1-T06, P1-T08
   - **Output** A scoring table, attempt state diagram, and visibility matrix covering delivery and authoring routes.
