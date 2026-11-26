@@ -79,7 +79,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
   - **Accept when** Deleting or archiving a project has a specified effect on each child type and stale writes cannot win silently.
   - **Verify** Trace a rich-text checklist through storage and extraction, a two-tab edit, and a deletion involving a completed attempt.
 
-- [ ] **P1-T08 · Specify the REST API** (MVP)
+- [x] **P1-T08 · Specify the REST API** (MVP)
   - **Work and purpose** List methods, paths, owner scope, requests, success and error responses, pagination, and idempotency for profile, projects, notes, generations, summaries, quizzes, attempts, analytics, and usage.
   - **Files** `docs/API.md` · **Depends on** P1-T05, P1-T06, P1-T07
   - **Output** An endpoint inventory with example payloads.

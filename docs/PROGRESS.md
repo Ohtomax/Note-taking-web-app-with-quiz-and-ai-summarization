@@ -19,3 +19,5 @@ Each completion entry records the verification performed. Git history provides t
 - **P1-T06 completed** Reviewed thirteen models and traced two sources and two version-bound attempts. Files docs/DATABASE.md.
 
 - **P1-T07 completed** Traced checklist serialization, stale autosaves and historical deletion behavior. Files docs/ARCHITECTURE.md, docs/DATABASE.md.
+
+- **P1-T08 completed** Mapped all study operations and reviewed conflict and retry payloads. Files docs/API.md.
