@@ -217,7 +217,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
   - **Accept when** The test harness can exercise routes without a global listener and public health responses expose no credentials.
   - **Verify** Request liveness while simulating an unavailable dependency and verify readiness returns a non-success response.
 
-- [ ] **P2-T04 · Define request validation and error responses** (MVP)
+- [x] **P2-T04 · Define request validation and error responses** (MVP)
   - **Work and purpose** Validate params, query, and body against strict Zod schemas. Reject extra writable fields and translate typed service and unexpected errors into consistent client responses.
   - **Files** `server/src/middlewares/validate.ts`, `server/src/utils/input-validators/`, `server/src/utils/error-handler/`, `docs/API.md` · **Depends on** P2-T03
   - **Output** A validation and error-handling pattern reusable across modules.
