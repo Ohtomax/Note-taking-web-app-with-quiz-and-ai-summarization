@@ -196,7 +196,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
 
 ### Task checklist
 
-- [ ] **P2-T01 · Connect the backend test harness** (MVP)
+- [x] **P2-T01 · Connect the backend test harness** (MVP)
   - **Work and purpose** Create an isolated test entry point with disposable fixtures and injectable token verifiers. Keep external services and production credentials outside normal test execution.
   - **Files** `server/tests/setup.ts`, `server/package.json`, `docs/TESTING.md` · **Depends on** None
   - **Output** A repeatable backend test command and fixture lifecycle.

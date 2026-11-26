@@ -36,3 +36,7 @@ Node 24.12.0 and npm 11.6.2. A fresh local clone with hardlinks disabled ran npm
 The compiled server was started with PORT=3002 and returned the expected 404 JSON NOT_FOUND. The client production preview at port 4174 returned 200 and its HTML referenced the built entry. Existing working-copy dev servers were checked at ports 3001 and 5173, and preview at 4173. These are HTTP/startup results. Visual browser rendering remains unverified as recorded under P1-T18.
 
 The first fresh checkout revealed CRLF conflicts with Prettier's LF setting. The P1-T20 follow-up added .gitattributes, and the successful rehearsal used that commit. Documentation relative links were also checked against actual files. Per the owner's direction, external account credentials and live-service checks are deferred.
+
+## Phase 2 harness
+
+Run npm test in server/ for credential-free HTTP and service tests. Token verification is injected per application instance. Database integration fixtures require an explicit loopback URL named study_test_<uuid>. The guard rejects remote or ordinary database names. Temporary fixture directories are cleaned in finally blocks, including an intentionally failing callback. Tests and configuration are included in the separate strict test typecheck.

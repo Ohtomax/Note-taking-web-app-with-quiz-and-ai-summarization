@@ -58,3 +58,5 @@ Twenty task acceptance records are complete after the local rehearsal. P1-T18 re
 The owner will supply Firebase, Supabase, Redis and AI configuration later. No real credentials were requested or committed. The Groq provider choice is a documented candidate pending a live quality pilot. Phase 2 has not started.
 
 - **P1-T21 completed** Fresh checkout passed install, lint, format, types, builds and both HTTP startups. Files README.md, docs/TESTING.md.
+
+- **P2-T01 completed** Harness passed twice, including unsafe-target rejection and failed-fixture cleanup.
