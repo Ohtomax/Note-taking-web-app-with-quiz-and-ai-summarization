@@ -93,7 +93,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
   - **Accept when** A reviewer can reproduce the estimates from input/output token assumptions and see which claims still need a pilot.
   - **Verify** Recalculate the two examples, including intermediate calls for folder processing, and flag unmeasured results.
 
-- [ ] **P1-T10 · Design the generation lifecycle** (MVP)
+- [x] **P1-T10 · Design the generation lifecycle** (MVP)
   - **Work and purpose** Specify selection, source revision capture, token budgeting, chunking, reduction, validation, storage, and retrieval. Decide how timeouts, retries, quotas, and generation status work within the hosting limits.
   - **Files** `docs/AI_INTEGRATION.md`, `docs/API.md` · **Depends on** P1-T07, P1-T08, P1-T09
   - **Output** A generation sequence for a passage and for an oversized folder.

@@ -23,3 +23,5 @@ Each completion entry records the verification performed. Git history provides t
 - **P1-T08 completed** Mapped all study operations and reviewed conflict and retry payloads. Files docs/API.md.
 
 - **P1-T09 completed** Verified official pricing and recalculated note and folder costs; pilot deferred. Files docs/AI_INTEGRATION.md.
+
+- **P1-T10 completed** Walked passage and three-chunk success, failure and duplicate generation states. Files docs/AI_INTEGRATION.md, docs/API.md.

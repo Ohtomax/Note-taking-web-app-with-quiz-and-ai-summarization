@@ -52,3 +52,7 @@ A PATCH with {expectedRevision:5,title:"OSI"} against revision 6 returns 409 REV
 Idempotency keys are scoped to owner plus operation. Persist a hash of settings/source revisions. Same key and same input returns the existing operation. Same key with changed input returns 409 IDEMPOTENCY_CONFLICT. A deliberate regeneration uses a fresh key. Submitting a completed attempt returns its stored result and leaves finish time unchanged.
 
 Player endpoints suppress grading keys throughout an open exam and suppress practice feedback until the matching answer is committed. Authoring endpoints intentionally expose the owner's answer keys, so this is a personal study tool and carries no proctored-exam integrity guarantee. Avoid prefetching authoring data into player state.
+
+## Generation status
+
+POST generation returns 201 with the completed artifact or a persisted operation status. GET /generations/:generationId returns RESERVED, RUNNING, SUCCEEDED, FAILED or UNCERTAIN with a safe public error and retry guidance. A response timeout does not imply that the provider incurred zero usage. The existing idempotency key retrieves the original status.

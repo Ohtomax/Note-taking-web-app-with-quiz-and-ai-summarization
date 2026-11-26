@@ -30,3 +30,26 @@ Initial configurable policy proposes 20 logical generations/user/day, one concur
 ## Deferred account work
 
 Per the owner's instruction, keys, billing activation and live provider benchmarks are left for the owner. A later pilot should use synthetic Networking notes, at least 20 generations, all question types, and record schema pass rate, source fidelity, duplicate rate, latency and actual usage. Target complete source references and no invalid saved questions. Live output quality has not been claimed.
+
+## Generation lifecycle
+
+1. Strictly validate settings, source mode and idempotency key.
+2. Resolve the current user and all notes within the selected owned project. Capture stable source keys, revisions, ranges and content hashes. Reject stale excerpts or mixed ownership.
+3. Build a complete ordered manifest of eligible source material. Check revisions again before admitting the request. Archived/deleted notes are excluded explicitly.
+4. Estimate tokens with the provider tokenizer or count endpoint when available. Reserve prompt/output space and a safety margin. Start with a conservative 20,000-token chunk input target and a 100,000-token source ceiling. Reject unsupported size clearly before billing.
+5. Atomically reserve the quota and claim owner/operation/key/inputHash. A repeated key returns the persisted generation state. Changed inputs with the same key return 409.
+6. Treat note text as untrusted data in delimited prompt sections. The model receives no tools, database credentials or unrelated user metadata.
+7. For passages and small notes, make one schema-constrained call. For folders, map every chunk, then reduce in bounded batches until the result fits. Carry source keys through every stage. Validate every citation against the manifest.
+8. Zod checks structure and semantic invariants. Quiz validation checks answer membership, cardinality, exact question count and duplicates. Summary sections include source references. A partial chunk set cannot become a complete artifact.
+9. Atomically save the artifact and source revisions, settle usage and mark success. Source changes after capture mark the saved result stale. Never overwrite notes.
+10. Reopening or retaking uses saved data. Intentional regenerate uses a new request key.
+
+Use a 20-second provider-call deadline and a 55-second overall deadline as initial configurable values. Honor Retry-After and retry transient failures at most twice with jitter within the overall budget. Do not retry invalid input. A timed-out request with unknown provider completion stays uncertain and is never silently reissued under the same operation.
+
+Persist generation state in AIUsage as RESERVED/RUNNING/SUCCEEDED/FAILED/UNCERTAIN with a lease and result reference. Recover expired reservations without labeling unknown cost as zero. A terminal retry uses a fresh operation after the UI discloses potential extra usage. In-process synchronous execution is the first implementation. If measured supported folders exceed hosting deadlines, P4-T25 adds resumable background execution before that size is advertised.
+
+## Three-chunk walkthrough
+
+Success covers chunks A, B and C, validates the three results and reduces their source keys into one artifact. Failure after B records A/B usage and the failed/uncertain state, saves no complete artifact and releases only unused reservation capacity. The same request key retrieves that state and starts no new provider calls. A new explicitly authorized generation re-resolves current source revisions.
+
+For an excerpt, offsets resolve against the server-owned plainText at the specified revision. A changed revision fails before provider access. The UI identifies the external provider before sending and shows source coverage and limits.
