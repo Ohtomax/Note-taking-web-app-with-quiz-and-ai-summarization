@@ -7,4 +7,6 @@ model Quiz {
   createdAt DateTime      @default(now()) @db.Timestamptz(6)
   updatedAt DateTime      @updatedAt @db.Timestamptz(6)
   versions  QuizVersion[]
+
+  @@index([projectId, deletedAt, updatedAt, id])
 }

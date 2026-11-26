@@ -22,4 +22,6 @@ model QuizAttempt {
 
   @@unique([versionId, requestKey])
   @@unique([id, versionId])
+  @@index([versionId, startedAt, id])
+  @@index([status, startedAt])
 }

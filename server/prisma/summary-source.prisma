@@ -13,4 +13,5 @@ model SummarySource {
   contentHash String  @db.VarChar(64)
 
   @@unique([summaryId, sourceKey])
+  @@index([noteId])
 }

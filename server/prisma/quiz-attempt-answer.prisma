@@ -12,4 +12,5 @@ model QuizAttemptAnswer {
   submittedAt       DateTime     @default(now()) @db.Timestamptz(6)
 
   @@unique([attemptId, questionId])
+  @@index([questionId, versionId])
 }

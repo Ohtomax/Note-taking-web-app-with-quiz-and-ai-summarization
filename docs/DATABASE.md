@@ -63,3 +63,7 @@ Retain soft-deleted study records until the owner requests a purge or account de
 Preview includes project revision and content counts. Child mutations increment project revision so a changed impact requires a new preview. Project archive status is checked during writes inside the same transaction.
 
 Reviewed cases include a checklist round-trip through JSON and plain text, two updates both using revision 5 with only one revision 6 winner, and deleting a project with completed attempts while preserving review access through history.
+
+## Implemented index inventory
+
+Project indexes ownerId/deletedAt/updatedAt/id for owned paginated lists. Note indexes projectId/deletedAt/pinned/updatedAt/id plus title and creation-order variants. Summary uses projectId/generatedAt/id and Quiz uses projectId/deletedAt/updatedAt/id. Source joins index noteId for stale-source checks. Attempts index versionId/startedAt/id and status/startedAt for history/expiry. Usage indexes userId/createdAt/status and status/leaseExpiresAt. Unique quizId/version and questionId/position constraints also provide lookup indexes. Bounded substring search will begin with Prisma contains/insensitive filters on owned notes, with full-text/trigram indexing only after measured need. Stable pagination tests include 25 records with identical timestamps. Production-sized query plan measurement remains a later optimization check.

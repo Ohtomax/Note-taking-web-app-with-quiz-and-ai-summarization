@@ -15,4 +15,8 @@ model Note {
   lastOpenedAt         DateTime?       @db.Timestamptz(6)
   createdAt            DateTime        @default(now()) @db.Timestamptz(6)
   updatedAt            DateTime        @updatedAt @db.Timestamptz(6)
+
+  @@index([projectId, deletedAt, pinned, updatedAt, id])
+  @@index([projectId, title, id])
+  @@index([projectId, createdAt, id])
 }

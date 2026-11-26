@@ -12,4 +12,5 @@ model QuizSource {
   rangeEnd      Int?
 
   @@unique([quizVersionId, sourceKey])
+  @@index([noteId])
 }

@@ -32,4 +32,6 @@ model AIUsage {
   updatedAt      DateTime    @updatedAt @db.Timestamptz(6)
 
   @@unique([userId, requestKey])
+  @@index([userId, createdAt, status])
+  @@index([status, leaseExpiresAt])
 }
