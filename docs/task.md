@@ -86,7 +86,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
   - **Accept when** Every step of the first-release journey maps to an endpoint with a defined authorization rule.
   - **Verify** Review route examples for a note save conflict, a forbidden source selection, and a retried attempt submission.
 
-- [ ] **P1-T09 · Compare AI providers and cost** (MVP)
+- [x] **P1-T09 · Compare AI providers and cost** (MVP)
   - **Work and purpose** Compare current official information for Gemini, OpenAI, and Groq. Record the date, model, pricing, free tier, context limits, structured output, privacy terms, and reliability considerations. Use an authorized study fixture to assess quality when available.
   - **Files** `docs/AI_INTEGRATION.md` · **Depends on** P1-T01, P1-T03
   - **Output** A provider recommendation, evidence for quality, and example costs for a note and a large folder.
