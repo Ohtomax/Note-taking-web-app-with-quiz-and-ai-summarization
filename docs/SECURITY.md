@@ -51,3 +51,7 @@ The design review traced Bob's rejected access, a malicious note, malformed AI k
 ## Phase 2 configuration status
 
 Local startup allows missing infrastructure settings so owner account setup can be deferred. Production requires PostgreSQL, the CA path, Redis and Firebase Admin settings. Invalid configuration reports setting names only. Unconfigured dependencies will make readiness fail and private operations return 503. Zod 3 is retained per the project rules. The current registry audit reports GHSA-mrhx-c7xc-m3w5 against that line. Limit request bytes before validation and bound collection sizes. A patched major upgrade needs a recorded compatibility decision before release.
+
+## Rate limiter implementation
+
+Private API groups use distinct RedisStore prefixes with express-rate-limit and ioredis. Profile reads/writes allow 60 requests/minute/IP, auth 10, generation 5 and general reads 120 as initial values. Counter storage failures fail closed. Public health probes remain process/dependency diagnostics without accessing study data. MemoryStore is used only as an injected test store. Hosted Redis configuration and two-instance Redis verification are deferred because no Redis service is configured.

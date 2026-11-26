@@ -68,3 +68,5 @@ The owner will supply Firebase, Supabase, Redis and AI configuration later. No r
 - **P2-T04 completed** Validated strict body/query schemas and clean unexpected-error responses.
 
 - **P2-T05 completed** HTTP policy tests pass for CORS preflight, headers, JSON and byte limits.
+
+- **P2-T06 implemented, live check deferred** Limiter unit checks pass; real shared Redis/window/store-loss verification deferred.
