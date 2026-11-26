@@ -30,7 +30,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
 
 ### Task checklist
 
-- [ ] **P1-T01 · Map requirements to a first release** (MVP)
+- [x] **P1-T01 · Map requirements to a first release** (MVP)
   - **Work and purpose** Walk through registration, creating a project and notes, generating study material, taking a quiz, and reviewing a retake. Map each requirement to a task and propose which enhancements can wait.
   - **Files** `PROJECT_BRIEF.md`, `task.md`, `docs/ROADMAP.md` · **Depends on** None
   - **Output** A scope checklist with a learner journey and explicit deferrals.
