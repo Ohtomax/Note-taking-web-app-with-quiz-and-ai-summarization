@@ -156,7 +156,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
   - **Accept when** A direct visit renders the initial route and a production build passes strict checking.
   - **Verify** Install from the lockfile, build, and open the development and preview versions of the route.
 
-- [ ] **P1-T19 · Document the environment contract** (MVP)
+- [x] **P1-T19 · Document the environment contract** (MVP)
   - **Work and purpose** Separate public client settings from Firebase Admin, PostgreSQL, Redis, and AI secrets. Describe local, test, and deployed values using placeholders and explain which phase first requires each.
   - **Files** `client/.env.example`, `server/.env.example`, `docs/DEPLOYMENT.md` · **Depends on** P1-T04, P1-T17, P1-T18
   - **Output** Two environment examples and a configuration reference.

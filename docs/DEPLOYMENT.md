@@ -22,3 +22,24 @@ A failed schema change stops release promotion. Revert the application only to a
 ## Owner setup deferred
 
 The owner requested that account/credential-dependent steps be skipped. Firebase project registration and keys, Supabase database/CA access, Redis provisioning, provider billing/keys, Render and Vercel project setup remain owner actions for later phases. Local Phase 1 checks require no external secrets.
+
+## Environment reference
+
+| Settings | Purpose | First needed |
+| --- | --- | --- |
+| PORT | Bootstrap listener, default 3001 | Phase 1 |
+| NODE_ENV | Runtime policy | Phase 2 |
+| CORS_ORIGINS | Explicit allowed frontend origins | Phase 2 |
+| DATABASE_URL, DIRECT_URL | Pooled runtime and migration connection | Phase 2 |
+| DATABASE_CA_PATH | Trusted Supabase CA for verified TLS | Phase 2 |
+| FIREBASE_SERVICE_ACCOUNT | Admin credential JSON held server-side | Phase 2 |
+| REDIS_URL | Shared route counters | Phase 2 |
+| VITE_API_BASE_URL | Browser-to-Express URL | Phase 3 |
+| VITE_FIREBASE_* | Firebase browser project settings | Phase 3 |
+| AI_PROVIDER, AI_MODEL, AI_API_KEY | Provider/model and backend credential | Phase 4 |
+| AI_DAILY_GENERATIONS, AI_USER_CONCURRENCY, AI_GLOBAL_CONCURRENCY | Generation admission limits | Phase 4 |
+| AI_CALL_TIMEOUT_MS, AI_TOTAL_TIMEOUT_MS, AI_MAX_SOURCE_TOKENS | Cost and deadline bounds | Phase 4 |
+
+Copy each .env.example to a local .env when that phase needs it. Values in examples are placeholders. Render supplies server secrets through its environment settings. Vercel receives only VITE-prefixed public settings. Tests use isolated test values. The Phase 1 bootstrap starts with PORT's default and needs no account setup.
+
+Never prefix privileged keys with VITE_. Phase 2 will implement runtime schema validation, secure connection construction and certificate loading. Example variables beyond PORT are documented future inputs.
