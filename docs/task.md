@@ -121,7 +121,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
   - **Accept when** The review covers both the browser and direct API use, and only necessary study content reaches the provider.
   - **Verify** Review the model against two users, a malformed model response, a repeated submission, and a shared browser session.
 
-- [ ] **P1-T14 · Plan testing, deployment, and recovery** (MVP)
+- [x] **P1-T14 · Plan testing, deployment, and recovery** (MVP)
   - **Work and purpose** Choose unit, integration, component, and end-to-end boundaries. Outline mock Firebase/AI and isolated database use, plus Docker, Render, Vercel, Supabase migrations, health, backups, and recovery.
   - **Files** `docs/TESTING.md`, `docs/DEPLOYMENT.md` · **Depends on** P1-T04, P1-T10, P1-T12, P1-T13
   - **Output** A test matrix and deployment diagram with a staging-to-production sequence.

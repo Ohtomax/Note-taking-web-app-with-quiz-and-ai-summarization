@@ -31,3 +31,5 @@ Each completion entry records the verification performed. Git history provides t
 - **P1-T12 completed** Recalculated weighted accuracy, mean scores, skips and version-based grouping. Files docs/ANALYTICS.md.
 
 - **P1-T13 completed** Reviewed twelve threats with controls, module owners and regression scenarios. Files docs/SECURITY.md, docs/TESTING.md.
+
+- **P1-T14 completed** Mapped critical flows to test layers and reviewed migration/provider recovery. Files docs/TESTING.md, docs/DEPLOYMENT.md.
