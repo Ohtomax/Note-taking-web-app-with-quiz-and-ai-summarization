@@ -43,3 +43,7 @@ The owner requested that account/credential-dependent steps be skipped. Firebase
 Copy each .env.example to a local .env when that phase needs it. Values in examples are placeholders. Render supplies server secrets through its environment settings. Vercel receives only VITE-prefixed public settings. Tests use isolated test values. The Phase 1 bootstrap starts with PORT's default and needs no account setup.
 
 Never prefix privileged keys with VITE_. Phase 2 will implement runtime schema validation, secure connection construction and certificate loading. Example variables beyond PORT are documented future inputs.
+
+## Deferred Phase 2 infrastructure
+
+Per the owner's instruction, collecting URLs/keys, connecting to hosted Supabase/Firebase/Redis and deployment are skipped. prisma.config.ts uses an explicit unconfigured localhost placeholder for offline schema commands only. No automatic migration or schema push runs on app startup. Runtime database construction requires an actual supplied connection string and trusted CA. URL SSL override parameters are removed before pg receives the verified TLS object. The live certificate acceptance/rejection check remains pending.
