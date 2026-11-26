@@ -90,3 +90,5 @@ The owner will supply Firebase, Supabase, Redis and AI configuration later. No r
 - **P2-T15 completed** Initial migration applied to empty local database; repeat and nine constraints pass.
 
 - **P2-T16 implemented, live check deferred** Token middleware tests pass; real Firebase project/token verification deferred.
+
+- **P2-T17 completed** Eight parallel local sign-ins produce one user and preserve edited profile fields.

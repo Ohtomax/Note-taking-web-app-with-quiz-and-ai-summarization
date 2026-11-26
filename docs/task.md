@@ -308,7 +308,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
   - **Accept when** Missing, invalid, expired, and wrong-project tokens are rejected and a valid token yields only its verified identity.
   - **Verify** Run controlled verifier cases and verify one emulator-issued or isolated-project ID token through the middleware.
 
-- [ ] **P2-T17 · Synchronize the database user** (MVP)
+- [x] **P2-T17 · Synchronize the database user** (MVP)
   - **Work and purpose** Upsert the user by verified UID before application data access. Use controlled provider fields, preserve editable profile fields, and handle parallel first requests.
   - **Files** `server/src/services/user.service.ts`, `server/src/repositories/user.repository.ts`, `server/tests/user-sync.test.ts` · **Depends on** P2-T15, P2-T16
   - **Output** An idempotent first-login path.
