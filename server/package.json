@@ -14,7 +14,10 @@
     "lint": "eslint . --max-warnings 0",
     "format:check": "prettier --check \"src/**/*.{ts,tsx,css}\" \"*.{ts,js,json,html}\" --ignore-unknown",
     "format": "prettier --write \"src/**/*.{ts,tsx,css}\" \"*.{ts,js,json,html}\" --ignore-unknown",
-    "test": "node --import tsx --test tests/*.test.ts"
+    "test": "node --import tsx --test tests/*.test.ts",
+    "test:db": "node --import tsx --test --test-concurrency=1 tests/database/*.test.ts",
+    "prisma:generate": "prisma generate",
+    "prisma:validate": "prisma validate"
   },
   "dependencies": {
     "@prisma/adapter-pg": "7.10.1",

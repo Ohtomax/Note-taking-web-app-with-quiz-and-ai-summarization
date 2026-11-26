@@ -74,3 +74,5 @@ The owner will supply Firebase, Supabase, Redis and AI configuration later. No r
 - **P2-T07 completed** Captured logs exclude private markers and use server correlation IDs.
 
 - **P2-T08 implemented, live check deferred** Prisma config and TLS options tested offline; hosted connection/CA check deferred.
+
+- **P2-T09 completed** Validated/generated schema and passed local FK, UID and ownership database tests.

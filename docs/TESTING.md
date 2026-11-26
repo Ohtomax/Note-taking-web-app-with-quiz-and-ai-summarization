@@ -40,3 +40,7 @@ The first fresh checkout revealed CRLF conflicts with Prettier's LF setting. The
 ## Phase 2 harness
 
 Run npm test in server/ for credential-free HTTP and service tests. Token verification is injected per application instance. Database integration fixtures require an explicit loopback URL named study_test_<uuid>. The guard rejects remote or ordinary database names. Temporary fixture directories are cleaned in finally blocks, including an intentionally failing callback. Tests and configuration are included in the separate strict test typecheck.
+
+## Local PostgreSQL fixture
+
+Phase 2 schema checks use a newly initialized disposable PostgreSQL 18 cluster bound to 127.0.0.1 on a separate test port. It contains synthetic data only and uses a random study_test_<uuid> database. No hosted URL or owner secret is read. Pass its URL explicitly as STUDY_TEST_DATABASE_URL to npm run test:db. The fixture module validates loopback and database name before constructing a client. Data tests roll back their transactions and disconnect on failure. Runtime connections retain verified TLS, while this isolated loopback-only fixture uses its separate test adapter.

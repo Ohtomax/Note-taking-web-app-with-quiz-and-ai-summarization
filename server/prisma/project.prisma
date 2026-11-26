@@ -1,0 +1,15 @@
+model Project {
+  id          String    @id @default(uuid()) @db.Uuid
+  ownerId     String    @db.Uuid
+  owner       User      @relation(fields: [ownerId], references: [id], onDelete: Restrict)
+  title       String    @db.VarChar(200)
+  description String    @default("") @db.Text
+  color       String    @default("slate") @db.VarChar(30)
+  icon        String    @default("folder") @db.VarChar(50)
+  revision    Int       @default(1)
+  archivedAt  DateTime? @db.Timestamptz(6)
+  deletedAt   DateTime? @db.Timestamptz(6)
+  createdAt   DateTime  @default(now()) @db.Timestamptz(6)
+  updatedAt   DateTime  @updatedAt @db.Timestamptz(6)
+  notes       Note[]
+}

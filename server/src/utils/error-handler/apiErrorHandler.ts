@@ -23,10 +23,8 @@ export const ApiHandleError: ErrorRequestHandler = (error: unknown, _req, res, _
       .json({ error: { code: 'INVALID_JSON', message: 'Invalid JSON body' } });
     return;
   }
-  res
-    .status(500)
-    .json({
-      error: { code: 'INTERNAL_ERROR', message: 'Internal server error' },
-      requestId,
-    });
+  res.status(500).json({
+    error: { code: 'INTERNAL_ERROR', message: 'Internal server error' },
+    requestId,
+  });
 };

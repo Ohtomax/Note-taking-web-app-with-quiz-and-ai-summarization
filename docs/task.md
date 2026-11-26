@@ -252,7 +252,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
   - **Accept when** The schema validates and the test connection succeeds with the configured CA and rejects a mismatched trust configuration.
   - **Verify** Generate the client, connect to the isolated PostgreSQL target, and check TLS behavior with a disposable configuration.
 
-- [ ] **P2-T09 · Model users, projects, and notes** (MVP)
+- [x] **P2-T09 · Model users, projects, and notes** (MVP)
   - **Work and purpose** Create user, project, and note models with unique Firebase UIDs, ownership relations, archive state, timestamps, structured content, and an atomic note revision field.
   - **Files** `server/prisma/user.prisma`, `server/prisma/project.prisma`, `server/prisma/note.prisma` · **Depends on** P2-T08
   - **Output** Prisma definitions for the editable workspace.
