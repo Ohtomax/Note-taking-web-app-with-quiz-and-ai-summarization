@@ -46,3 +46,20 @@ Source join records express many-to-many links and preserve the original title/r
 Alice owns Networking with OSI revision 2 and TCP/IP revision 4. Summary S has two SummarySource rows. Quiz Q version 1 has four questions and two QuizSource rows. Attempts A1 and A2 reference version 1 with independent answer rows. Moving OSI to another Alice project changes Note.projectId while S and Q retain original project ownership and source revision metadata. Deleting OSI hides it and preserves its sources, questions and both scores. A later Q version 2 leaves A1/A2 on version 1.
 
 All foreign keys receive explicit referential actions during Phase 2. Hard deletion is a separate retention operation with an owner-scoped transaction. Derived global/project statistics receive no duplicate counter tables.
+
+## Retention and lifecycle
+
+| Action | Workspace effect | Historical effect |
+| --- | --- | --- |
+| Archive project | Read-only until restore, hidden from default lists | Notes and study records retain IDs and dates |
+| Archive note | Hidden from default note/source selections | Existing citations and attempts remain |
+| Delete note | Soft delete with confirmation | Source title/revision/hash and immutable questions remain |
+| Delete summary or quiz | Soft delete, hidden from library | Quiz attempts and pinned versions remain reviewable |
+| Delete project | Preview impact and confirm project revision in a transaction, soft delete workspace | Historical attempt views keep tombstoned project title and versions |
+| Hard purge | Separate explicit destructive retention process | Remove children in dependency order after retention/backup checks |
+
+Retain soft-deleted study records until the owner requests a purge or account deletion. Account deletion must disclose the impact and reconcile Firebase identity removal with database purge using retryable operations. Enforce backup retention separately in deployment policy. No timed purge is introduced in the MVP.
+
+Preview includes project revision and content counts. Child mutations increment project revision so a changed impact requires a new preview. Project archive status is checked during writes inside the same transaction.
+
+Reviewed cases include a checklist round-trip through JSON and plain text, two updates both using revision 5 with only one revision 6 winner, and deleting a project with completed attempts while preserving review access through history.

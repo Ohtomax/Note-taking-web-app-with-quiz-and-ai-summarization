@@ -72,7 +72,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
   - **Accept when** The schema can represent a summary with two sources and two attempts against the same fixed question set.
   - **Verify** Insert both examples on paper, then trace what remains after a source note moves or is deleted.
 
-- [ ] **P1-T07 · Decide note format and retention rules** (MVP)
+- [x] **P1-T07 · Decide note format and retention rules** (MVP)
   - **Work and purpose** Evaluate the rich-text editor and content representation for formatting, search, safe rendering, and AI text extraction. Define revision conflicts, archive/restore, confirmed deletion, and retention of source references and attempts.
   - **Files** `docs/ARCHITECTURE.md`, `docs/DATABASE.md` · **Depends on** P1-T06
   - **Output** A note format decision, deletion matrix, and autosave conflict contract.

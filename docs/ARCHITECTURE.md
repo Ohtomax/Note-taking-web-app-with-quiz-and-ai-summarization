@@ -98,3 +98,11 @@ docs/
 ```
 
 React is the view layer. Controllers own HTTP concerns, services own workflows and repositories own Prisma calls. Query keys include the current user ID. Zustand holds temporary UI state. Cancel and clear old queries and drafts before mounting a different account.
+
+## Rich text and save decisions
+
+Use TipTap 3 JSON with a schema version, StarterKit and task-list/task-item support. Required nodes cover paragraphs, headings, bullet/ordered/check lists, code and quotes, with bold/italic/underline marks. Store canonical JSON and derive plainText on the server for search and AI. JSON preserves semantics and reliable traversal but requires schema migrations and renderer compatibility. HTML is portable but requires sanitization and makes structural validation harder.
+
+Validate nodes, attributes, length and links server-side. Render allow-listed React/editor nodes and sanitize HTML on any future export boundary. Exclude embedded scripts, raw HTML and arbitrary attributes. Checklists extract their text and checked state for generation.
+
+Autosave debounces and serializes changes per note. PATCH includes expectedRevision. Update atomically WHERE id, owner and revision match, incrementing revision on success. One concurrent writer wins and the other receives 409. Preserve the losing local draft and offer reload/compare/reapply. Cancel queued work on navigation and account changes. Do not replay a stale draft automatically.
