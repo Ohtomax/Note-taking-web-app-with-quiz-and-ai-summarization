@@ -35,3 +35,5 @@ Each completion entry records the verification performed. Git history provides t
 - **P1-T14 completed** Mapped critical flows to test layers and reviewed migration/provider recovery. Files docs/TESTING.md, docs/DEPLOYMENT.md.
 
 - **P1-T15 completed** Reconciled all design references and recorded owner approval and deferred setup. Files docs/ROADMAP.md.
+
+- **P1-T16 completed** Verified secret/build ignore paths and preserved tracked project documentation. Files .gitignore.

@@ -1,0 +1,15 @@
+node_modules/
+dist/
+coverage/
+.env
+.env.*
+!.env.example
+*.log
+*.tsbuildinfo
+server/src/generated/
+firebase-service-account*.json
+*serviceAccount*.json
+*.pem
+.vercel/
+playwright-report/
+test-results/

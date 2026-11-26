@@ -135,7 +135,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
   - **Accept when** The brief’s design deliverables have a location and any changes to approved assumptions are visible for review.
   - **Verify** Cross-check endpoint names, model relationships, and task dependencies against one complete study session.
 
-- [ ] **P1-T16 · Prepare the existing Git repository** (MVP)
+- [x] **P1-T16 · Prepare the existing Git repository** (MVP)
   - **Work and purpose** Inspect the checkout, preserve its documentation, and add ignore rules for credentials, dependencies, generated files, and build products.
   - **Files** `README.md`, `.gitignore` · **Depends on** P1-T15
   - **Output** A repository ready to receive the two TypeScript projects.
