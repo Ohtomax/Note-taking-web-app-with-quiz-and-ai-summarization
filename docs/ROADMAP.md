@@ -1,6 +1,6 @@
 # Scope and roadmap
 
-The first release follows the full core workflow in the [brief](../PROJECT_BRIEF.md). Detailed task IDs, prerequisites and completion tests are in [task.md](../task.md).
+The first release follows the full core workflow in the [brief](./PROJECT_BRIEF.md). Detailed task IDs, prerequisites and completion tests are in [task.md](./task.md).
 
 | Requirement | Tasks and release scope |
 | --- | --- |

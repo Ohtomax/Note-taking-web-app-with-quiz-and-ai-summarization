@@ -37,3 +37,7 @@ Each completion entry records the verification performed. Git history provides t
 - **P1-T15 completed** Reconciled all design references and recorded owner approval and deferred setup. Files docs/ROADMAP.md.
 
 - **P1-T16 completed** Verified secret/build ignore paths and preserved tracked project documentation. Files .gitignore.
+
+- **P1-T17 completed** Passed strict typecheck, build, compiled alias HTTP and dev watch startup. Files server, docs/ARCHITECTURE.md, docs/ROADMAP.md.
+
+- **P1-T17 completed** Passed strict typecheck, build, compiled alias HTTP and dev watch startup. Files server, docs/ARCHITECTURE.md, docs/ROADMAP.md.

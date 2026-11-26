@@ -1,6 +1,6 @@
 # Study platform development tasks
 
-Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from design review to a verified release. Work is pending. The first decision is approval of the proposed architecture, database design, and roadmap before Phase 1 begins.
+Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from design review to a verified release. The owner authorized all Phase 1 tasks on 2026-11-26 with a separate push after each task. Credential-dependent account setup is deferred to the owner.
 
 | Phase | What a reviewer should be able to verify |
 | --- | --- |
@@ -14,7 +14,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
 ### Working agreements
 
 - **Scope.** MVP marks work proposed for the first release. Optional items can be deferred with a recorded decision. The brief remains the reference for the full product.
-- **Order.** Read the phase prerequisites first. Each task lists its additional dependencies within the phase. Work on one approved task at a time and obtain approval before advancing to the next task or phase.
+- **Order.** Read the phase prerequisites first. Each task lists its additional dependencies within the phase. Complete and push one Phase 1 task before advancing. Later phases require another instruction.
 - **Status.** An unchecked task is pending. If blocked, leave it unchecked and record the task ID, blocker, and next decision in the progress log. Check a task only after its acceptance criteria pass. Record the changed paths and verification evidence alongside its ID.
 - **Paths.** Paths below are proposed, relative to the repository root. Phase 1 establishes the layout and records any path changes here. Commands and results belong in the progress log when each task is performed.
 
@@ -142,7 +142,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
   - **Accept when** The project brief, README, and roadmap remain available and secret-bearing paths are ignored.
   - **Verify** Use Git’s ignore check on example secret and build paths, then review tracked documentation.
 
-- [ ] **P1-T17 · Initialize the Express TypeScript project** (MVP)
+- [x] **P1-T17 · Initialize the Express TypeScript project** (MVP)
   - **Work and purpose** Create the server package, strict TypeScript configuration, development and build scripts, and the approved route/controller/service/repository layout. Configure source aliases and verify compiled imports.
   - **Files** `server/package.json`, `server/tsconfig.json`, `server/src/`, `server/server.ts` · **Depends on** P1-T02, P1-T03, P1-T16
   - **Output** A small executable backend entry point.

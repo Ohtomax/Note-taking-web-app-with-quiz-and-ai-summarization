@@ -106,3 +106,7 @@ Use TipTap 3 JSON with a schema version, StarterKit and task-list/task-item supp
 Validate nodes, attributes, length and links server-side. Render allow-listed React/editor nodes and sanitize HTML on any future export boundary. Exclude embedded scripts, raw HTML and arbitrary attributes. Checklists extract their text and checked state for generation.
 
 Autosave debounces and serializes changes per note. PATCH includes expectedRevision. Update atomically WHERE id, owner and revision match, incrementing revision on success. One concurrent writer wins and the other receives 409. Preserve the losing local draft and offer reload/compare/reapply. Cancel queued work on navigation and account changes. Do not replay a stale draft automatically.
+
+## Scaffold verification adjustment
+
+TypeScript 5.9 rejects alias imports ending in .ts when rewriteRelativeImportExtensions is enabled (TS2877). Use .js for @/ imports under NodeNext, as observed in SmileCheck. Relative imports may use .ts and are rewritten by TypeScript. tsc-alias converts emitted aliases into runnable relative paths. Both tsx watch and compiled startup were verified locally.
