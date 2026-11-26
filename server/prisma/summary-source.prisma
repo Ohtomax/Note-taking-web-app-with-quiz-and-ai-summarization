@@ -1,0 +1,16 @@
+model SummarySource {
+  id          String  @id @default(uuid()) @db.Uuid
+  summaryId   String  @db.Uuid
+  summary     Summary @relation(fields: [summaryId], references: [id], onDelete: Cascade)
+  noteId      String? @db.Uuid
+  note        Note?   @relation(fields: [noteId], references: [id], onDelete: SetNull)
+  sourceKey   String  @db.VarChar(100)
+  noteTitle   String  @db.VarChar(200)
+  revision    Int
+  excerpt     String? @db.Text
+  rangeStart  Int?
+  rangeEnd    Int?
+  contentHash String  @db.VarChar(64)
+
+  @@unique([summaryId, sourceKey])
+}

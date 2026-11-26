@@ -259,7 +259,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
   - **Accept when** A project has exactly one owner and each note belongs to one project. Database constraints prevent orphan records.
   - **Verify** Validate and generate the schema, then apply it in the disposable database and exercise FK and UID uniqueness checks.
 
-- [ ] **P2-T10 · Model generated summaries and sources** (MVP)
+- [x] **P2-T10 · Model generated summaries and sources** (MVP)
   - **Work and purpose** Define summary content, editable title, generation time, source note/revision links, and the snapshot metadata required by the retention policy.
   - **Files** `server/prisma/summary.prisma`, `server/prisma/summary-source.prisma` · **Depends on** P2-T09
   - **Output** Summary storage with provenance and stale-source inputs.
