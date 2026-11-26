@@ -18,9 +18,10 @@ export const createApiLimiter = (store: Store, limit = 120, windowMs = 60_000) =
     legacyHeaders: false,
     passOnStoreError: false,
     handler: (_req, res) => {
-      res
-        .status(429)
-        .json({ error: { code: 'RATE_LIMITED', message: 'Too many requests' } });
+      res.status(429).json({
+        error: { code: 'RATE_LIMITED', message: 'Too many requests' },
+        requestId: res.locals.requestId,
+      });
     },
   });
 

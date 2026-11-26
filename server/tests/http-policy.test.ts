@@ -33,6 +33,7 @@ test('headers cover errors and parsing enforces byte limits and valid JSON', asy
     .set('Content-Type', 'application/json')
     .send('{');
   assert.equal(invalid.status, 400);
+  assert.equal(invalid.body.requestId, invalid.headers['x-request-id']);
   assert.equal(invalid.headers['x-content-type-options'], 'nosniff');
   assert.equal(
     (

@@ -15,15 +15,16 @@ export const ApiHandleError: ErrorRequestHandler = (error: unknown, _req, res, _
   }
   const bodyError = error as { type?: unknown };
   if (bodyError?.type === 'entity.too.large') {
-    res
-      .status(413)
-      .json({ error: { code: 'PAYLOAD_TOO_LARGE', message: 'Request is too large' } });
+    res.status(413).json({
+      error: { code: 'PAYLOAD_TOO_LARGE', message: 'Request is too large' },
+      requestId,
+    });
     return;
   }
   if (bodyError?.type === 'entity.parse.failed') {
     res
       .status(400)
-      .json({ error: { code: 'INVALID_JSON', message: 'Invalid JSON body' } });
+      .json({ error: { code: 'INVALID_JSON', message: 'Invalid JSON body' }, requestId });
     return;
   }
   res.status(500).json({
