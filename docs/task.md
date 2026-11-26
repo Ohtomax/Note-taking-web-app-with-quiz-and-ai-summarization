@@ -210,7 +210,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
   - **Accept when** A missing required value fails startup with the setting name and no secret value.
   - **Verify** Try a missing variable, a malformed URL, and a valid test configuration.
 
-- [ ] **P2-T03 · Create the Express application and health routes** (MVP)
+- [x] **P2-T03 · Create the Express application and health routes** (MVP)
   - **Work and purpose** Separate application construction from listening on a port. Provide a minimal liveness endpoint and a readiness response that reflects required dependencies.
   - **Files** `server/src/app.ts`, `server/server.ts`, `server/src/routes/health.routes.ts` · **Depends on** P2-T01, P2-T02
   - **Output** An importable app and documented health endpoints.

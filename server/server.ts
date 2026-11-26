@@ -1,11 +1,9 @@
 import { createApp } from '@/app.js';
+import { parseEnvironment } from './config/env.ts';
 
-const port = Number(process.env.PORT ?? 3001);
-if (!Number.isInteger(port) || port < 1 || port > 65535) {
-  throw new Error('PORT must be an integer between 1 and 65535');
-}
+const environment = parseEnvironment(process.env);
 
-const server = createApp().listen(port, '0.0.0.0');
+const server = createApp().listen(environment.PORT, '0.0.0.0');
 function shutdown() {
   server.close(() => process.exit(0));
 }
