@@ -42,3 +42,59 @@ Checked 2026-11-26. Use Node 24.12.0 for the local rehearsal and Node 24 in depl
 Only install dependencies when the current implementation needs them. Prisma, Redis and Firebase begin in Phase 2, the editor in Phase 3, provider SDK in Phase 4 and charts in Phase 5. P1-T17/T18 record exact installed patch versions in package manifests and lockfiles.
 
 Version checks used npm registry engines and peer dependencies in addition to official documentation. Review source links before a future major upgrade. [Vite 6 guide](https://v6.vite.dev/guide/), [Prisma 7 upgrade requirements](https://docs.prisma.io/docs/orm/v6/more/upgrades/to-v7), [React Router installation](https://reactrouter.com/start/declarative/installation), [TanStack Query installation](https://tanstack.com/query/latest/docs/framework/react/installation), [TipTap StarterKit](https://tiptap.dev/docs/editor/extensions/functionality/starterkit), [TipTap task lists](https://tiptap.dev/docs/editor/extensions/nodes/task-list), [Recharts installation](https://recharts.github.io/en-US/guide/installation/).
+
+## System boundaries
+
+```mermaid
+flowchart LR
+  Browser["React on Vercel"] -->|Sign in| Firebase["Firebase Auth"]
+  Firebase -->|ID token| Browser
+  Browser -->|Bearer token| API["Express on Render"]
+  API -->|Verify| Admin["Firebase Admin"]
+  API --> Auth["Database role and owner scope"]
+  Auth --> Service["Services and repositories"]
+  Service -->|Verified TLS| DB["Supabase PostgreSQL"]
+  Service -->|Rate counters| Redis["Redis"]
+  Service -->|Authorized source text| AI["AI provider"]
+```
+
+A note read verifies the token and database role, then queries Note through Project.ownerId. The controller serializes an allow-listed DTO. An AI request resolves every source note and revision before reserving quota and sending selected content with synthetic source IDs to the provider.
+
+## Proposed folder layout
+
+```text
+client/src/
+  api/
+  components/ui/
+  features/        # auth, dashboard, projects, notes, summaries, quizzes,
+                   # quiz-history, analytics and settings
+  pages/           # lazy route entries
+  hooks/
+  store/
+  routes/
+  types/
+  utils/
+  config/
+server/
+  server.ts        # listener
+  config/          # env, database, Firebase, Redis
+  prisma/          # schema modules and migrations
+  prisma.config.ts
+  src/
+    app.ts
+    routes/
+    controllers/
+    services/
+    repositories/
+    middlewares/
+    utils/input-validators/
+    utils/error-handler/
+    utils/rate-limiter/
+    types/
+    ai/prompts/
+    ai/tools/
+  tests/
+docs/
+```
+
+React is the view layer. Controllers own HTTP concerns, services own workflows and repositories own Prisma calls. Query keys include the current user ID. Zustand holds temporary UI state. Cancel and clear old queries and drafts before mounting a different account.

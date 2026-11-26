@@ -11,3 +11,5 @@ Each completion entry records the verification performed. Git history provides t
 - **P1-T03 completed** Checked official compatibility guides and registry metadata against Node 24. Files docs/ARCHITECTURE.md, docs/TESTING.md.
 
 - **P1-T03 completed** Checked official compatibility guides and registry metadata against Node 24. Files docs/ARCHITECTURE.md, docs/TESTING.md.
+
+- **P1-T04 completed** Traced note and AI requests through system and folder diagrams. Files docs/ARCHITECTURE.md, docs/DEPLOYMENT.md.

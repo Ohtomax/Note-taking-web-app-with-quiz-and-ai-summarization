@@ -51,7 +51,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
   - **Accept when** The matrix covers browser, API, database, and test tooling with compatible runtimes.
   - **Verify** Check the maintainers’ compatibility documentation and pin the chosen versions when scaffolding.
 
-- [ ] **P1-T04 · Draw the application boundaries** (MVP)
+- [x] **P1-T04 · Draw the application boundaries** (MVP)
   - **Work and purpose** Diagram the browser, Firebase, Express, PostgreSQL, and AI provider. Include frontend and backend folder trees, request flow, deployment boundaries, and where credentials reside.
   - **Files** `docs/ARCHITECTURE.md`, `docs/DEPLOYMENT.md` · **Depends on** P1-T02, P1-T03
   - **Output** A system diagram and file layout that distinguish UI, HTTP, business logic, and persistence.
