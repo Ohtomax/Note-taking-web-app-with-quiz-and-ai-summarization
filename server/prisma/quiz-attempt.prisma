@@ -1,0 +1,25 @@
+enum AttemptStatus {
+  IN_PROGRESS
+  ABANDONED
+  COMPLETED
+}
+
+model QuizAttempt {
+  id             String              @id @default(uuid()) @db.Uuid
+  versionId      String              @db.Uuid
+  version        QuizVersion         @relation(fields: [versionId], references: [id], onDelete: Restrict)
+  requestKey     String              @db.VarChar(128)
+  mode           QuizMode
+  status         AttemptStatus       @default(IN_PROGRESS)
+  questionOrder  Json                @default("[]")
+  optionOrder    Json                @default("{}")
+  startedAt      DateTime            @default(now()) @db.Timestamptz(6)
+  finishedAt     DateTime?           @db.Timestamptz(6)
+  correctCount   Int?
+  answeredCount  Int?
+  totalQuestions Int
+  answers        QuizAttemptAnswer[]
+
+  @@unique([versionId, requestKey])
+  @@unique([id, versionId])
+}

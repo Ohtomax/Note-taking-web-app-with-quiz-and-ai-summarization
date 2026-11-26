@@ -10,6 +10,7 @@ enum QuizMode {
 }
 
 model QuizVersion {
+  attempts            QuizAttempt[]
   id                  String         @id @default(uuid()) @db.Uuid
   quizId              String         @db.Uuid
   quiz                Quiz           @relation(fields: [quizId], references: [id], onDelete: Restrict)

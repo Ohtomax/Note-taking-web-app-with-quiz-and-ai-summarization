@@ -273,7 +273,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
   - **Accept when** Two versions of a quiz can hold different questions, grading keys, and source revisions independently.
   - **Verify** Build both versions in an isolated fixture, then query each question set with its sources.
 
-- [ ] **P2-T12 · Model attempts and submitted answers** (MVP)
+- [x] **P2-T12 · Model attempts and submitted answers** (MVP)
   - **Work and purpose** Link each attempt to a single quiz version and record lifecycle timestamps, mode, question/option order, answers, and final scoring facts. Enforce one logical answer per attempt question and version consistency.
   - **Files** `server/prisma/quiz-attempt.prisma`, `server/prisma/quiz-attempt-answer.prisma`, `docs/DATABASE.md` · **Depends on** P2-T11
   - **Output** Attempt and answer definitions that preserve a historical result.

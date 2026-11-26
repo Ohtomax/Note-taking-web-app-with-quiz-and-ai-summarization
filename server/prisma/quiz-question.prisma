@@ -6,6 +6,7 @@ enum QuestionType {
 }
 
 model QuizQuestion {
+  answers         QuizAttemptAnswer[]
   id              String               @id @default(uuid()) @db.Uuid
   versionId       String               @db.Uuid
   version         QuizVersion          @relation(fields: [versionId], references: [id], onDelete: Restrict)
