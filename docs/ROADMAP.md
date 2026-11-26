@@ -42,3 +42,22 @@ Topic analytics (P5-T28) requires trustworthy topic metadata. Background workers
 ## Scope verification
 
 The six-step journey reaches two independent results using MVP tasks alone. Every feature group in brief sections 3–7 maps to the table above. Security and tests accompany feature phases and receive regression coverage in Phase 6.
+
+## Phase 1 decision review
+
+The owner's 2026-11-26 instruction authorizes all Phase 1 tasks and individual pushes, superseding the earlier per-task approval gate for this phase. Credential-dependent setup is explicitly deferred to the owner.
+
+| Design deliverable | Reference |
+| --- | --- |
+| Overview, MVP and six-phase dependencies | This roadmap and task.md |
+| Style review, stack, MVC and frontend trees | ARCHITECTURE.md |
+| Relational dictionary, ER diagram and retention | DATABASE.md |
+| Identity and authorization | SECURITY.md |
+| Endpoint contracts | API.md |
+| Provider comparison, costs and lifecycle | AI_INTEGRATION.md |
+| Scoring, player modes, versions and retakes | QUIZ_SYSTEM.md |
+| Aggregates and worked metric fixtures | ANALYTICS.md |
+| Testing and technical risk scenarios | TESTING.md and SECURITY.md |
+| Deployment boundaries, migration and recovery | DEPLOYMENT.md |
+
+Reviewed one Networking session across all documents. Project/Note ownership agrees with the API predicates. SummarySource and version-bound QuizSource retain revisions. Both attempts pin QuizVersion. Accuracy and mean percentage have distinct denominators. The main open items are owner account configuration, live provider quality and measured limits. The next authorized task is repository preparation, followed by initialization.

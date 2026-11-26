@@ -128,7 +128,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
   - **Accept when** Every critical study flow has a test layer, and the release plan identifies how to recover data and restore service.
   - **Verify** Trace a schema migration failure and an unavailable AI provider through the plans.
 
-- [ ] **P1-T15 · Record design decisions and review outcomes** (MVP)
+- [x] **P1-T15 · Record design decisions and review outcomes** (MVP)
   - **Work and purpose** Reconcile the API, schema, six-phase roadmap, and security decisions with the approved scope. Record open questions, decisions, blockers, and the selected next task.
   - **Files** `docs/ROADMAP.md`, `docs/PROGRESS.md`, `task.md` · **Depends on** P1-T01, P1-T08, P1-T10, P1-T11, P1-T12, P1-T13, P1-T14
   - **Output** A coherent planning baseline and progress log keyed by task ID.
