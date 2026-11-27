@@ -63,3 +63,7 @@ Firebase Admin verifies ID tokens with revocation checking and returns selected 
 ## Current dependency audit
 
 The Phase 2 audit reports four high-severity package findings representing two advisory chains. Zod 3 has GHSA-mrhx-c7xc-m3w5. The Prisma configuration dependency chain includes effect with GHSA-7589-6fvf-x4pw, also reported through @prisma/config and prisma. Audit proposes incompatible major changes and no forced downgrade/upgrade was applied. Keep request size limits active and resolve the version-policy decision before a production release. This is an outstanding release risk, not a passing audit.
+
+## Phase 6 study ownership matrix
+
+phase6-ownership.test.ts exercises both identity directions for quiz metadata/versions/keys, summary reads and writes, attempt player/results/comparison/answers/location/finalization/abandonment, generation status, note-open tracking, project/quiz analytics and cross-owner note moves. Each rejected request returns 404 and a before/after snapshot covers both workspaces, sources, quiz versions, questions/options, attempts/answers and AI ledger/calls. Missing, invalid and expired test tokens return 401. History, analytics and usage lists contain only the current owner. The deterministic provider receives zero calls. Existing project/note and generation matrices remain part of the same database regression suite.

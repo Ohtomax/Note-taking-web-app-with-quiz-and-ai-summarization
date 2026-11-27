@@ -967,7 +967,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
   - **Accept when** Two clean runs produce the same results and make zero paid AI requests.
   - **Verify** Run both suites twice with production credentials absent and compare results and mock call counts.
 
-- [ ] **P6-T02 · Verify account isolation across API routes** (MVP)
+- [x] **P6-T02 · Verify account isolation across API routes** (MVP)
   - **Work and purpose** Exercise authentication and owner scoping with two test accounts. Cover projects, note moves, generated resources, quiz questions, attempts, analytics, and usage.
   - **Files** `server/tests/integration/ownership.test.ts`, `docs/SECURITY.md` · **Depends on** P6-T01
   - **Output** An ownership regression matrix with read, list, and mutation cases.
