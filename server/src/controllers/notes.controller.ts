@@ -4,6 +4,22 @@ import type { NotesService } from '@/services/notes.service.js';
 import { UserHandleError } from '@/utils/error-handler/userErrorHandler.js';
 import type { NoteListInput } from '@/utils/input-validators/notes.js';
 
+export const deleteNote =
+  (service: NotesService) =>
+  async (req: AuthRequest, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      await service.remove(
+        req.account!.id,
+        req.params.projectId!,
+        req.params.noteId!,
+        req.body.expectedRevision,
+      );
+      res.status(204).end();
+    } catch (error) {
+      UserHandleError(error, next);
+    }
+  };
+
 export const archiveNote =
   (service: NotesService, archived: boolean) =>
   async (req: AuthRequest, res: Response, next: NextFunction): Promise<void> => {

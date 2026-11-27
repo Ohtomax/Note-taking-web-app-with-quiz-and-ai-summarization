@@ -19,6 +19,25 @@ async function findWritableNote(
 }
 
 export const createNotesRepository = (db: PrismaClient) => ({
+  remove: (
+    ownerId: string,
+    projectId: string,
+    noteId: string,
+    expectedRevision: number,
+  ) =>
+    db.$transaction(async (tx) => {
+      await lockProject(tx, ownerId, projectId);
+      const note = await findWritableNote(tx, projectId, noteId);
+      checkRevision(note.revision, expectedRevision);
+      await tx.note.update({
+        where: { id: noteId },
+        data: { deletedAt: new Date(), revision: { increment: 1 } },
+      });
+      await tx.project.update({
+        where: { id: projectId },
+        data: { revision: { increment: 1 } },
+      });
+    }),
   setArchived: (
     ownerId: string,
     projectId: string,

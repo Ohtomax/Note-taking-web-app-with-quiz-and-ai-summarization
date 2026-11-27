@@ -9,6 +9,7 @@ import { updateNoteSchema } from '@/utils/input-validators/notes.js';
 import { noteListSchema } from '@/utils/input-validators/notes.js';
 import { pinNoteSchema } from '@/utils/input-validators/notes.js';
 import { revisionSchema } from '@/utils/input-validators/projects.js';
+import { deleteNoteSchema } from '@/utils/input-validators/notes.js';
 import { projectParamsSchema } from '@/utils/input-validators/projects.js';
 import type { UserService } from '@/services/user.service.js';
 import type { NotesService } from '@/services/notes.service.js';
@@ -21,6 +22,12 @@ export const createNotesRouter = (
 ) => {
   const router = Router({ mergeParams: true });
   router.use(createVerifyToken(verify), synchronizeUser(users), verifyUser);
+  router.delete(
+    '/:noteId',
+    validate('params', noteParamsSchema),
+    validate('body', deleteNoteSchema),
+    notesController.deleteNote(service),
+  );
   router.post(
     '/:noteId/archive',
     validate('params', noteParamsSchema),

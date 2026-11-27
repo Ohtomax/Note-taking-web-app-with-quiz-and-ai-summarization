@@ -404,3 +404,83 @@ test('P3-T12 note archive and restore preserve identity and contents', async () 
     );
   });
 });
+
+test('P3-T13 confirmed note removal retains source links and original grading snapshot', async () => {
+  await withWorkspace(async ({ db, project, api }) => {
+    const note = await db.note.create({
+      data: { projectId: project.id, title: 'Source' },
+    });
+    const quiz = await db.quiz.create({
+      data: {
+        title: 'Saved',
+        projectId: project.id,
+        versions: {
+          create: {
+            version: 1,
+            difficulty: 'EASY',
+            promptVersion: 'v1',
+            questions: {
+              create: {
+                position: 1,
+                type: 'IDENTIFICATION',
+                prompt: 'Protocol?',
+                acceptedAnswers: ['TCP'],
+              },
+            },
+          },
+        },
+      },
+      include: { versions: { include: { questions: true } } },
+    });
+    const version = quiz.versions[0]!;
+    const source = await db.quizSource.create({
+      data: {
+        quizVersionId: version.id,
+        noteId: note.id,
+        sourceKey: 'source',
+        noteTitle: note.title,
+        revision: 1,
+        contentHash: 'a'.repeat(64),
+      },
+    });
+    const attempt = await db.quizAttempt.create({
+      data: {
+        versionId: version.id,
+        requestKey: randomUUID(),
+        mode: 'EXAM',
+        totalQuestions: 1,
+        status: 'COMPLETED',
+        correctCount: 1,
+      },
+    });
+    const url = '/api/v1/projects/' + project.id + '/notes/' + note.id;
+    assert.equal(
+      (
+        await api
+          .delete(url)
+          .set('Authorization', 'Bearer alice')
+          .send({ confirmed: true, expectedRevision: 1 })
+      ).status,
+      204,
+    );
+    assert.ok((await db.note.findUniqueOrThrow({ where: { id: note.id } })).deletedAt);
+    assert.equal(
+      (await db.quizSource.findUniqueOrThrow({ where: { id: source.id } })).noteTitle,
+      'Source',
+    );
+    assert.equal(
+      (await db.quizAttempt.findUniqueOrThrow({ where: { id: attempt.id } }))
+        .correctCount,
+      1,
+    );
+    assert.equal(
+      (
+        await api
+          .delete(url)
+          .set('Authorization', 'Bearer bob')
+          .send({ confirmed: true, expectedRevision: 1 })
+      ).status,
+      404,
+    );
+  });
+});

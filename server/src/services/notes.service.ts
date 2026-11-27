@@ -5,6 +5,12 @@ import type { UpdateNoteInput } from '@/utils/input-validators/notes.js';
 import type { NoteListInput } from '@/utils/input-validators/notes.js';
 
 export const createNotesService = (repository: NotesRepository) => ({
+  remove: (
+    ownerId: string,
+    projectId: string,
+    noteId: string,
+    expectedRevision: number,
+  ) => repository.remove(ownerId, projectId, noteId, expectedRevision),
   setArchived: (
     ownerId: string,
     projectId: string,

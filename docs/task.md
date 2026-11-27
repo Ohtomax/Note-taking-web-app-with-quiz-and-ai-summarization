@@ -440,7 +440,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
   - **Accept when** Restored notes return to the correct project and the default list excludes archived notes.
   - **Verify** Archive and restore a formatted note, then compare identity, contents and list results.
 
-- [ ] **P3-T13 · Remove a note safely** (MVP)
+- [x] **P3-T13 · Remove a note safely** (MVP)
   - **Work and purpose** Apply the approved deletion and source-retention rules to a confirmed owner-scoped request so saved study history remains intelligible.
   - **Files** `server/src/services/notes.service.ts`, `server/src/repositories/notes.repository.ts`, `server/tests/notes/deletion.test.ts` · **Depends on** P3-T08, P3-T12
   - **Output** Confirmed note deletion with retained historical references as designed.

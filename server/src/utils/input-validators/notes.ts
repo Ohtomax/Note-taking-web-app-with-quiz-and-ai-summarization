@@ -44,3 +44,7 @@ export type NoteListInput = z.infer<typeof noteListSchema>;
 export const pinNoteSchema = z
   .object({ expectedRevision: z.number().int().positive(), pinned: z.boolean() })
   .strict();
+
+export const deleteNoteSchema = z
+  .object({ expectedRevision: z.number().int().positive(), confirmed: z.literal(true) })
+  .strict();
