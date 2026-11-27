@@ -15,6 +15,10 @@ import type { ProjectsService } from '@/services/projects.service.js';
 import type { NotesService } from '@/services/notes.service.js';
 import { createNotesRouter } from '@/routes/notes.routes.js';
 import { ServiceError } from '@/utils/error-handler/ServiceError.js';
+import {
+  createSavedSummaryRouter,
+  createSummaryDetailRouter,
+} from '@/routes/saved-summaries.routes.js';
 import type { AIUsageService } from '@/services/ai-usage.service.js';
 import { createAIUsageRouter } from '@/routes/ai-usage.routes.js';
 import type { SummaryGenerationService } from '@/services/summary-generation.service.js';
@@ -24,6 +28,7 @@ import {
 } from '@/routes/summaries.routes.js';
 
 export interface AppServices {
+  summariesService?: import('@/services/summaries.service.js').SummariesService;
   summaryGenerationService?: SummaryGenerationService;
   aiLimiter?: RequestHandler;
   aiUsageService?: AIUsageService;
@@ -64,6 +69,16 @@ export function createApp(
       }),
   );
   if (services) {
+    if (services.summariesService) {
+      app.use(
+        '/api/v1/projects/:projectId/summaries',
+        createSavedSummaryRouter(services, services.summariesService),
+      );
+      app.use(
+        '/api/v1/summaries',
+        createSummaryDetailRouter(services, services.summariesService),
+      );
+    }
     if (services.summaryGenerationService) {
       app.use(
         '/api/v1/projects/:projectId/generations',

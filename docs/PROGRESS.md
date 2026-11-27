@@ -196,3 +196,5 @@ Every frontend task has its own commit and push to main, including implemented t
 - **P4-T12 completed 2026-11-27** Authenticated HTTP-to-Prisma tests verify exact excerpt-only prompts, complete note immutability and zero foreign provider calls. Production wiring is fail-closed until owner configuration.
 
 - **P4-T13 completed 2026-11-27** Large multi-note and full-folder fixtures cover map/reduce and source metadata. Interrupted chunks produce no completed draft or saved summary.
+
+- **P4-T14 completed 2026-11-27** HTTP/database fixture verifies idempotent atomic saves, retained source metadata, stale indicators after edits/removal, owner-only history and no provider calls on reread.

@@ -635,7 +635,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
   - **Accept when** All eligible inputs are processed and a final summary links each cited concept to an allowed source.
   - **Verify** Compare selected and full-folder runs and test missing-chunk failure and topic merging with mock outputs.
 
-- [ ] **P4-T14 · Save summaries and track source revisions** (MVP)
+- [x] **P4-T14 · Save summaries and track source revisions** (MVP)
   - **Work and purpose** Store generated content, title, timestamps and source versions together. Return saved history with a stale-source indicator so learners can judge when material has changed.
   - **Files** `server/src/routes/summaries.routes.ts`, `server/src/services/summaries.service.ts`, `server/src/repositories/summaries.repository.ts` · **Depends on** P4-T12, P4-T13
   - **Output** Owner-scoped save, detail and history endpoints with source metadata.
