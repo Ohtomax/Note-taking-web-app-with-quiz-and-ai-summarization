@@ -48,3 +48,7 @@ Phase 2 schema checks use a newly initialized disposable PostgreSQL 18 cluster b
 ## Phase 2 verification results
 
 The credential-free suite passes 17 tests. The isolated PostgreSQL suite passes 13 tests against the initial migration, including two-account ownership for projects, notes, summaries, quizzes, versions, questions, options, source links, attempts, answers and AI usage. Profile HTTP tests execute the actual limiter, token middleware, user synchronization, role guard, validator, controller, service and Prisma repository with an injected token verifier. Feature routes for projects/notes/quizzes are introduced in later phases and will reuse these fixtures. Hosted Redis sharing, real Firebase token issuance and Supabase CA verification remain deferred.
+
+## Phase 3 completed backend checks
+
+The combined server suite passes 22 credential-free tests and 27 isolated PostgreSQL tests. Per-task HTTP/database cases are in server/tests/database/workspace-phase3.test.ts. Shared fixture setup is in workspace.fixture.ts. Each case is named with its P3 task ID and was run against that task's incremental snapshot before commit. P3-T07 uses note-content.test.ts for round-trip and hostile-content validation. Test fixtures verify ownership, pagination, stale revisions, archive/restore, historical retention, duplication and rejected/accepted moves. Frontend behavior and Firebase console flows remain unverified and their checklist items stay open.

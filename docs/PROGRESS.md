@@ -134,3 +134,17 @@ All Phase 2 implementation tasks were processed under the owner's authorization 
 - **P3-T14 completed and verified 2026-11-27** Real HTTP and disposable PostgreSQL acceptance fixture passed. Isolated task snapshot passed strict typechecking, lint and the task acceptance case before its separate push.
 
 - **P3-T15 completed and verified 2026-11-27** Real HTTP and disposable PostgreSQL acceptance fixture passed. Isolated task snapshot passed strict typechecking, lint and the task acceptance case before its separate push.
+
+## Phase 3 review and individual pushes on 2026-11-27
+
+P3-T01 through P3-T15 are complete and each has its own tested commit and push to main. Verification used an isolated worktree and a disposable PostgreSQL 18 cluster containing synthetic records. The final server regression run passed 22 unit/HTTP tests and 27 database tests, along with strict typechecking, lint, formatting and compiled builds. The previous 100 ms limiter test used a wall clock that could expire during a slow request. A separate P2-T06 regression commit replaced its wait with the test clock.
+
+P3-T16 through P3-T24 remain unchecked. The authentication and frontend drafts exist in the original working folder and are outside the completed backend commits. Live Firebase registration/recovery checks remain deferred. The current frontend also has two strict optional-prop type errors in ProjectLibrary and ProjectDetail. The workspace route still renders the scaffold, so the library, detail and dashboard drafts are not verified through navigation. The rich-text editor, autosave recovery and profile form are unfinished, and the full workspace integration task remains pending.
+
+The pending frontend changes are preserved in the original folder. No deployment or collection of hosted secrets was performed. The three earlier Phase 2 live-service checks remain deferred.
+
+### Earlier draft notes, superseded by the successful backend verification above
+
+- **P3-T01 implemented, HTTP verification deferred** Added owner-derived project creation with strict metadata validation. Typechecking and validator regression passed. Existing HTTP tests cannot connect to loopback (EACCES) in this runtime; API and database acceptance will remain unclaimed until executable.
+
+- **P3-T02 implemented, database verification deferred** Added bounded owner-scoped project search with deterministic sorting and active-note counts. Runtime blocks loopback database checks. Git metadata is read-only, so per-task commits are blocked.
