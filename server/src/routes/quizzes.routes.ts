@@ -3,7 +3,7 @@ import type { QuizzesService } from '@/services/quizzes.service.js';
 import { saveQuiz, authorQuizVersion } from '@/controllers/saved-quizzes.controller.js';
 import { validate } from '@/middlewares/validate.js';
 import { projectParamsSchema } from '@/utils/input-validators/projects.js';
-import { saveGenerationSchema } from '@/utils/input-validators/saved-artifacts.js';
+import { saveGeneratedQuizSchema } from '@/utils/input-validators/saved-quizzes.js';
 import { quizVersionParamsSchema } from '@/utils/input-validators/saved-quizzes.js';
 import {
   quizParamsSchema,
@@ -40,7 +40,7 @@ export function createProjectQuizRouter(
   router.post(
     '/',
     validate('params', projectParamsSchema),
-    validate('body', saveGenerationSchema),
+    validate('body', saveGeneratedQuizSchema),
     saveQuiz(quizzes),
   );
   return router;

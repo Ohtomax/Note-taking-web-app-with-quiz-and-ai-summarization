@@ -406,7 +406,12 @@ export const createQuizzesRepository = (db: PrismaClient) => ({
       });
       return version;
     }),
-  save: (ownerId: string, projectId: string, generationId: string) =>
+  save: (
+    ownerId: string,
+    projectId: string,
+    generationId: string,
+    edited?: { settings: QuizSettings; content: QuizDraft },
+  ) =>
     db.$transaction(async (tx) => {
       await lockProject(tx, ownerId, projectId);
       const usage = await tx.aIUsage.findFirst({
@@ -443,11 +448,11 @@ export const createQuizzesRepository = (db: PrismaClient) => ({
       const stored = storedGenerationSchema.parse(usage.result);
       if (stored.projectId !== projectId || stored.operation !== 'QUIZ')
         throw new ServiceError('RESOURCE_NOT_FOUND', 'Resource not found', 404);
-      const settings = quizSettingsSchema.parse(stored.settings);
+      const settings = quizSettingsSchema.parse(edited?.settings ?? stored.settings);
       const draft = quizResultSchema(
         settings,
         stored.manifest.sources.map((source) => source.sourceKey),
-      ).parse(stored.output);
+      ).parse(edited?.content ?? stored.output);
       const available = await tx.note.findMany({
         where: {
           id: { in: stored.manifest.sources.map((source) => source.noteId) },

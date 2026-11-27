@@ -33,3 +33,15 @@ export const duplicateQuizSchema = z
 export const quizLibraryQuerySchema = usageQuerySchema
   .extend({ search: z.string().trim().max(200).default('') })
   .strict();
+
+export const saveGeneratedQuizSchema = z
+  .object({
+    generationId: z.string().uuid(),
+    settings: quizSettingsSchema.optional(),
+    content: quizDraftSchema.optional(),
+  })
+  .strict()
+  .refine(
+    (input) => Boolean(input.settings) === Boolean(input.content),
+    'Edited settings and content must be supplied together',
+  );

@@ -228,3 +228,5 @@ Every frontend task has its own commit and push to main, including implemented t
 - **P5-T03 completed 2026-11-27** Library/detail tests verify stored reads, edits and rename, stale-source metadata and confirmed deletion. Paginated project navigation and cache invalidation are wired without AI calls.
 
 - **P5-T04 completed 2026-11-27** Component tests reject invalid type selections before calls, retain every setting after failure, reuse request keys and display validated identification previews. All four question types share backend-equivalent contracts.
+
+- **P5-T05 completed 2026-11-27** Question-specific key errors and edited answer submission pass UI tests. HTTP/SQL tests save edited previews and publish new keys without altering sources, earlier versions or adding AI calls.

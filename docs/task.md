@@ -768,7 +768,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
   - **Accept when** A valid submission opens a preview, and a failed submission retains the form values.
   - **Verify** Test each question type and difficulty with a mock provider and retry a failed request.
 
-- [ ] **P5-T05 · Preview and edit a quiz version** (MVP)
+- [x] **P5-T05 · Preview and edit a quiz version** (MVP)
   - **Work and purpose** Edit prompts, options, accepted answers and explanations in the owner’s authoring view. Validate each question type and save edits through the versioned API.
   - **Files** `client/src/features/quizzes/QuizEditor.tsx` · **Depends on** P5-T04
   - **Output** A quiz preview with version-aware editing and saving.

@@ -8,15 +8,20 @@ import type { QuizGenerationInput } from '@/utils/input-validators/quizzes.js';
 import { ServiceError } from '@/utils/error-handler/ServiceError.js';
 import { quizLibraryQuerySchema } from '@/utils/input-validators/saved-quizzes.js';
 import { usageQuerySchema } from '@/utils/input-validators/ai-usage.js';
+import { saveGeneratedQuizSchema } from '@/utils/input-validators/saved-quizzes.js';
 export const saveQuiz =
   (service: QuizzesService) =>
   async (req: AuthRequest, res: Response, next: NextFunction) => {
     try {
+      const input = saveGeneratedQuizSchema.parse(req.body);
       res.status(201).json({
         data: await service.save(
           req.account!.id,
           req.params.projectId!,
           req.body.generationId as string,
+          input.settings && input.content
+            ? { settings: input.settings, content: input.content }
+            : undefined,
         ),
       });
     } catch (error) {

@@ -5,62 +5,9 @@ import {
   questionTypeSchema,
   type QuizSettings,
 } from '@/types/quiz-settings';
-import { quizResultSchema } from '@/types/quiz';
+import { GeneratedQuizEditor } from './GeneratedQuizEditor';
 import type { SourceChoice } from '@/types/study-sources';
-import type { Generation } from '@/types/study';
-function QuizPreview({ generation }: { generation: Generation }) {
-  const settings = quizSettingsSchema.safeParse(generation.result?.settings);
-  const draft = settings.success
-    ? quizResultSchema(
-        settings.data,
-        generation.result!.sources.map((s) => s.sourceKey),
-      ).safeParse(generation.result!.output)
-    : null;
-  if (!draft?.success)
-    return (
-      <p role="alert">
-        This quiz preview could not be validated. Your notes are unchanged.
-      </p>
-    );
-  return (
-    <section className="mt-5" aria-label="Quiz preview">
-      <h3 className="text-lg font-semibold">{draft.data.title}</h3>
-      <ol className="mt-3 grid gap-3">
-        {draft.data.questions.map((question, index) => (
-          <li key={index} className="rounded border border-slate-200 p-3">
-            <p className="font-medium">
-              {index + 1}. {question.prompt}
-            </p>
-            {question.type === 'IDENTIFICATION' ? (
-              <p className="mt-2 text-sm">
-                Accepted answers: {question.acceptedAnswers.join(', ')}
-              </p>
-            ) : (
-              <ul className="mt-2 text-sm">
-                {question.options.map((option) => (
-                  <li key={option.id}>
-                    {question.correctOptionIds.includes(option.id) ? 'Correct: ' : ''}
-                    {option.text}
-                  </li>
-                ))}
-              </ul>
-            )}
-            <p className="mt-2 text-xs text-slate-500">
-              Sources:{' '}
-              {question.sourceKeys
-                .map(
-                  (key) =>
-                    generation.result!.sources.find((source) => source.sourceKey === key)
-                      ?.noteTitle ?? key,
-                )
-                .join(', ')}
-            </p>
-          </li>
-        ))}
-      </ol>
-    </section>
-  );
-}
+
 export function QuizGenerator({
   projectId,
   choice,
@@ -241,7 +188,7 @@ export function QuizGenerator({
           </button>
         )}
       {generation.data?.status === 'SUCCEEDED' && (
-        <QuizPreview key={generation.data.id} generation={generation.data} />
+        <GeneratedQuizEditor key={generation.data.id} generation={generation.data} />
       )}
     </section>
   );
