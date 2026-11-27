@@ -86,16 +86,14 @@ export const regenerateSummary =
           'A valid Idempotency-Key header is required.',
           400,
         );
-      res
-        .status(201)
-        .json({
-          data: await service.regenerate(
-            req.account!.id,
-            req.params.summaryId!,
-            key.data,
-            req.body as SummaryGenerationInput,
-          ),
-        });
+      res.status(201).json({
+        data: await service.regenerate(
+          req.account!.id,
+          req.params.summaryId!,
+          key.data,
+          req.body as SummaryGenerationInput,
+        ),
+      });
     } catch (error) {
       AIHandleError(error, next);
     }

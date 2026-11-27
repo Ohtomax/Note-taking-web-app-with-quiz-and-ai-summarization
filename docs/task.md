@@ -649,7 +649,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
   - **Accept when** Ordinary management incurs no AI calls, and a failed regeneration preserves the saved summary.
   - **Verify** Edit and rename, force a regeneration error, retry successfully and attempt deletion from a second account.
 
-- [ ] **P4-T16 · Validate quiz settings** (MVP)
+- [x] **P4-T16 · Validate quiz settings** (MVP)
   - **Work and purpose** Accept a title, source scope, count, difficulty, question-type selection, practice or exam mode and explanation preference so the generator receives an explicit bounded request.
   - **Files** `server/src/utils/input-validators/quizzes.ts`, `server/tests/ai/quiz-settings.test.ts` · **Depends on** P4-T02, P4-T03
   - **Output** Quiz request schema with defined limits.

@@ -200,3 +200,5 @@ Every frontend task has its own commit and push to main, including implemented t
 - **P4-T14 completed 2026-11-27** HTTP/database fixture verifies idempotent atomic saves, retained source metadata, stale indicators after edits/removal, owner-only history and no provider calls on reread.
 
 - **P4-T15 completed 2026-11-27** HTTP fixtures verify free edits/rename/delete, foreign rejection and unchanged saved originals after failed and successful regeneration previews. Acceptance saves a separate new summary.
+
+- **P4-T16 completed 2026-11-27** All difficulties and both modes pass. Invalid counts, unsupported/duplicate types, forged fields and impossible mixed requests fail before generation.
