@@ -1113,6 +1113,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
   - **Verify** Exercise health and readiness, a request without credentials, and an authorized read. Check the API response to allowed and unlisted browser origins.
 
 - [ ] **P6-T21 · Deploy the frontend to Vercel** (MVP)
+  - **Status 2026-11-28** Skipped under the owner rule. No Vercel deployment command, project setting or public Firebase/API-origin configuration was applied. Existing external Git-triggered automations were not inspected.
   - **Work and purpose** Use the approved public Firebase configuration and deployed API origin for a production build. Configure route fallback so direct links and refreshes reach the React app.
   - **Files** `client/vite.config.ts`, `docs/DEPLOYMENT.md` · **Depends on** P6-T10, P6-T15, P6-T20
   - **Output** A production frontend on the approved HTTPS domain.
