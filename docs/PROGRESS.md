@@ -322,3 +322,7 @@ Phase 5 implementation status: 26 of 27 MVP task checkboxes are complete. P5-T26
 - **P6-T21 deferred/partial 2026-11-28** Skipped under the owner rule. No Vercel deployment command, project setting or public Firebase/API-origin configuration was applied. Existing external Git-triggered automations were not inspected.
 
 - **P6-T22 deferred/partial 2026-11-28** Skipped with production deployment and provider credentials. Passing local mock-provider sessions do not establish live Firebase/Groq or hosted release behavior; no paid generation or production test account was used.
+
+Phase 6 local pass: 8 MVP tasks complete (T01, T02, T04, T05, T06, T07, T09, T11). Browser/interaction acceptance, dependency release disposition, live recovery policy and production/deployment work remain explicitly open; T14 has an optional deferral. Final full candidate regression is 150 passing tests plus types/lint/format/build, with separate benchmark and restore evidence. No owner environment or deployment setup was performed.
+
+- **P6-T23 deferred/partial 2026-11-28** README, architecture/testing/deployment references and HANDOVER.md distinguish the 150-test local candidate, benchmarks, audited overrides and restored synthetic history from unverified release work. All 36 relative document links and whitespace checks pass. No shipped production revision exists, so release-handover acceptance remains open.

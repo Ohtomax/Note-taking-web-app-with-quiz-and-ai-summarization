@@ -72,6 +72,8 @@ Run npm test in server/ for the credential-free suite. Database tests use npm ru
 
 ## Design documents
 
+Phase 6 local validation is available through `pwsh -NoProfile -File scripts/test-local.ps1 -Repetitions 2 -CleanCheckout`. It requires Node 24, PowerShell 7 and local PostgreSQL 18 tools, and uses synthetic identities and mock AI. See the [local handover](./docs/HANDOVER.md) for verified behavior, benchmarks, dependency findings and deferred browser/deployment work. The latest complete candidate run passes 150 tests; production release acceptance remains open.
+
 - [Architecture and source conventions](./docs/ARCHITECTURE.md)
 - [Database and retention](./docs/DATABASE.md)
 - [API contract](./docs/API.md)
@@ -80,3 +82,6 @@ Run npm test in server/ for the credential-free suite. Database tests use npm ru
 - [Quiz scoring and history](./docs/QUIZ_SYSTEM.md)
 - [Analytics definitions](./docs/ANALYTICS.md)
 - [Deployment and recovery](./docs/DEPLOYMENT.md)
+- [Local validation and repeatable checks](./docs/PHASE6_VALIDATION.md)
+- [Dependency audit and remaining blockers](./docs/DEPENDENCY_AUDIT.md)
+- [Recovery rehearsal](./docs/RECOVERY.md)

@@ -114,3 +114,7 @@ TypeScript 5.9 rejects alias imports ending in .ts when rewriteRelativeImportExt
 ## Formatting and lint baseline
 
 ESLint 10, typescript-eslint 8 and Prettier 3 are pinned in each package. React lint rules check hooks and refresh boundaries. Both projects use single quotes, trailing commas, 90-column formatting and LF endings. Both lint and format checks pass. A disposable unused-variable probe failed lint as expected in each project and was removed. The initial ESLint 9 dependency reported end-of-support, so it was replaced with compatible ESLint 10 before the task commit.
+
+## Phase 6 verification boundary
+
+The deployed architecture remains a plan. The [local handover](./HANDOVER.md) records verified controller/service/repository behavior through real HTTP and Prisma, guarded disposable databases, mock-only identity/provider fixtures, measured queries and the recovery rehearsal. Test-only entry points are outside production compilation. Production runtime still verifies Firebase and fails closed when required infrastructure is unavailable. Dependency overrides and unresolved Zod-major findings are documented separately; no release approval follows from the local harness.

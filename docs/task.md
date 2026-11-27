@@ -1129,6 +1129,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
   - **Verify** Compare the usage and attempt counts before and after each action, check the latest score in history and the mean score on the dashboard, and follow the rehearsed recovery procedure if release-critical checks fail.
 
 - [ ] **P6-T23 · Publish the release handover in the repository** (MVP)
+  - **Status 2026-11-28** Local predeployment HANDOVER.md, README and verification references are published. Actual shipped revisions/deployed services/production smoke acceptance are deferred, so the release-handover task remains unchecked.
   - **Work and purpose** Update the README, architecture and feature references, test guide, progress tracker, deployment instructions, and recovery record to match the shipped revision.
   - **Files** `README.md`, `docs/PROGRESS.md`, `docs/TESTING.md`, `docs/DEPLOYMENT.md` · **Depends on** P6-T22
   - **Output** A release handover covering setup, deployed services, verification, recovery, and outstanding work.

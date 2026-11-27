@@ -51,3 +51,7 @@ Per the owner's instruction, collecting URLs/keys, connecting to hosted Supabase
 ## Initial migration rehearsal
 
 The initial migration was generated with prisma migrate diff --from-empty --to-schema ./prisma --script. It was applied to a new empty disposable local database using prisma migrate deploy. A second run reported no pending migrations, and the database fixture suite passed against the migrated schema. No hosted or production migration was attempted. Before a later hosted deployment, supply DIRECT_URL locally through the approved secret mechanism, review the migration, back up the target and run the documented Phase 6 release procedure.
+
+## Phase 6 owner exclusion and handover
+
+Deployment-associated tasks remain deferred at the owner request: no container/image deployment, hosted identity/database/Redis setup, production migration, Render/Vercel command or paid smoke generation was performed. The [local handover](./HANDOVER.md), [dependency audit](./DEPENDENCY_AUDIT.md) and [recovery runbook](./RECOVERY.md) distinguish tested local contracts from release work requiring owner settings and later authorization. Local eight-migration replay does not establish a production migration or application rollback rehearsal.
