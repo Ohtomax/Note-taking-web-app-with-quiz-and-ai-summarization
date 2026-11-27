@@ -3,6 +3,7 @@ import { Prisma, type PrismaClient } from '@/generated/prisma/client.js';
 import type { StartAttemptInput } from '@/utils/input-validators/quiz-attempt.validator.js';
 import { serializable } from './serializable.js';
 import { ServiceError } from '@/utils/error-handler/ServiceError.js';
+import type { AnswerOutcome } from '@/services/quiz-scoring.service.js';
 export const attemptSelect = {
   id: true,
   versionId: true,
@@ -68,6 +69,25 @@ export const attemptSelect = {
   },
 } as const;
 export type AttemptRow = Prisma.QuizAttemptGetPayload<{ select: typeof attemptSelect }>;
+export async function lockAttempt(
+  tx: Prisma.TransactionClient,
+  ownerId: string,
+  id: string,
+): Promise<AttemptRow> {
+  const locked = await tx.quizAttempt.updateMany({
+    where: { id, version: { quiz: { project: { ownerId } } } },
+    data: { id },
+  });
+  if (!locked.count)
+    throw new ServiceError('RESOURCE_NOT_FOUND', 'Resource not found', 404);
+  return tx.quizAttempt.findUniqueOrThrow({ where: { id }, select: attemptSelect });
+}
+function sameAnswer(answer: AttemptRow['answers'][number], outcome: AnswerOutcome) {
+  return (
+    JSON.stringify(answer.selectedOptionIds) ===
+      JSON.stringify(outcome.selectedOptionIds) && answer.text === outcome.text
+  );
+}
 function shuffled<T>(items: T[], enabled: boolean): T[] {
   const result = [...items];
   if (enabled)
@@ -78,6 +98,50 @@ function shuffled<T>(items: T[], enabled: boolean): T[] {
   return result;
 }
 export const createQuizAttemptRepository = (db: PrismaClient) => ({
+  practice: (
+    ownerId: string,
+    id: string,
+    questionId: string,
+    expectedRevision: number,
+    outcome: AnswerOutcome,
+  ) =>
+    serializable(db, async (tx) => {
+      const attempt = await lockAttempt(tx, ownerId, id);
+      if (attempt.status !== 'IN_PROGRESS' || attempt.mode !== 'PRACTICE')
+        throw new ServiceError(
+          'ATTEMPT_CLOSED',
+          'This practice attempt cannot be changed.',
+          409,
+        );
+      if (!attempt.version.questions.some((question) => question.id === questionId))
+        throw new ServiceError('RESOURCE_NOT_FOUND', 'Resource not found', 404);
+      const existing = attempt.answers.find((answer) => answer.questionId === questionId);
+      if (existing) {
+        if (sameAnswer(existing, outcome)) return attempt;
+        throw new ServiceError(
+          'ANSWER_LOCKED',
+          'A practice answer is already recorded for this question.',
+          409,
+        );
+      }
+      if (expectedRevision !== 0)
+        throw new ServiceError(
+          'ANSWER_REVISION_CONFLICT',
+          'Reload the recorded answer before retrying.',
+          409,
+        );
+      await tx.quizAttemptAnswer.create({
+        data: {
+          attemptId: id,
+          versionId: attempt.versionId,
+          questionId,
+          selectedOptionIds: outcome.selectedOptionIds,
+          text: outcome.text,
+          isCorrect: outcome.isCorrect,
+        },
+      });
+      return tx.quizAttempt.findUniqueOrThrow({ where: { id }, select: attemptSelect });
+    }),
   start: async (
     ownerId: string,
     quizId: string,

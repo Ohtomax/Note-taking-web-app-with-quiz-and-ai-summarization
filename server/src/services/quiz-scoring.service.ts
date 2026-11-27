@@ -9,8 +9,8 @@ export interface ScoringQuestion {
   acceptedAnswers: unknown;
 }
 export interface AnswerChoice {
-  optionIds?: string[];
-  text?: string;
+  optionIds?: string[] | undefined;
+  text?: string | undefined;
 }
 export interface AnswerOutcome {
   answered: boolean;

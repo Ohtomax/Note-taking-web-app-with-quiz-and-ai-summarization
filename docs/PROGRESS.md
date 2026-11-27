@@ -238,3 +238,5 @@ Every frontend task has its own commit and push to main, including implemented t
 - **P5-T08 completed 2026-11-27** HTTP fixtures inspect start/resume responses after authoring access: open exams expose no keys, explanations or correctness; practice reveals only committed questions. Player schemas/cache keys are separate and foreign reads are hidden.
 
 - **P5-T09 completed 2026-11-27** Table-driven tests cover exact multiple-select sets, duplicate/foreign IDs, both single-choice types, normalized identification variants, punctuation, unknown synonyms, blanks and zero denominators.
+
+- **P5-T10 completed 2026-11-27** Concurrent different answers yield one committed row and one conflict. Identical retries return original feedback, unanswered questions reveal nothing and foreign attempts/questions remain inaccessible.

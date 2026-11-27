@@ -4,6 +4,9 @@ import type {
   AttemptRow,
 } from '@/repositories/quiz-attempt.repository.js';
 import type { StartAttemptInput } from '@/utils/input-validators/quiz-attempt.validator.js';
+import type { AnswerInput } from '@/utils/input-validators/quiz-attempt.validator.js';
+import { scoreAnswer } from './quiz-scoring.service.js';
+import { ServiceError } from '@/utils/error-handler/ServiceError.js';
 export function attemptSummary(row: AttemptRow) {
   return {
     id: row.id,
@@ -80,6 +83,34 @@ export function playerAttempt(row: AttemptRow) {
   };
 }
 export const createQuizAttemptService = (repository: QuizAttemptRepository) => ({
+  answer: async (ownerId: string, id: string, questionId: string, input: AnswerInput) => {
+    const attempt = await repository.load(ownerId, id),
+      question = attempt.version.questions.find((item) => item.id === questionId);
+    if (!question)
+      throw new ServiceError('RESOURCE_NOT_FOUND', 'Resource not found', 404);
+    if (attempt.mode !== 'PRACTICE')
+      throw new ServiceError(
+        'MODE_MISMATCH',
+        'Use the exam draft workflow for this attempt.',
+        409,
+      );
+    const outcome = scoreAnswer(question, input);
+    if (!outcome.answered)
+      throw new ServiceError(
+        'ANSWER_REQUIRED',
+        'Choose an answer before submitting practice feedback.',
+        400,
+      );
+    return playerAttempt(
+      await repository.practice(
+        ownerId,
+        id,
+        questionId,
+        input.expectedAnswerRevision,
+        outcome,
+      ),
+    );
+  },
   start: async (ownerId: string, quizId: string, key: string, input: StartAttemptInput) =>
     playerAttempt(await repository.start(ownerId, quizId, key, input)),
   read: async (ownerId: string, id: string) =>

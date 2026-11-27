@@ -9,3 +9,19 @@ export const startAttemptSchema = z
   .strict();
 export type StartAttemptInput = z.infer<typeof startAttemptSchema>;
 export const attemptParamsSchema = z.object({ attemptId: z.string().uuid() }).strict();
+
+export const answerParamsSchema = attemptParamsSchema
+  .extend({ questionId: z.string().uuid() })
+  .strict();
+export const answerInputSchema = z
+  .object({
+    expectedAnswerRevision: z.number().int().min(0).max(100000000).default(0),
+    optionIds: z.array(z.string().uuid()).max(8).optional(),
+    text: z.string().max(500).optional(),
+  })
+  .strict()
+  .refine(
+    (input) => (input.optionIds !== undefined) !== (input.text !== undefined),
+    'Supply either choices or identification text',
+  );
+export type AnswerInput = z.infer<typeof answerInputSchema>;

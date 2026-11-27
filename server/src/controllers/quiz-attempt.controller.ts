@@ -2,6 +2,7 @@ import type { Response, NextFunction } from 'express';
 import type { AuthRequest } from '@/types/auth.type.js';
 import type { QuizAttemptService } from '@/services/quiz-attempt.service.js';
 import type { StartAttemptInput } from '@/utils/input-validators/quiz-attempt.validator.js';
+import type { AnswerInput } from '@/utils/input-validators/quiz-attempt.validator.js';
 import { idempotencyKeySchema } from '@/utils/input-validators/generations.js';
 import { ServiceError } from '@/utils/error-handler/ServiceError.js';
 export const startQuizAttempt =
@@ -33,6 +34,23 @@ export const readQuizAttempt =
   async (req: AuthRequest, res: Response, next: NextFunction) => {
     try {
       res.json({ data: await service.read(req.account!.id, req.params.attemptId!) });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+export const saveAttemptAnswer =
+  (service: QuizAttemptService) =>
+  async (req: AuthRequest, res: Response, next: NextFunction) => {
+    try {
+      res.json({
+        data: await service.answer(
+          req.account!.id,
+          req.params.attemptId!,
+          req.params.questionId!,
+          req.body as AnswerInput,
+        ),
+      });
     } catch (error) {
       next(error);
     }

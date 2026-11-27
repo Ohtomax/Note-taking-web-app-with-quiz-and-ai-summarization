@@ -803,7 +803,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
   - **Accept when** Only a full correct set earns multiple-select credit. An approved textual variation earns credit and an unknown synonym follows the documented rule.
   - **Verify** Run table-driven tests for partial sets, duplicate or foreign option IDs, extra whitespace, mixed case and blank input.
 
-- [ ] **P5-T10 · Record practice answers** (MVP)
+- [x] **P5-T10 · Record practice answers** (MVP)
   - **Work and purpose** Validate ownership, question membership and payload shape. Write and grade a practice answer atomically, then reveal its outcome and any enabled explanation.
   - **Files** `server/src/services/quiz-attempt.service.ts`, `server/src/utils/input-validators/quiz-attempt.validator.ts` · **Depends on** P5-T07, P5-T08, P5-T09
   - **Output** A practice submission endpoint with question-level feedback.
