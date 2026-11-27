@@ -190,3 +190,5 @@ Every frontend task has its own commit and push to main, including implemented t
 - **P4-T09 completed 2026-11-27** Real PostgreSQL races admit one request, reject over-quota work and release unused expired leases. Unknown running work retains its allowance; per-generation Redis limiter is ready for route wiring.
 
 - **P4-T10 completed 2026-11-27** Concurrent identical requests and dropped-response retries perform one provider call and one usage charge. Changed input conflicts, new keys regenerate, and generation retrieval is owner-scoped.
+
+- **P4-T11 completed 2026-11-27** All twelve length/format combinations pass fixtures. Missing sections, unsupported formats, invented citations and oversized output are rejected.

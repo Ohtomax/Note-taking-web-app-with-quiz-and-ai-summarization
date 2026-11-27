@@ -614,7 +614,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
   - **Accept when** Concurrent identical submissions perform one logical generation, unrelated input cannot reuse the key and intentional regeneration starts a new request.
   - **Verify** Send simultaneous duplicates, drop a response, retry, then compare provider calls, usage and stored artifacts.
 
-- [ ] **P4-T11 · Validate summary settings and results** (MVP)
+- [x] **P4-T11 · Validate summary settings and results** (MVP)
   - **Work and purpose** Define schemas for short, medium and detailed summaries in paragraph, bullet, key-concept and study-guide formats. Check output bounds and require citations from the resolved input.
   - **Files** `server/src/utils/input-validators/summaries.ts`, `server/src/ai/schemas/summary.ts` · **Depends on** P4-T02, P4-T03, P4-T04
   - **Output** Validated summary request and output contracts.
