@@ -180,3 +180,5 @@ Every frontend task has its own commit and push to main, including implemented t
 - **P4-T04 completed 2026-11-27** Both prompt types pass all four scope fixtures with instruction-like source text. Trusted instructions and serialized source data remain separate, with explicit citation allowlists.
 
 - **P4-T05 completed 2026-11-27** Boundary and Unicode coverage tests pass for long notes and many small notes. UTF-8 bytes conservatively estimate tokens; prompt/output headroom and bounded stage/retry reserves are explicit.
+
+- **P4-T06 completed 2026-11-27** First/last concept fixture survives bounded reduction. A middle chunk failure or invented source key prevents a completed result; every map prompt is preflighted before billing.

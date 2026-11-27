@@ -579,7 +579,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
   - **Accept when** Every eligible text range is covered, normal requests fit one call where appropriate and over-limit requests fail clearly before billing.
   - **Verify** Use fixtures on either side of the budget boundary, one long note and many small notes, then compare covered ranges.
 
-- [ ] **P4-T06 · Merge results for large source sets** (MVP)
+- [x] **P4-T06 · Merge results for large source sets** (MVP)
   - **Work and purpose** Combine chunk results in bounded stages, carry source IDs into each merge and fail the generation if any required chunk is missing so a partial result cannot appear complete.
   - **Files** `server/src/ai/chunking`, `server/src/services/ai.service.ts`, `server/tests/ai/coverage.test.ts` · **Depends on** P4-T04, P4-T05
   - **Output** Bounded multi-stage processing with traceable inputs.
