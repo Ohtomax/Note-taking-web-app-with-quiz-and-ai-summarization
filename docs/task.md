@@ -1041,6 +1041,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
   - **Verify** Trace the first and last source through chunking, compare counts to the token budget, and repeat with a provider timeout.
 
 - [ ] **P6-T12 · Audit release dependencies** (MVP)
+  - **Status 2026-11-28** Targeted Effect/jsondiffpatch/gRPC overrides reduce high findings from 15 to 7. Zod-related findings remain and require a major compatibility migration or explicit release disposition; no risk exception is approved. See DEPENDENCY_AUDIT.md.
   - **Work and purpose** Audit the locked client and server dependencies, assess reported advisories against actual use, and update affected packages where required.
   - **Files** `client/package-lock.json`, `server/package-lock.json`, `docs/SECURITY.md` · **Depends on** P6-T01
   - **Output** A dated audit with fixes or documented release decisions.

@@ -67,3 +67,5 @@ The Phase 2 audit reports four high-severity package findings representing two a
 ## Phase 6 study ownership matrix
 
 phase6-ownership.test.ts exercises both identity directions for quiz metadata/versions/keys, summary reads and writes, attempt player/results/comparison/answers/location/finalization/abandonment, generation status, note-open tracking, project/quiz analytics and cross-owner note moves. Each rejected request returns 404 and a before/after snapshot covers both workspaces, sources, quiz versions, questions/options, attempts/answers and AI ledger/calls. Missing, invalid and expired test tokens return 401. History, analytics and usage lists contain only the current owner. The deterministic provider receives zero calls. Existing project/note and generation matrices remain part of the same database regression suite.
+
+The [Phase 6 dependency audit](./DEPENDENCY_AUDIT.md) records targeted patched overrides, the final 6 high server / 1 high client findings, application exposure and the remaining Zod-major release blocker. No security-risk exception is approved.
