@@ -1,0 +1,98 @@
+{
+  "date": "2026-11-28",
+  "fixture": {
+    "projects": 120,
+    "notes": 6000,
+    "attempts": 12000,
+    "owners": 2,
+    "samples": 12,
+    "warmups": 2
+  },
+  "results": [
+    {
+      "name": "project list",
+      "medianMs": 2.68,
+      "p95Ms": 2.98,
+      "maxQueries": 3,
+      "localBudgetMs": 250,
+      "planCount": 2,
+      "indexes": [],
+      "scanNodes": [
+        "Aggregate",
+        "Hash",
+        "Hash Join",
+        "Limit",
+        "Seq Scan",
+        "Sort",
+        "Subquery Scan"
+      ]
+    },
+    {
+      "name": "note search",
+      "medianMs": 2.06,
+      "p95Ms": 2.24,
+      "maxQueries": 4,
+      "localBudgetMs": 250,
+      "planCount": 3,
+      "indexes": [
+        "Note_projectId_createdAt_id_idx"
+      ],
+      "scanNodes": [
+        "Aggregate",
+        "Bitmap Heap Scan",
+        "Bitmap Index Scan",
+        "Limit",
+        "Nested Loop",
+        "Seq Scan",
+        "Sort"
+      ]
+    },
+    {
+      "name": "history page",
+      "medianMs": 12.97,
+      "p95Ms": 13.92,
+      "maxQueries": 7,
+      "localBudgetMs": 250,
+      "planCount": 5,
+      "indexes": [
+        "Quiz_pkey",
+        "QuizVersion_pkey"
+      ],
+      "scanNodes": [
+        "Aggregate",
+        "Bitmap Heap Scan",
+        "Bitmap Index Scan",
+        "Hash",
+        "Hash Join",
+        "Index Scan",
+        "Limit",
+        "Seq Scan",
+        "Sort"
+      ]
+    },
+    {
+      "name": "global analytics",
+      "medianMs": 13.73,
+      "p95Ms": 17.22,
+      "maxQueries": 17,
+      "localBudgetMs": 750,
+      "planCount": 15,
+      "indexes": [
+        "Quiz_pkey",
+        "QuizVersion_pkey"
+      ],
+      "scanNodes": [
+        "Aggregate",
+        "Bitmap Heap Scan",
+        "Bitmap Index Scan",
+        "Hash",
+        "Hash Join",
+        "Index Scan",
+        "Limit",
+        "Nested Loop",
+        "Seq Scan",
+        "Sort"
+      ]
+    }
+  ]
+}

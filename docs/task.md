@@ -1018,7 +1018,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
   - **Accept when** A learner can finish the flow using the keyboard, reload the results, and sign out without showing the previous learner's data to the next account.
   - **Verify** Run the scenario at both viewport sizes and check visible results, focus after transitions, and the persisted attempt ID.
 
-- [ ] **P6-T09 · Measure and tune database queries** (MVP)
+- [x] **P6-T09 · Measure and tune database queries** (MVP)
   - **Work and purpose** Measure project lists, note search, history, and analytics using representative row counts. Use database plans and query counts to identify repeated reads or missing indexes.
   - **Files** `server/src/repositories/`, `server/prisma/`, `docs/DATABASE.md` · **Depends on** P6-T07
   - **Output** Recorded baseline, query changes justified by measurement, and repeatable timings.

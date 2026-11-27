@@ -71,3 +71,11 @@ Project indexes ownerId/deletedAt/updatedAt/id for owned paginated lists. Note i
 ## Local query-plan check
 
 A read-only EXPLAIN of the owner-scoped Project list with deletedAt filtering, stable updatedAt/id ordering and LIMIT 20 selected the Project_ownerId_deletedAt_updatedAt_id_idx index in the disposable PostgreSQL fixture. The separate tied-timestamp fixture confirms bounded paging without duplicates. Large-scale benchmarking belongs to Phase 6 and does not block this index implementation.
+
+## Phase 6 local query baseline (2026-11-28)
+
+The repeatable tests/performance/database.ts fixture seeds two owners, 120 projects, 6,000 notes and 12,000 completed attempts. It checks owner counts, page bounds and a known 75% score while measuring the actual Prisma repositories/services. Twelve samples follow two warmups per operation. Local engineering regression limits are 250 ms p95 for project/note/history reads and 750 ms for global analytics; these are fixture limits, not an approved hosted/mobile service-level objective.
+
+Measured median / p95 / maximum SQL query count: projects 2.68 / 2.98 ms / 3; note search 2.06 / 2.24 ms / 4; history 12.97 / 13.92 ms / 7; global analytics 13.73 / 17.22 ms / 17. Queries remain constant per page/report. PostgreSQL ANALYZE and parameter-bound EXPLAIN ANALYZE/BUFFERS on Prisma-emitted SELECT statements record plans; the summarized evidence is in evidence/database-performance.json. Small owner/project tables use sequential scans where PostgreSQL estimates those cheaper, while note and version relations use existing indexes. All local limits pass, so no speculative index or business-query rewrite was applied. This does not measure network, concurrent production traffic or Supabase latency.
+
+To reproduce, set the guarded loopback STUDY_TEST_DATABASE_URL, apply repository migrations to it, then run server node --import tsx tests/performance/database.ts <temporary-report.json>. The fixture cleans up its two accounts and all synthetic records. Full plans remain in the specified local report, with no database connection URL logged. Diagnostic EXPLAIN statements do not run in application requests.
