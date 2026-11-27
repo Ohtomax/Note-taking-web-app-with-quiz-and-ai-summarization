@@ -1,0 +1,1 @@
+ALTER TABLE "QuizAttempt" ADD COLUMN "lastQuestionIndex" INTEGER NOT NULL DEFAULT 0;

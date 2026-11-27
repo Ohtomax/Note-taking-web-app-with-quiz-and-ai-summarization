@@ -9,6 +9,7 @@ import { Modal } from '@/components/ui/Modal';
 import { QuizGenerator } from './QuizGenerator';
 import { authoringDraft } from '@/types/quiz-library';
 import type { SourceChoice } from '@/types/study-sources';
+import { OpenAttempts } from './ResumeAttempt';
 export function QuizDetail() {
   const { quizId = '' } = useParams(),
     uid = useSession((state) => state.user!.uid);
@@ -79,6 +80,7 @@ export function QuizDetail() {
             Back to quizzes
           </Link>
           <h1 className="my-5 text-2xl font-semibold">{data.title}</h1>
+          <OpenAttempts quizId={quizId} />
           <p className="mb-4 text-sm text-slate-600">
             Each version preserves its own questions and key. Existing attempts retain
             their recorded version.

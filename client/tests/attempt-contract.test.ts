@@ -9,6 +9,7 @@ const attempt = {
   quizId: id,
   projectId: id,
   quizTitle: 'Exam',
+  lastQuestionIndex: 0,
   versionId: id,
   version: 1,
   difficulty: 'EASY',

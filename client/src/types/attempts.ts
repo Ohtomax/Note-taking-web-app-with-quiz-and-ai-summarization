@@ -42,6 +42,7 @@ export const playerAnswerSchema = z
   .strict();
 export const attemptSchema = z
   .object({
+    lastQuestionIndex: z.number().int().nonnegative(),
     result: attemptResultSchema.optional(),
     id: z.string().uuid(),
     quizId: z.string().uuid(),
@@ -94,3 +95,25 @@ export interface SaveAnswerInput {
   optionIds?: string[] | undefined;
   text?: string | undefined;
 }
+
+export const openAttemptSchema = z.object({
+  id: z.string().uuid(),
+  quizId: z.string().uuid(),
+  projectId: z.string().uuid(),
+  versionId: z.string().uuid(),
+  quizTitle: z.string(),
+  version: z.number().int(),
+  difficulty: z.enum(['EASY', 'MEDIUM', 'HARD']),
+  mode: z.enum(['PRACTICE', 'EXAM']),
+  status: z.literal('IN_PROGRESS'),
+  startedAt: z.string().datetime(),
+  lastQuestionIndex: z.number().int(),
+  totalQuestions: z.number().int(),
+});
+export type OpenAttempt = z.infer<typeof openAttemptSchema>;
+export const openAttemptPageSchema = z.object({
+  data: z.array(openAttemptSchema),
+  total: z.number().int(),
+  page: z.number().int(),
+  pageSize: z.number().int(),
+});

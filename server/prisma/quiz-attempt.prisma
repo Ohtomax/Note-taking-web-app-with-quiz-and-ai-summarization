@@ -5,6 +5,7 @@ enum AttemptStatus {
 }
 
 model QuizAttempt {
+  lastQuestionIndex Int @default(0)
   inputHash      String              @default("") @db.VarChar(64)
   id             String              @id @default(uuid()) @db.Uuid
   versionId      String              @db.Uuid

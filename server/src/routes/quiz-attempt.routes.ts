@@ -13,11 +13,38 @@ import {
 import { saveAttemptAnswer } from '@/controllers/quiz-attempt.controller.js';
 import { submitQuizAttempt } from '@/controllers/quiz-attempt.controller.js';
 import { emptyActionSchema } from '@/utils/input-validators/quiz-attempt.validator.js';
+import {
+  openQuizAttempts,
+  locateQuizAttempt,
+  abandonQuizAttempt,
+} from '@/controllers/quiz-attempt.controller.js';
+import {
+  locationSchema,
+  openAttemptQuerySchema,
+} from '@/utils/input-validators/quiz-attempt.validator.js';
+import { confirmDeleteSchema } from '@/utils/input-validators/saved-artifacts.js';
 export function createAttemptRouter(
   services: PrivateServices,
   attempts: QuizAttemptService,
 ) {
   const router = createPrivateRouter(services);
+  router.get(
+    '/in-progress',
+    validate('query', openAttemptQuerySchema),
+    openQuizAttempts(attempts),
+  );
+  router.patch(
+    '/:attemptId/location',
+    validate('params', attemptParamsSchema),
+    validate('body', locationSchema),
+    locateQuizAttempt(attempts),
+  );
+  router.post(
+    '/:attemptId/abandon',
+    validate('params', attemptParamsSchema),
+    validate('body', confirmDeleteSchema),
+    abandonQuizAttempt(attempts),
+  );
   router.post(
     '/:attemptId/submit',
     validate('params', attemptParamsSchema),

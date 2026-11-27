@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { usageQuerySchema } from './ai-usage.js';
 export const startAttemptSchema = z
   .object({
     versionId: z.string().uuid(),
@@ -27,3 +28,10 @@ export const answerInputSchema = z
 export type AnswerInput = z.infer<typeof answerInputSchema>;
 
 export const emptyActionSchema = z.object({}).strict();
+
+export const locationSchema = z
+  .object({ questionIndex: z.number().int().min(0).max(49) })
+  .strict();
+export const openAttemptQuerySchema = usageQuerySchema
+  .extend({ quizId: z.string().uuid().optional() })
+  .strict();

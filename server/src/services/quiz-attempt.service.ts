@@ -11,6 +11,7 @@ import { ServiceError } from '@/utils/error-handler/ServiceError.js';
 export function attemptSummary(row: AttemptRow) {
   return {
     id: row.id,
+    lastQuestionIndex: row.lastQuestionIndex,
     quizId: row.version.quiz.id,
     projectId: row.version.quiz.projectId,
     quizTitle: row.version.quiz.title,
@@ -110,8 +111,16 @@ export function playerAttempt(row: AttemptRow) {
   };
 }
 export const createQuizAttemptService = (repository: QuizAttemptRepository) => ({
-  submit: async (ownerId: string, id: string) =>
-    playerAttempt(
+  open: repository.open,
+  locate: async (ownerId: string, id: string, index: number) => {
+    await repository.load(ownerId, id);
+    return playerAttempt(await repository.locate(ownerId, id, index));
+  },
+  abandon: async (ownerId: string, id: string) =>
+    playerAttempt(await repository.abandon(ownerId, id)),
+  submit: async (ownerId: string, id: string) => {
+    await repository.expire(ownerId, id);
+    return playerAttempt(
       await repository.finalize(ownerId, id, (row) => {
         const answers = new Map<string, AnswerChoice>();
         for (const answer of row.answers) {
@@ -127,7 +136,8 @@ export const createQuizAttemptService = (repository: QuizAttemptRepository) => (
         }
         return scoreAttempt(row.version.questions, answers);
       }),
-    ),
+    );
+  },
   answer: async (ownerId: string, id: string, questionId: string, input: AnswerInput) => {
     const attempt = await repository.load(ownerId, id),
       question = attempt.version.questions.find((item) => item.id === questionId);
@@ -160,8 +170,15 @@ export const createQuizAttemptService = (repository: QuizAttemptRepository) => (
       ),
     );
   },
-  start: async (ownerId: string, quizId: string, key: string, input: StartAttemptInput) =>
-    playerAttempt(await repository.start(ownerId, quizId, key, input)),
+  start: async (
+    ownerId: string,
+    quizId: string,
+    key: string,
+    input: StartAttemptInput,
+  ) => {
+    const attempt = await repository.start(ownerId, quizId, key, input);
+    return playerAttempt(await repository.load(ownerId, attempt.id));
+  },
   read: async (ownerId: string, id: string) =>
     playerAttempt(await repository.load(ownerId, id)),
 });

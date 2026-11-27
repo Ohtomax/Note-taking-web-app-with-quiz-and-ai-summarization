@@ -1,7 +1,30 @@
-import { apiRequest } from './client';
+import { apiRequest, queryString } from './client';
+import { openAttemptPageSchema } from '@/types/attempts';
 import type { SaveAnswerInput } from '@/types/attempts';
 import { attemptResponseSchema, type StartAttemptInput } from '@/types/attempts';
 export const attemptsApi = {
+  open: async (quizId: string | undefined, page: number, signal?: AbortSignal) =>
+    openAttemptPageSchema.parse(
+      await apiRequest<unknown>(
+        '/attempts/in-progress?' +
+          queryString({ page, pageSize: 12, ...(quizId ? { quizId } : {}) }),
+        signal ? { signal } : {},
+      ),
+    ),
+  locate: async (id: string, questionIndex: number) =>
+    attemptResponseSchema.parse(
+      await apiRequest<unknown>('/attempts/' + id + '/location', {
+        method: 'PATCH',
+        body: JSON.stringify({ questionIndex }),
+      }),
+    ),
+  abandon: async (id: string) =>
+    attemptResponseSchema.parse(
+      await apiRequest<unknown>('/attempts/' + id + '/abandon', {
+        method: 'POST',
+        body: JSON.stringify({ confirmed: true }),
+      }),
+    ),
   submit: async (id: string) =>
     attemptResponseSchema.parse(
       await apiRequest<unknown>('/attempts/' + id + '/submit', {

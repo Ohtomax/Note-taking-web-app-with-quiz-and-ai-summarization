@@ -5,6 +5,7 @@ import type { StartAttemptInput } from '@/utils/input-validators/quiz-attempt.va
 import type { AnswerInput } from '@/utils/input-validators/quiz-attempt.validator.js';
 import { idempotencyKeySchema } from '@/utils/input-validators/generations.js';
 import { ServiceError } from '@/utils/error-handler/ServiceError.js';
+import { openAttemptQuerySchema } from '@/utils/input-validators/quiz-attempt.validator.js';
 export const startQuizAttempt =
   (service: QuizAttemptService) =>
   async (req: AuthRequest, res: Response, next: NextFunction) => {
@@ -61,6 +62,43 @@ export const submitQuizAttempt =
   async (req: AuthRequest, res: Response, next: NextFunction) => {
     try {
       res.json({ data: await service.submit(req.account!.id, req.params.attemptId!) });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+export const openQuizAttempts =
+  (service: QuizAttemptService) =>
+  async (req: AuthRequest, res: Response, next: NextFunction) => {
+    try {
+      const query = openAttemptQuerySchema.parse(req.query);
+      res.json(
+        await service.open(req.account!.id, query.quizId, query.page, query.pageSize),
+      );
+    } catch (error) {
+      next(error);
+    }
+  };
+export const locateQuizAttempt =
+  (service: QuizAttemptService) =>
+  async (req: AuthRequest, res: Response, next: NextFunction) => {
+    try {
+      res.json({
+        data: await service.locate(
+          req.account!.id,
+          req.params.attemptId!,
+          req.body.questionIndex as number,
+        ),
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+export const abandonQuizAttempt =
+  (service: QuizAttemptService) =>
+  async (req: AuthRequest, res: Response, next: NextFunction) => {
+    try {
+      res.json({ data: await service.abandon(req.account!.id, req.params.attemptId!) });
     } catch (error) {
       next(error);
     }

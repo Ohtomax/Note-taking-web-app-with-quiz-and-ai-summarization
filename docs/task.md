@@ -824,7 +824,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
   - **Accept when** Repeated finalization returns the recorded result, and subsequent writes leave the score and completion time intact.
   - **Verify** Race a final submission against a draft write, send duplicate submissions and recompute the stored score from the accepted answers.
 
-- [ ] **P5-T13 · Resume or abandon unfinished attempts** (MVP)
+- [x] **P5-T13 · Resume or abandon unfinished attempts** (MVP)
   - **Work and purpose** Expose owned in-progress attempts and the persisted question order, answers and location. Make abandonment terminal and distinguish it from a scored completion.
   - **Files** `server/src/services/quiz-attempt.service.ts`, `client/src/features/quizzes/ResumeAttempt.tsx` · **Depends on** P5-T08, P5-T10, P5-T11, P5-T12
   - **Output** A resume entry point and confirmed abandon action.

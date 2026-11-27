@@ -5,6 +5,7 @@ import { serializable } from './serializable.js';
 import { ServiceError } from '@/utils/error-handler/ServiceError.js';
 import type { AnswerOutcome, scoreAttempt } from '@/services/quiz-scoring.service.js';
 export const attemptSelect = {
+  lastQuestionIndex: true,
   id: true,
   versionId: true,
   requestKey: true,
@@ -69,6 +70,23 @@ export const attemptSelect = {
   },
 } as const;
 export type AttemptRow = Prisma.QuizAttemptGetPayload<{ select: typeof attemptSelect }>;
+export const ATTEMPT_TTL_MS = 7 * 86400000;
+async function expireAttempts(db: PrismaClient, ownerId: string, id?: string) {
+  return db.quizAttempt.updateMany({
+    where: {
+      ...(id ? { id } : {}),
+      status: 'IN_PROGRESS',
+      startedAt: { lte: new Date(Date.now() - ATTEMPT_TTL_MS) },
+      version: { quiz: { project: { ownerId } } },
+    },
+    data: {
+      status: 'ABANDONED',
+      finishedAt: new Date(),
+      correctCount: null,
+      answeredCount: null,
+    },
+  });
+}
 export async function lockAttempt(
   tx: Prisma.TransactionClient,
   ownerId: string,
@@ -98,6 +116,95 @@ function shuffled<T>(items: T[], enabled: boolean): T[] {
   return result;
 }
 export const createQuizAttemptRepository = (db: PrismaClient) => ({
+  expire: (ownerId: string, id: string) => expireAttempts(db, ownerId, id),
+  open: async (
+    ownerId: string,
+    quizId: string | undefined,
+    page: number,
+    pageSize: number,
+  ) => {
+    await expireAttempts(db, ownerId);
+    const where = {
+      status: 'IN_PROGRESS' as const,
+      version: { ...(quizId ? { quizId } : {}), quiz: { project: { ownerId } } },
+    };
+    const [data, total] = await db.$transaction([
+      db.quizAttempt.findMany({
+        where,
+        select: {
+          id: true,
+          versionId: true,
+          mode: true,
+          status: true,
+          startedAt: true,
+          lastQuestionIndex: true,
+          totalQuestions: true,
+          version: {
+            select: {
+              version: true,
+              difficulty: true,
+              quiz: { select: { id: true, title: true, projectId: true } },
+            },
+          },
+        },
+        orderBy: [{ startedAt: 'desc' }, { id: 'desc' }],
+        skip: (page - 1) * pageSize,
+        take: pageSize,
+      }),
+      db.quizAttempt.count({ where }),
+    ]);
+    return {
+      data: data.map(({ version, ...attempt }) => ({
+        ...attempt,
+        version: version.version,
+        difficulty: version.difficulty,
+        quizId: version.quiz.id,
+        quizTitle: version.quiz.title,
+        projectId: version.quiz.projectId,
+      })),
+      total,
+      page,
+      pageSize,
+    };
+  },
+  locate: (ownerId: string, id: string, questionIndex: number) =>
+    serializable(db, async (tx) => {
+      const attempt = await lockAttempt(tx, ownerId, id);
+      if (attempt.status !== 'IN_PROGRESS')
+        throw new ServiceError('ATTEMPT_CLOSED', 'This attempt cannot be changed.', 409);
+      if (questionIndex >= attempt.totalQuestions)
+        throw new ServiceError(
+          'INVALID_INPUT',
+          'Question location is out of range.',
+          400,
+        );
+      return tx.quizAttempt.update({
+        where: { id },
+        data: { lastQuestionIndex: questionIndex },
+        select: attemptSelect,
+      });
+    }),
+  abandon: (ownerId: string, id: string) =>
+    serializable(db, async (tx) => {
+      const attempt = await lockAttempt(tx, ownerId, id);
+      if (attempt.status === 'ABANDONED') return attempt;
+      if (attempt.status !== 'IN_PROGRESS')
+        throw new ServiceError(
+          'ATTEMPT_CLOSED',
+          'A completed attempt cannot be abandoned.',
+          409,
+        );
+      return tx.quizAttempt.update({
+        where: { id },
+        data: {
+          status: 'ABANDONED',
+          finishedAt: new Date(),
+          correctCount: null,
+          answeredCount: null,
+        },
+        select: attemptSelect,
+      });
+    }),
   finalize: (
     ownerId: string,
     id: string,
@@ -319,6 +426,7 @@ export const createQuizAttemptRepository = (db: PrismaClient) => ({
     }
   },
   load: async (ownerId: string, id: string) => {
+    await expireAttempts(db, ownerId, id);
     const attempt = await db.quizAttempt.findFirst({
       where: { id, version: { quiz: { project: { ownerId } } } },
       select: attemptSelect,

@@ -244,3 +244,5 @@ Every frontend task has its own commit and push to main, including implemented t
 - **P5-T11 completed 2026-11-27** Two-tab fixtures reject stale writes, preserve the newer choice across reload and permit explicit clearing. Draft rows remain ungraded and every exam response excludes keys, explanations and correctness.
 
 - **P5-T12 completed 2026-11-27** Real draft/finalization races record one committed score and timestamp. Repeat submission is stable, foreign submit is hidden and later writes cannot change results; player contracts allow grading only after completion.
+
+- **P5-T13 completed 2026-11-27** Database fixtures verify persistent location/order, owner-scoped unfinished lists, seven-day expiry and terminal abandon/write/submit rules. UI confirmation and resume links pass component tests.
