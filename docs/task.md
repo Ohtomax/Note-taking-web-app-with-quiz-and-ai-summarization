@@ -887,7 +887,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
   - **Accept when** Time trends and difficulty and question-type breakdowns use the version attempted, including after a quiz edit.
   - **Verify** Seed two projects and two quiz versions with different difficulty labels, then reconcile each group against fixture rows.
 
-- [ ] **P5-T22 · Aggregate quiz performance** (MVP)
+- [x] **P5-T22 · Aggregate quiz performance** (MVP)
   - **Work and purpose** Calculate total attempts by status, first, latest, highest and average completed score, score improvement, average completion duration and missed questions. Distinguish version-specific questions in comparisons.
   - **Files** `server/src/repositories/analytics.repository.ts`, `server/src/services/analytics.service.ts` · **Depends on** P5-T19, P5-T20
   - **Output** A quiz analytics API with version-aware comparisons.

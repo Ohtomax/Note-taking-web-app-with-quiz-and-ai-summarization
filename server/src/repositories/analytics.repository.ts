@@ -60,6 +60,122 @@ export function completedWhere(
   };
 }
 export const createAnalyticsRepository = (db: PrismaClient) => ({
+  quizDetails: async (
+    ownerId: string,
+    window: AnalyticsWindow,
+    quizId: string,
+    page: number,
+  ) => {
+    const resolved = await analyticsScope(db, ownerId, { kind: 'QUIZ', id: quizId });
+    const completed = {
+      ...completedWhere(resolved.version, window),
+      scoreRatio: { not: null },
+    };
+    const versionWhere = { quizId, attempts: { some: completed } };
+    const [versions, total, wrong] = await Promise.all([
+      db.quizVersion.findMany({
+        where: versionWhere,
+        select: { id: true, version: true, difficulty: true, generatedAt: true },
+        orderBy: { version: 'asc' },
+        skip: (page - 1) * 20,
+        take: 20,
+      }),
+      db.quizVersion.count({ where: versionWhere }),
+      db.quizAttemptAnswer.groupBy({
+        by: ['questionId', 'versionId'],
+        where: { isCorrect: false, attempt: completed },
+        _count: { _all: true },
+        orderBy: [{ _count: { questionId: 'desc' } }, { questionId: 'asc' }],
+        take: 10,
+      }),
+    ]);
+    const ids = versions.map((version) => version.id),
+      questionIds = wrong.map((row) => row.questionId),
+      wrongVersionIds = [...new Set(wrong.map((row) => row.versionId))];
+    const [versionStats, questions, answerSamples, assignedSamples] = await Promise.all([
+      db.quizAttempt.groupBy({
+        by: ['versionId'],
+        where: { ...completed, versionId: { in: ids } },
+        _count: { _all: true },
+        _avg: { scoreRatio: true, elapsedMs: true },
+        _max: { scoreRatio: true },
+      }),
+      db.quizQuestion.findMany({
+        where: {
+          id: { in: questionIds },
+          version: { quizId, quiz: { project: { ownerId } } },
+        },
+        select: {
+          id: true,
+          prompt: true,
+          type: true,
+          versionId: true,
+          version: { select: { version: true } },
+        },
+      }),
+      db.quizAttemptAnswer.groupBy({
+        by: ['questionId'],
+        where: {
+          questionId: { in: questionIds },
+          isCorrect: { not: null },
+          attempt: completed,
+        },
+        _count: { _all: true },
+      }),
+      db.quizAttempt.groupBy({
+        by: ['versionId'],
+        where: { ...completed, versionId: { in: wrongVersionIds } },
+        _count: { _all: true },
+      }),
+    ]);
+    return {
+      versions: {
+        data: versions.map((version) => {
+          const stats = versionStats.find((row) => row.versionId === version.id);
+          return {
+            versionId: version.id,
+            version: version.version,
+            difficulty: version.difficulty,
+            generatedAt: version.generatedAt,
+            attempts: stats?._count._all ?? 0,
+            meanScore:
+              stats?._avg.scoreRatio === null || stats?._avg.scoreRatio === undefined
+                ? null
+                : 100 * stats._avg.scoreRatio,
+            highestScore:
+              stats?._max.scoreRatio === null || stats?._max.scoreRatio === undefined
+                ? null
+                : 100 * stats._max.scoreRatio,
+            meanElapsedMs: stats?._avg.elapsedMs ?? null,
+          };
+        }),
+        total,
+        page,
+        pageSize: 20,
+      },
+      missed: wrong.map((row) => {
+        const question = questions.find((item) => item.id === row.questionId)!,
+          answered =
+            answerSamples.find((item) => item.questionId === row.questionId)?._count
+              ._all ?? 0,
+          assigned =
+            assignedSamples.find((item) => item.versionId === row.versionId)?._count
+              ._all ?? 0;
+        return {
+          questionId: row.questionId,
+          versionId: row.versionId,
+          version: question.version.version,
+          prompt: question.prompt,
+          type: question.type,
+          incorrect: row._count._all,
+          answered,
+          assigned,
+          skipped: Math.max(0, assigned - answered),
+          wrongRate: answered ? (100 * row._count._all) / answered : null,
+        };
+      }),
+    };
+  },
   breakdowns: async (ownerId: string, window: AnalyticsWindow, scope: AnalyticsScope) => {
     const resolved = await analyticsScope(db, ownerId, scope);
     const where = {

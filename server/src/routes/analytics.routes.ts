@@ -5,6 +5,9 @@ import { analyticsQuerySchema } from '@/utils/input-validators/analytics.js';
 import { validate } from '@/middlewares/validate.js';
 import { projectAnalytics } from '@/controllers/analytics.controller.js';
 import { projectParamsSchema } from '@/utils/input-validators/projects.js';
+import { quizAnalytics } from '@/controllers/analytics.controller.js';
+import { quizAnalyticsQuerySchema } from '@/utils/input-validators/analytics.js';
+import { quizParamsSchema } from '@/utils/input-validators/saved-quizzes.js';
 export function createAnalyticsRouter(
   services: PrivateServices,
   analytics: AnalyticsService,
@@ -24,6 +27,20 @@ export function createProjectAnalyticsRouter(
     validate('params', projectParamsSchema),
     validate('query', analyticsQuerySchema),
     projectAnalytics(analytics),
+  );
+  return router;
+}
+
+export function createQuizAnalyticsRouter(
+  services: PrivateServices,
+  analytics: AnalyticsService,
+) {
+  const router = createPrivateRouter(services);
+  router.get(
+    '/',
+    validate('params', quizParamsSchema),
+    validate('query', quizAnalyticsQuerySchema),
+    quizAnalytics(analytics),
   );
   return router;
 }

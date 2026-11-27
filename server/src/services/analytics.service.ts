@@ -5,6 +5,7 @@ import type {
 import type {
   AnalyticsQuery,
   AnalyticsWindow,
+  QuizAnalyticsQuery,
 } from '@/utils/input-validators/analytics.js';
 import { ServiceError } from '@/utils/error-handler/ServiceError.js';
 export function resolveAnalyticsWindow(
@@ -68,6 +69,16 @@ export const createAnalyticsService = (repository: AnalyticsRepository) => {
     return { ...data, trend: fillDailyTrend(data.trend, window) };
   };
   return {
+    quiz: async (ownerId: string, quizId: string, query: QuizAnalyticsQuery) => {
+      const window = resolveAnalyticsWindow(query),
+        scope = { kind: 'QUIZ' as const, id: quizId };
+      const [data, breakdowns, detail] = await Promise.all([
+        read(ownerId, query, scope),
+        repository.breakdowns(ownerId, window, scope),
+        repository.quizDetails(ownerId, window, quizId, query.versionPage),
+      ]);
+      return { ...data, breakdowns, ...detail };
+    },
     project: async (ownerId: string, projectId: string, query: AnalyticsQuery) => {
       const window = resolveAnalyticsWindow(query),
         scope = { kind: 'PROJECT' as const, id: projectId };

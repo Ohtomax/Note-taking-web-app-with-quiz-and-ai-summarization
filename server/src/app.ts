@@ -18,6 +18,7 @@ import { ServiceError } from '@/utils/error-handler/ServiceError.js';
 import {
   createAnalyticsRouter,
   createProjectAnalyticsRouter,
+  createQuizAnalyticsRouter,
 } from '@/routes/analytics.routes.js';
 import {
   createQuizStartRouter,
@@ -83,6 +84,11 @@ export function createApp(
       }),
   );
   if (services) {
+    if (services.analyticsService)
+      app.use(
+        '/api/v1/quizzes/:quizId/analytics',
+        createQuizAnalyticsRouter(services, services.analyticsService),
+      );
     if (services.analyticsService)
       app.use(
         '/api/v1/projects/:projectId/analytics',
