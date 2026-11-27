@@ -663,7 +663,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
   - **Accept when** Each key references an existing option and duplicate choices or impossible answer sets are rejected.
   - **Verify** Parse valid question fixtures and invalid fixtures with repeated options, missing keys and extra true/false choices.
 
-- [ ] **P4-T18 · Validate identification questions** (MVP)
+- [x] **P4-T18 · Validate identification questions** (MVP)
   - **Work and purpose** Represent accepted answer variants explicitly and apply the same approved text-normalization rules planned for scoring so generated items can be graded deterministically.
   - **Files** `server/src/ai/schemas/quiz-question.ts`, `server/src/services/answer-normalization.ts`, `server/tests/ai/identification.test.ts` · **Depends on** P4-T16
   - **Output** Identification question schema and normalization fixtures.

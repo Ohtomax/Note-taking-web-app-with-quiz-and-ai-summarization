@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { normalizeAnswer } from '@/services/answer-normalization.js';
 export const questionBase = {
   prompt: z.string().trim().min(1).max(2000),
   explanation: z.string().trim().min(1).max(4000).nullable(),
@@ -54,3 +55,28 @@ export const choiceQuestionSchema = z
       });
   });
 export type ChoiceQuestion = z.infer<typeof choiceQuestionSchema>;
+
+export const identificationQuestionSchema = z
+  .object({
+    ...questionBase,
+    type: z.literal('IDENTIFICATION'),
+    acceptedAnswers: z
+      .array(
+        z
+          .string()
+          .max(500)
+          .refine(
+            (value) => normalizeAnswer(value).length > 0,
+            'Accepted answer cannot be blank',
+          ),
+      )
+      .min(1)
+      .max(20)
+      .transform((answers) => [...new Set(answers.map(normalizeAnswer))]),
+  })
+  .strict();
+export const quizQuestionSchema = z.union([
+  choiceQuestionSchema,
+  identificationQuestionSchema,
+]);
+export type QuizQuestion = z.infer<typeof quizQuestionSchema>;
