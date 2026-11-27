@@ -236,11 +236,23 @@ export const createQuizAttemptRepository = (db: PrismaClient) => ({
             data: { isCorrect: outcome.answered ? outcome.isCorrect : null },
           });
       }
+      const finishedAt = new Date();
       return tx.quizAttempt.update({
         where: { id },
         data: {
           status: 'COMPLETED',
-          finishedAt: new Date(),
+          finishedAt,
+          scoreRatio: result.totalQuestions
+            ? result.correctCount / result.totalQuestions
+            : null,
+          elapsedMs: Math.max(0, finishedAt.getTime() - attempt.startedAt.getTime()),
+          completedDay: new Date(
+            Date.UTC(
+              finishedAt.getUTCFullYear(),
+              finishedAt.getUTCMonth(),
+              finishedAt.getUTCDate(),
+            ),
+          ),
           correctCount: result.correctCount,
           answeredCount: result.answeredCount,
         },

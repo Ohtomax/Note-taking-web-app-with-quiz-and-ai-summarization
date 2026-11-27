@@ -5,6 +5,9 @@ enum AttemptStatus {
 }
 
 model QuizAttempt {
+  scoreRatio Float?
+  elapsedMs Int?
+  completedDay DateTime? @db.Date
   lastQuestionIndex Int @default(0)
   inputHash      String              @default("") @db.VarChar(64)
   id             String              @id @default(uuid()) @db.Uuid
@@ -26,4 +29,5 @@ model QuizAttempt {
   @@unique([id, versionId])
   @@index([versionId, startedAt, id])
   @@index([status, startedAt])
+  @@index([status, completedDay, versionId])
 }

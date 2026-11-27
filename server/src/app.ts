@@ -15,6 +15,7 @@ import type { ProjectsService } from '@/services/projects.service.js';
 import type { NotesService } from '@/services/notes.service.js';
 import { createNotesRouter } from '@/routes/notes.routes.js';
 import { ServiceError } from '@/utils/error-handler/ServiceError.js';
+import { createAnalyticsRouter } from '@/routes/analytics.routes.js';
 import {
   createQuizStartRouter,
   createAttemptRouter,
@@ -33,6 +34,7 @@ import {
 } from '@/routes/summaries.routes.js';
 
 export interface AppServices {
+  analyticsService?: import('@/services/analytics.service.js').AnalyticsService;
   quizHistoryService?: import('@/services/quiz-history.service.js').QuizHistoryService;
   quizAttemptService?: import('@/services/quiz-attempt.service.js').QuizAttemptService;
   quizzesService?: import('@/services/quizzes.service.js').QuizzesService;
@@ -78,6 +80,11 @@ export function createApp(
       }),
   );
   if (services) {
+    if (services.analyticsService)
+      app.use(
+        '/api/v1/analytics',
+        createAnalyticsRouter(services, services.analyticsService),
+      );
     if (services.quizAttemptService)
       app.use(
         '/api/v1/attempts',

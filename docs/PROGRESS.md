@@ -258,3 +258,5 @@ Every frontend task has its own commit and push to main, including implemented t
 - **P5-T18 completed 2026-11-27** History UI shows incomplete status and review/resume actions. Database comparisons cover first/selected/latest across versions, best score and completed counts with owner isolation; filtered empty states pass.
 
 - **P5-T19 completed 2026-11-27** The 2/2 and 1/4 fixture verifies 62.5% equal-weight mean score, 60% answer accuracy and separate skipped/wrong counts. UTC windows, retention, completed samples and stable comparison rules are documented.
+
+- **P5-T20 completed 2026-11-27** Real API-scored fixtures reconcile 62.5% mean, 60% accuracy, workspace counts, statuses, UTC trends and duration without foreign rows or join multiplication. Completion stores raw ratio/day/time snapshots atomically.

@@ -873,7 +873,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
   - **Accept when** Mean attempt score gives each completed attempt equal weight, incorrect counts exclude skipped questions, and a zero denominator displays no value.
   - **Verify** Work through a 2/2 attempt and a 1/4 attempt with one skipped question. Expect a 62.5% mean score and 60% answer accuracy.
 
-- [ ] **P5-T20 · Aggregate global study activity** (MVP)
+- [x] **P5-T20 · Aggregate global study activity** (MVP)
   - **Work and purpose** Query owned project, note, generated summary and quiz counts, completed attempts, answered/correct/incorrect totals, average and highest score, accuracy, total completion time, recent activity and performance over time.
   - **Files** `server/src/repositories/analytics.repository.ts`, `server/src/services/analytics.service.ts`, `server/src/routes/analytics.routes.ts` · **Depends on** P5-T17, P5-T19
   - **Output** A global analytics API using database aggregates.
