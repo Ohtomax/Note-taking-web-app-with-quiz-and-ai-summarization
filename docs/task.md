@@ -551,7 +551,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
   - **Accept when** Invalid settings fail early with a redacted message and automated tests run without credentials or network access.
   - **Verify** Start with missing configuration, then invoke the test adapter and check logs for redaction.
 
-- [ ] **P4-T02 · Resolve a note or selection** (MVP)
+- [x] **P4-T02 · Resolve a note or selection** (MVP)
   - **Work and purpose** Define a source request for a whole note or a range in a specific revision. Derive the excerpt from the owned server copy so generation uses exactly the intended material.
   - **Files** `server/src/utils/input-validators/ai-sources.ts`, `server/src/services/ai-sources.service.ts`, `server/src/repositories/notes.repository.ts` · **Depends on** None
   - **Output** Resolver for single-note and selected-text generation.
