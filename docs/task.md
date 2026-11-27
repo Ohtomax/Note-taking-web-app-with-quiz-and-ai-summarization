@@ -489,7 +489,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
   - **Accept when** Mutations refresh affected queries and cancellation leaves the targeted project intact.
   - **Verify** Create a folder, rename it, search, archive, restore and cancel a deletion after reviewing the impact.
 
-- [ ] **P3-T20 · Build the project detail view** (MVP)
+- [x] **P3-T20 · Build the project detail view** (MVP)
   - **Work and purpose** Connect an owned project to its paginated note list and expose note actions, sort, search and archive controls in context.
   - **Files** `client/src/features/projects`, `client/src/features/notes`, `client/src/api/notes.ts` · **Depends on** P3-T03, P3-T10, P3-T11, P3-T12, P3-T13, P3-T14, P3-T15, P3-T19
   - **Output** Project workspace with note actions.

@@ -6,6 +6,7 @@ import { WorkspaceLayout } from '@/features/dashboard/WorkspaceLayout';
 
 const ProjectLibrary = lazy(() => import('@/features/projects/ProjectLibrary'));
 const AuthPage = lazy(() => import('@/features/auth/AuthPage'));
+const ProjectDetail = lazy(() => import('@/features/projects/ProjectDetail'));
 
 export function App() {
   const { user, loading } = useSession();
@@ -26,6 +27,7 @@ export function App() {
           <Route element={<ProtectedRoute />}>
             <Route element={<WorkspaceLayout />}>
               <Route path="/" element={<ProjectLibrary />} />
+              <Route path="/projects/:projectId" element={<ProjectDetail />} />
               <Route
                 path="/projects/new"
                 element={<Navigate to="/?create=true" replace />}

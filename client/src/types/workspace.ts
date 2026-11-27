@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { noteContentSchema } from './note-content';
 
 export const projectSchema = z.object({
   id: z.string().uuid(),
@@ -46,3 +47,33 @@ export const deletionPreviewSchema = z.object({
   }),
 });
 export type DeletionPreview = z.infer<typeof deletionPreviewSchema>['data'];
+
+export const noteItemSchema = z.object({
+  id: z.string().uuid(),
+  projectId: z.string().uuid(),
+  title: z.string(),
+  revision: z.number().int().positive(),
+  pinned: z.boolean(),
+  archivedAt: z.string().datetime().nullable(),
+  createdAt: z.string().datetime(),
+  updatedAt: z.string().datetime(),
+});
+export type NoteItem = z.infer<typeof noteItemSchema>;
+export const noteSchema = noteItemSchema.extend({
+  content: noteContentSchema,
+  contentSchemaVersion: z.number().int(),
+});
+export type Note = z.infer<typeof noteSchema>;
+export const noteResponseSchema = z.object({ data: noteSchema });
+export const notePageSchema = z.object({
+  data: z.array(noteItemSchema),
+  page: z.number().int(),
+  pageSize: z.number().int(),
+  total: z.number().int(),
+});
+export interface Page<T> {
+  data: T[];
+  page: number;
+  pageSize: number;
+  total: number;
+}

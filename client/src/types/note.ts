@@ -1,15 +1,5 @@
-export interface RichNode {
-  type: string;
-  text?: string;
-  attrs?: Record<string, string | number | boolean | null>;
-  marks?: { type: string }[];
-  content?: RichNode[];
-}
-
-export interface RichDocument extends RichNode {
-  type: 'doc';
-  content: RichNode[];
-}
+import type { RichDocument } from './note-content';
+export type { RichDocument, RichNode } from './note-content';
 
 export interface NoteDraft {
   title: string;
