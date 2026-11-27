@@ -713,6 +713,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
   - **Verify** Run the suite against fresh fixtures and reconcile provider requests, usage rows, revisions and saved artifact ownership.
 
 - [ ] **P4-T25 · Evaluate background execution for long folders** (Optional)
+  - **Status 2026-11-27** Local maximum-folder and disconnected-request evaluation passed (353 ms, 14 mock calls). Live provider/hosting timing is deferred per owner instructions; see AI_INTEGRATION.md. Keep unchecked until that target-path acceptance is verified.
   - **Work and purpose** Measure the largest supported folder on the target request path and adopt persistent generation status and background execution only if measurements exceed the approved synchronous deadline.
   - **Files** `server/src/services/ai-generation.service.ts`, `server/tests/ai/long-generation.test.ts`, `docs/AI_INTEGRATION.md` · **Depends on** P4-T06, P4-T07, P4-T10, P4-T24
   - **Output** Documented duration decision and, if justified, recoverable job status.

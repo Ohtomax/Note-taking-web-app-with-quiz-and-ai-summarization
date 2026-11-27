@@ -218,3 +218,5 @@ Every frontend task has its own commit and push to main, including implemented t
 - **P4-T23 completed 2026-11-27** Library HTTP tests verify pagination/history, rename, independent duplicate IDs, every foreign management rejection and retained attempt/version records after confirmed soft deletion.
 
 - **P4-T24 completed 2026-11-27** 100 regression tests pass: 36 backend unit, 46 database and 18 frontend. Both builds and strict checks pass. Full ownership matrices, quota races, expired leases, 50-question and 200-note boundaries are covered; live setup and dependency advisories are documented.
+
+- **P4-T25 deferred 2026-11-27** Maximum local HTTP fixture passes in 353 ms with 14 mock calls; disconnection reuses the original result with no duplicate charge. Live provider/hosting timing remains deferred; bounded synchronous execution retained provisionally.
