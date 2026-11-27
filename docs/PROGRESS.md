@@ -310,3 +310,5 @@ Phase 5 implementation status: 26 of 27 MVP task checkboxes are complete. P5-T26
 - **P6-T15 deferred/partial 2026-11-28** Skipped under the owner rule. No Firebase, hosted database/CA, Redis, AI-provider secret, origin or production-account configuration was collected or changed.
 
 - **P6-T16 deferred/partial 2026-11-28** Staging/operational verification is deferred with deployment. Existing local health/log-redaction tests pass; production dependency interruption, bounded readiness/latency acceptance and an external alert path remain unverified.
+
+- **P6-T17 deferred/partial 2026-11-28** Local custom dump (209 ms) and restore (627 ms) reconcile 2 users, 3 projects, source links, 3 quiz versions and 5 attempts. Restored UID ownership and known 100%/62.5%/60% results pass with zero AI calls. RECOVERY.md distinguishes proposed policy and deferred live Firebase recovery; task stays open for owner-dependent acceptance.

@@ -1081,6 +1081,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
   - **Verify** Interrupt a staging dependency, observe status codes and the alert path, restore it, and inspect the logs for seeded sensitive values.
 
 - [ ] **P6-T17 · Restore a backup into a disposable environment** (MVP)
+  - **Status 2026-11-28** Local dump/restore and mapped synthetic identity checks pass with reconciled source links and historical scores. Live Firebase recovery/access and an approved operational retention/RPO/RTO policy remain owner-dependent and deferred. See RECOVERY.md.
   - **Work and purpose** Define retention, recovery targets, and responsibilities for PostgreSQL and Firebase identities. Restore a representative backup and check that each fixture owner can still access the correct records.
   - **Files** `docs/DEPLOYMENT.md`, `docs/DATABASE.md` · **Depends on** P6-T01
   - **Output** A recovery runbook and a timed restore record.

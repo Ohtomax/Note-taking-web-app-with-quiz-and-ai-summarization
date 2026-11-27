@@ -1,0 +1,24 @@
+{
+  "date": "2026-11-28",
+  "scope": "Disposable local PostgreSQL backup/restore with injected mapped test identities",
+  "dumpMs": 209,
+  "restoreMs": 627,
+  "sha256": "bda1240bac04900e434d706bb63a985086404a48bab7c86c85f4fffe4266334c",
+  "counts": {
+    "users": 2,
+    "projects": 3,
+    "notes": 2,
+    "summaries": 1,
+    "quizzes": 2,
+    "versions": 3,
+    "attempts": 5
+  },
+  "checks": [
+    "all rows and source/question/answer/type snapshots equal",
+    "both restored UID ownership chains enforced",
+    "known historical score 100%",
+    "global mean 62.5% and accuracy 60%",
+    "zero AI calls"
+  ],
+  "liveFirebaseRecovery": false
+}
