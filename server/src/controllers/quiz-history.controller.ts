@@ -13,3 +13,15 @@ export const listQuizHistory =
       next(error);
     }
   };
+
+export const compareQuizAttempts =
+  (service: QuizHistoryService) =>
+  async (req: AuthRequest, res: Response, next: NextFunction) => {
+    try {
+      res.json({
+        data: await service.comparison(req.account!.id, req.params.attemptId!),
+      });
+    } catch (error) {
+      next(error);
+    }
+  };

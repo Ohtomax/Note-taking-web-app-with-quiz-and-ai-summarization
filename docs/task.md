@@ -859,7 +859,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
   - **Accept when** Equal timestamps paginate consistently, and another user’s attempt cannot appear in a list or detail response.
   - **Verify** Seed overlapping dates for two users and two projects. Fetch consecutive pages and compare IDs.
 
-- [ ] **P5-T18 · Compare and revisit attempts** (MVP)
+- [x] **P5-T18 · Compare and revisit attempts** (MVP)
   - **Work and purpose** Build global and project history pages with detail, resume and retake actions. Compare the first, selected and latest completed scores and show the best score and attempt count.
   - **Files** `client/src/features/quiz-history/QuizHistory.tsx`, `client/src/features/quiz-history/AttemptComparison.tsx` · **Depends on** P5-T15, P5-T16, P5-T17
   - **Output** A history view with side-by-side comparisons.

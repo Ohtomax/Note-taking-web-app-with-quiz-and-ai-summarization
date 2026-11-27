@@ -30,6 +30,76 @@ export const historySelect = {
   },
 } as const;
 export const createQuizHistoryRepository = (db: PrismaClient) => ({
+  comparison: (ownerId: string, attemptId: string) =>
+    db.$transaction(async (tx) => {
+      const selected = await tx.quizAttempt.findFirst({
+        where: { id: attemptId, version: { quiz: { project: { ownerId } } } },
+        select: historySelect,
+      });
+      if (!selected)
+        throw new ServiceError('RESOURCE_NOT_FOUND', 'Resource not found', 404);
+      const where = {
+        version: { quizId: selected.version.quiz.id, quiz: { project: { ownerId } } },
+        status: 'COMPLETED' as const,
+        correctCount: { not: null },
+        finishedAt: { not: null },
+        totalQuestions: { gt: 0 },
+      };
+      const [first, latest, groups] = await Promise.all([
+        tx.quizAttempt.findFirst({
+          where,
+          select: historySelect,
+          orderBy: [{ finishedAt: 'asc' }, { id: 'asc' }],
+        }),
+        tx.quizAttempt.findFirst({
+          where,
+          select: historySelect,
+          orderBy: [{ finishedAt: 'desc' }, { id: 'desc' }],
+        }),
+        tx.quizAttempt.groupBy({
+          by: ['correctCount', 'totalQuestions'],
+          where,
+          _count: { _all: true },
+        }),
+      ]);
+      const project = (row: typeof selected | null) =>
+        row
+          ? {
+              id: row.id,
+              versionId: row.versionId,
+              version: row.version.version,
+              status: row.status,
+              mode: row.mode,
+              startedAt: row.startedAt,
+              finishedAt: row.finishedAt,
+              percentage:
+                row.status === 'COMPLETED' &&
+                row.correctCount !== null &&
+                row.totalQuestions
+                  ? (100 * row.correctCount) / row.totalQuestions
+                  : null,
+              elapsedMs:
+                row.status === 'COMPLETED' && row.finishedAt
+                  ? Math.max(0, row.finishedAt.getTime() - row.startedAt.getTime())
+                  : null,
+            }
+          : null;
+      return {
+        quizId: selected.version.quiz.id,
+        quizTitle: selected.version.quiz.title,
+        attemptCount: groups.reduce((sum, group) => sum + group._count._all, 0),
+        bestScore: groups.length
+          ? Math.max(
+              ...groups.map(
+                (group) => (100 * group.correctCount!) / group.totalQuestions,
+              ),
+            )
+          : null,
+        first: project(first),
+        selected: project(selected),
+        latest: project(latest),
+      };
+    }),
   list: async (ownerId: string, query: QuizHistoryQuery) => {
     await expireAttempts(db, ownerId);
     if (

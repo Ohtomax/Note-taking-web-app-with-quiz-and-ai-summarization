@@ -76,7 +76,11 @@ export const apiRequest = async <T>(
   }
 };
 
-export const queryString = (values: Record<string, string | number | boolean>): string =>
+export const queryString = (
+  values: Record<string, string | number | boolean | undefined>,
+): string =>
   new URLSearchParams(
-    Object.entries(values).map(([key, value]) => [key, String(value)]),
+    Object.entries(values)
+      .filter(([, value]) => value !== undefined)
+      .map(([key, value]) => [key, String(value)]),
   ).toString();

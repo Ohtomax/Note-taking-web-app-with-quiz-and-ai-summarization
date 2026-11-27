@@ -36,6 +36,9 @@ export default function QuizResults() {
           >
             Back to quiz
           </Link>
+          <Link className="ml-4 text-sm text-teal-800 underline" to="/history">
+            Study history
+          </Link>
           <h1
             ref={heading}
             tabIndex={-1}

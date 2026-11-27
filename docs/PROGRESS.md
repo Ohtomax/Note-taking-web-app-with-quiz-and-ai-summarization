@@ -254,3 +254,5 @@ Every frontend task has its own commit and push to main, including implemented t
 - **P5-T16 completed 2026-11-27** Retakes survive author edits, create independent answers and stable shuffled order, deduplicate retries and make zero provider calls. UI uses the reviewed version and separates regeneration as metered source work.
 
 - **P5-T17 completed 2026-11-27** Two-user/two-project fixtures verify deterministic pages under equal timestamps, project filtering, version/status/difficulty metadata, null incomplete scores and hidden foreign list/detail resources.
+
+- **P5-T18 completed 2026-11-27** History UI shows incomplete status and review/resume actions. Database comparisons cover first/selected/latest across versions, best score and completed counts with owner isolation; filtered empty states pass.

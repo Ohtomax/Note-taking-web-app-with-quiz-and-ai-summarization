@@ -14,6 +14,7 @@ const QuizEditorPage = lazy(() => import('@/features/quizzes/QuizEditor'));
 const QuizLibrary = lazy(() => import('@/features/quizzes/QuizLibrary'));
 const QuizPlayer = lazy(() => import('@/features/quizzes/QuizPlayer'));
 const QuizResults = lazy(() => import('@/features/quizzes/QuizResults'));
+const QuizHistory = lazy(() => import('@/features/quiz-history/QuizHistory'));
 const QuizDetail = lazy(() =>
   import('@/features/quizzes/QuizLibrary').then((module) => ({
     default: module.QuizDetail,
@@ -50,6 +51,8 @@ export function App() {
               <Route path="/quizzes/:quizId" element={<QuizDetail />} />
               <Route path="/attempts/:attemptId" element={<QuizPlayer />} />
               <Route path="/attempts/:attemptId/results" element={<QuizResults />} />
+              <Route path="/history" element={<QuizHistory />} />
+              <Route path="/projects/:projectId/history" element={<QuizHistory />} />
               <Route path="/summaries/:summaryId" element={<SummaryDetail />} />
               <Route
                 path="/quizzes/:quizId/versions/:versionId/edit"

@@ -96,6 +96,12 @@ function ProjectWorkspace({ projectId }: { projectId: string }) {
           <nav aria-label="Project study materials" className="my-4 flex gap-4">
             <Link
               className="text-teal-800 underline"
+              to={'/projects/' + projectId + '/history'}
+            >
+              Study history
+            </Link>
+            <Link
+              className="text-teal-800 underline"
               to={'/projects/' + projectId + '/summaries'}
             >
               Saved summaries
