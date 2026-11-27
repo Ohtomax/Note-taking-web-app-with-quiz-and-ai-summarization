@@ -6,7 +6,14 @@ import { quizResultSchema, type QuizDraft } from '@/types/quiz';
 import type { Generation } from '@/types/study';
 import { quizzesApi } from '@/api/quizzes';
 import { useSession } from '@/store/session';
-export function GeneratedQuizEditor({ generation }: { generation: Generation }) {
+import type { QuizRegenerationTarget } from '@/types/quiz-library';
+export function GeneratedQuizEditor({
+  generation,
+  target,
+}: {
+  generation: Generation;
+  target?: QuizRegenerationTarget | undefined;
+}) {
   const uid = useSession((state) => state.user!.uid),
     cache = useQueryClient();
   const parsedSettings = quizSettingsSchema.safeParse(generation.result?.settings);
@@ -18,12 +25,20 @@ export function GeneratedQuizEditor({ generation }: { generation: Generation }) 
     : null;
   const save = useMutation({
     mutationFn: (input: { settings: QuizSettings; content: QuizDraft }) =>
-      quizzesApi.saveGenerated(
-        generation.result!.projectId,
-        generation.id,
-        input.settings,
-        input.content,
-      ),
+      target
+        ? quizzesApi.acceptGeneration(
+            target.quizId,
+            target.expectedVersion,
+            generation.id,
+            input.settings,
+            input.content,
+          )
+        : quizzesApi.saveGenerated(
+            generation.result!.projectId,
+            generation.id,
+            input.settings,
+            input.content,
+          ),
     onSuccess: () => {
       void cache.invalidateQueries({ queryKey: [uid, 'quizzes'] });
       void cache.invalidateQueries({ queryKey: [uid, 'dashboard'] });

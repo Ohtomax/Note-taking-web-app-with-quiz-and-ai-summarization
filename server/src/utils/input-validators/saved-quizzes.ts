@@ -19,8 +19,14 @@ export const publishQuizSchema = z.union([
     .object({
       expectedVersion: z.number().int().positive(),
       generationId: z.string().uuid(),
+      settings: quizSettingsSchema.optional(),
+      content: quizDraftSchema.optional(),
     })
-    .strict(),
+    .strict()
+    .refine(
+      (input) => Boolean(input.settings) === Boolean(input.content),
+      'Edited settings and content must be supplied together',
+    ),
 ]);
 export type PublishQuizInput = z.infer<typeof publishQuizSchema>;
 

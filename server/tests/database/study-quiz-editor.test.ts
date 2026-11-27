@@ -60,5 +60,41 @@ test('P5-T05 saves edited quiz previews while keeping generated drafts and earli
     );
     assert.deepEqual(await db.note.findUniqueOrThrow({ where: { id: note.id } }), note);
     assert.equal(client.calls.length, 1);
+    const regenerated = await api
+      .post('/api/v1/quizzes/' + first.quizId + '/regenerate')
+      .set('Authorization', 'Bearer alice')
+      .set('Idempotency-Key', randomUUID())
+      .send({ operation: 'QUIZ', source: { scope: 'PROJECT' }, settings });
+    const accept = {
+      expectedVersion: 2,
+      generationId: regenerated.body.data.id,
+      settings,
+      content: {
+        ...draft,
+        questions: [{ ...draft.questions[0], correctOptionIds: ['b'] }],
+      },
+    };
+    const third = await api
+      .post('/api/v1/quizzes/' + first.quizId + '/versions')
+      .set('Authorization', 'Bearer alice')
+      .send(accept);
+    assert.equal(third.status, 201);
+    assert.equal(third.body.data.version, 3);
+    assert.equal(
+      third.body.data.questions[0].options.find(
+        (option: { isCorrect: boolean }) => option.isCorrect,
+      ).text,
+      'UDP',
+    );
+    assert.equal(
+      (
+        await api
+          .post('/api/v1/quizzes/' + first.quizId + '/versions')
+          .set('Authorization', 'Bearer alice')
+          .send(accept)
+      ).body.data.id,
+      third.body.data.id,
+    );
+    assert.equal(client.calls.length, 2);
   }, client);
 });

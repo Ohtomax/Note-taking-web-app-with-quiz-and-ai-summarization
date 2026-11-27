@@ -365,15 +365,14 @@ export const createQuizzesRepository = (db: PrismaClient) => ({
           'Reload the latest quiz version before publishing.',
           409,
         );
-      const settings =
-        'settings' in input ? input.settings : quizSettingsSchema.parse(stored!.settings);
+      const settings = input.settings ?? quizSettingsSchema.parse(stored!.settings);
       const sources = stored
         ? stored.manifest.sources
         : latest.sources.map((source) => ({ ...source, noteId: source.noteId ?? '' }));
       const content = quizResultSchema(
         settings,
         sources.map((source) => source.sourceKey),
-      ).parse('content' in input ? input.content : stored!.output);
+      ).parse(input.content ?? stored!.output);
       const available = await tx.note.findMany({
         where: {
           id: { in: sources.map((source) => source.noteId).filter(Boolean) },

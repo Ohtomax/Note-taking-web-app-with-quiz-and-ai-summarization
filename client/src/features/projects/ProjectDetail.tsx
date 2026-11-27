@@ -100,6 +100,12 @@ function ProjectWorkspace({ projectId }: { projectId: string }) {
             >
               Saved summaries
             </Link>
+            <Link
+              className="text-teal-800 underline"
+              to={'/projects/' + projectId + '/quizzes'}
+            >
+              Saved quizzes
+            </Link>
           </nav>
           <div className="my-5 flex flex-wrap items-center justify-between gap-4">
             <div>

@@ -81,3 +81,49 @@ export function authoringDraft(
     },
   };
 }
+
+export const versionHeaderSchema = z.object({
+  id: z.string().uuid(),
+  version: z.number().int(),
+  difficulty: z.enum(['EASY', 'MEDIUM', 'HARD']),
+  generatedAt: z.string().datetime(),
+  _count: z.object({ questions: z.number().int() }),
+});
+export const quizPageSchema = z.object({
+  data: z.array(quizMetaSchema.extend({ versions: z.array(versionHeaderSchema) })),
+  total: z.number().int(),
+  page: z.number().int(),
+  pageSize: z.number().int(),
+});
+export const versionPageSchema = z.object({
+  data: z.array(
+    versionHeaderSchema.extend({
+      quizId: z.string().uuid(),
+      defaultMode: z.enum(['PRACTICE', 'EXAM']),
+      includeExplanations: z.boolean(),
+    }),
+  ),
+  total: z.number().int(),
+  page: z.number().int(),
+  pageSize: z.number().int(),
+});
+export const duplicateQuizResponseSchema = z.object({
+  data: z.object({
+    id: z.string().uuid(),
+    projectId: z.string().uuid(),
+    title: z.string(),
+    versions: z.array(quizVersionSchema),
+  }),
+});
+export const renameQuizResponseSchema = z.object({
+  data: z.object({
+    id: z.string().uuid(),
+    projectId: z.string().uuid(),
+    title: z.string(),
+    updatedAt: z.string().datetime(),
+  }),
+});
+export interface QuizRegenerationTarget {
+  quizId: string;
+  expectedVersion: number;
+}

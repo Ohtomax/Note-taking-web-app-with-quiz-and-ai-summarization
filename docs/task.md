@@ -775,7 +775,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
   - **Accept when** A saved edit produces the expected successor version and an invalid key identifies the question to fix.
   - **Verify** Change a correct option, reopen the old version through a fixture attempt and compare the two versions.
 
-- [ ] **P5-T06 · Manage saved quizzes** (MVP)
+- [x] **P5-T06 · Manage saved quizzes** (MVP)
   - **Work and purpose** List project quizzes and connect rename, duplicate, delete with confirmation, and regenerate from the same sources. Present regeneration as a new AI request with its source selection visible.
   - **Files** `client/src/features/quizzes/QuizLibrary.tsx` · **Depends on** P5-T05
   - **Output** A quiz library with management actions.

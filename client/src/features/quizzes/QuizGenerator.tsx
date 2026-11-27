@@ -7,24 +7,31 @@ import {
 } from '@/types/quiz-settings';
 import { GeneratedQuizEditor } from './GeneratedQuizEditor';
 import type { SourceChoice } from '@/types/study-sources';
+import type { QuizRegenerationTarget } from '@/types/quiz-library';
 
 export function QuizGenerator({
   projectId,
   choice,
+  initialSettings,
+  target,
 }: {
   projectId: string;
   choice: SourceChoice | null;
+  initialSettings?: QuizSettings | undefined;
+  target?: QuizRegenerationTarget | undefined;
 }) {
-  const [settings, setSettings] = useState<QuizSettings>({
-    title: '',
-    questionCount: 10,
-    difficulty: 'EASY',
-    questionTypes: ['MULTIPLE_CHOICE'],
-    defaultMode: 'PRACTICE',
-    includeExplanations: true,
-  });
+  const [settings, setSettings] = useState<QuizSettings>(
+    initialSettings ?? {
+      title: '',
+      questionCount: 10,
+      difficulty: 'EASY',
+      questionTypes: ['MULTIPLE_CHOICE'],
+      defaultMode: 'PRACTICE',
+      includeExplanations: true,
+    },
+  );
   const [validation, setValidation] = useState('');
-  const generation = useGeneration(projectId);
+  const generation = useGeneration(projectId, target?.quizId);
   const ready = choice?.projectId === projectId;
   const submit = (fresh = false) => {
     const parsed = quizSettingsSchema.safeParse(settings);
@@ -188,7 +195,11 @@ export function QuizGenerator({
           </button>
         )}
       {generation.data?.status === 'SUCCEEDED' && (
-        <GeneratedQuizEditor key={generation.data.id} generation={generation.data} />
+        <GeneratedQuizEditor
+          key={generation.data.id}
+          generation={generation.data}
+          target={target}
+        />
       )}
     </section>
   );

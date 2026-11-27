@@ -2,14 +2,16 @@ import { useRef, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { studyApi, type GenerateInput } from '@/api/study';
 import { useSession } from '@/store/session';
-export function useGeneration(projectId: string) {
+export function useGeneration(projectId: string, regenerateQuizId?: string) {
   const uid = useSession((state) => state.user!.uid),
     cache = useQueryClient();
   const attempt = useRef<{ signature: string; key: string } | null>(null);
   const [id, setId] = useState<string | null>(null);
   const mutation = useMutation({
     mutationFn: (input: { key: string; request: GenerateInput }) =>
-      studyApi.generate(projectId, input.key, input.request),
+      regenerateQuizId
+        ? studyApi.regenerateQuiz(regenerateQuizId, input.key, input.request)
+        : studyApi.generate(projectId, input.key, input.request),
     onSuccess: (response) => {
       if (useSession.getState().user?.uid === uid) {
         cache.setQueryData([uid, 'generation', response.data.id], response);
