@@ -15,16 +15,14 @@ export const generateQuiz =
           'A valid Idempotency-Key header is required.',
           400,
         );
-      res
-        .status(201)
-        .json({
-          data: await service.generate(
-            req.account!.id,
-            req.params.projectId!,
-            key.data,
-            req.body as QuizGenerationInput,
-          ),
-        });
+      res.status(201).json({
+        data: await service.generate(
+          req.account!.id,
+          req.params.projectId!,
+          key.data,
+          req.body as QuizGenerationInput,
+        ),
+      });
     } catch (error) {
       next(error);
     }

@@ -1,6 +1,6 @@
 import type { AIGenerationService } from './ai-generation.service.js';
 import type { QuizGenerationInput } from '@/utils/input-validators/quizzes.js';
-import { quizSourcesSchema } from '@/ai/schemas/quiz.js';
+import { quizResultSchema } from '@/ai/schemas/quiz.js';
 import { generationView } from './summary-generation.service.js';
 export const createQuizGenerationService = (generation: AIGenerationService) => ({
   generate: async (
@@ -18,7 +18,10 @@ export const createQuizGenerationService = (generation: AIGenerationService) => 
         input.source,
         input.settings,
         (manifest) =>
-          quizSourcesSchema(manifest.sources.map((source) => source.sourceKey)),
+          quizResultSchema(
+            input.settings,
+            manifest.sources.map((source) => source.sourceKey),
+          ),
       ),
     ),
 });

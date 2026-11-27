@@ -132,8 +132,11 @@ export function createMockAIClient(
     generate: async (request) => {
       request.signal.throwIfAborted();
       calls.push(request);
+      const result = request.schema.safeParse(respond(request, calls.length));
+      if (!result.success)
+        throw new AIProviderError('INVALID', 0, { inputTokens: 100, outputTokens: 40 });
       return {
-        object: request.schema.parse(respond(request, calls.length)),
+        object: result.data,
         usage: { inputTokens: 100, outputTokens: 40 },
       };
     },

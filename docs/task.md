@@ -677,7 +677,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
   - **Accept when** Each requested source scope reaches the provider only after ownership checks, and a large folder has explicit coverage.
   - **Verify** Generate one mock quiz per scope and verify that an unauthorized or stale selection makes zero calls.
 
-- [ ] **P4-T20 · Check quiz quality before persistence** (MVP)
+- [x] **P4-T20 · Check quiz quality before persistence** (MVP)
   - **Work and purpose** Validate the complete draft for requested count and types, non-repetitive questions, correct answer references, explanation settings and citations, rejecting invalid output before saving.
   - **Files** `server/src/ai/schemas/quiz.ts`, `server/src/services/quiz-generation.service.ts`, `server/tests/ai/quiz-quality.test.ts` · **Depends on** P4-T17, P4-T18, P4-T19
   - **Output** Whole-quiz validation with clean generation errors.
