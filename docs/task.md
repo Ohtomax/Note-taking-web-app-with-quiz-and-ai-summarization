@@ -1065,6 +1065,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
   - **Verify** Start, stop, and restart the stack with the same configuration and repeat one protected API read.
 
 - [ ] **P6-T15 · Configure production identities, secrets, and origins** (MVP)
+  - **Status 2026-11-28** Skipped under the owner rule. No Firebase, hosted database/CA, Redis, AI-provider secret, origin or production-account configuration was collected or changed.
   - **Work and purpose** Separate public Vite settings from private backend credentials. Configure Firebase sign-in and password-reset domains, the approved frontend origin, Supabase TLS, the Redis connection, AI credentials, and quota settings.
   - **Files** `client/.env.example`, `server/.env.example`, `docs/DEPLOYMENT.md` · **Depends on** P6-T13
   - **Output** A production configuration inventory and provider-side settings with secret values held in their designated services.
