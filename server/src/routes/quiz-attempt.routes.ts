@@ -24,11 +24,15 @@ import {
 } from '@/utils/input-validators/quiz-attempt.validator.js';
 import { confirmDeleteSchema } from '@/utils/input-validators/saved-artifacts.js';
 import { quizAttemptResults } from '@/controllers/quiz-attempt.controller.js';
+import { attachQuizHistoryRoutes } from './quiz-history.routes.js';
+import type { QuizHistoryService } from '@/services/quiz-history.service.js';
 export function createAttemptRouter(
   services: PrivateServices,
   attempts: QuizAttemptService,
+  history?: QuizHistoryService,
 ) {
   const router = createPrivateRouter(services);
+  if (history) attachQuizHistoryRoutes(router, history);
   router.get(
     '/:attemptId/results',
     validate('params', attemptParamsSchema),

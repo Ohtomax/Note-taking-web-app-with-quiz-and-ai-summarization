@@ -17,6 +17,8 @@ import { quotaPolicy } from '@/repositories/ai-admission.repository.js';
 import type { Pricing } from '@/repositories/ai-usage.repository.js';
 import { createQuizAttemptRepository } from '@/repositories/quiz-attempt.repository.js';
 import { createQuizAttemptService } from '@/services/quiz-attempt.service.js';
+import { createQuizHistoryRepository } from '@/repositories/quiz-history.repository.js';
+import { createQuizHistoryService } from '@/services/quiz-history.service.js';
 export interface StudyServiceOptions {
   quota?: typeof quotaPolicy;
   pricing?: Pricing;
@@ -39,6 +41,7 @@ export function createStudyServices(
     usage: aiUsageService,
   });
   return {
+    quizHistoryService: createQuizHistoryService(createQuizHistoryRepository(db)),
     quizAttemptService: createQuizAttemptService(createQuizAttemptRepository(db)),
     quizzesService: createQuizzesService(
       createQuizzesRepository(db),

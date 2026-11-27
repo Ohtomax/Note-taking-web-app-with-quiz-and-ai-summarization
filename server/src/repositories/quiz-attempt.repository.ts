@@ -71,7 +71,7 @@ export const attemptSelect = {
 } as const;
 export type AttemptRow = Prisma.QuizAttemptGetPayload<{ select: typeof attemptSelect }>;
 export const ATTEMPT_TTL_MS = 7 * 86400000;
-async function expireAttempts(db: PrismaClient, ownerId: string, id?: string) {
+export async function expireAttempts(db: PrismaClient, ownerId: string, id?: string) {
   return db.quizAttempt.updateMany({
     where: {
       ...(id ? { id } : {}),

@@ -852,7 +852,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
   - **Accept when** The new attempt has its own ID and answers, the order survives reload, and the AI provider receives zero calls.
   - **Verify** Retake after an author edit, verify the version and persisted order, then compare the old and new attempt rows.
 
-- [ ] **P5-T17 · Query quiz history** (MVP)
+- [x] **P5-T17 · Query quiz history** (MVP)
   - **Work and purpose** Add an owner-scoped paginated history API with project filters and deterministic ordering. Include quiz version, attempt date, status, mode, difficulty, counts, score and duration when available.
   - **Files** `server/src/repositories/quiz-history.repository.ts`, `server/src/services/quiz-history.service.ts`, `server/src/routes/quiz-history.routes.ts` · **Depends on** P5-T12, P5-T13
   - **Output** A history API with project-filtered pages and authorized attempt detail.

@@ -33,6 +33,7 @@ import {
 } from '@/routes/summaries.routes.js';
 
 export interface AppServices {
+  quizHistoryService?: import('@/services/quiz-history.service.js').QuizHistoryService;
   quizAttemptService?: import('@/services/quiz-attempt.service.js').QuizAttemptService;
   quizzesService?: import('@/services/quizzes.service.js').QuizzesService;
   quizGenerationService?: import('@/services/quiz-generation.service.js').QuizGenerationService;
@@ -80,7 +81,11 @@ export function createApp(
     if (services.quizAttemptService)
       app.use(
         '/api/v1/attempts',
-        createAttemptRouter(services, services.quizAttemptService),
+        createAttemptRouter(
+          services,
+          services.quizAttemptService,
+          services.quizHistoryService,
+        ),
       );
     if (services.quizAttemptService)
       app.use(
