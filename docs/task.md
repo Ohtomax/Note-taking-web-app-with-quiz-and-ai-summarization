@@ -916,6 +916,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
   - **Verify** Mock an exhausted quota, change accounts, then reopen a saved quiz and inspect the usage counters.
 
 - [ ] **P5-T26 · Verify navigation, themes and accessibility** (MVP)
+  - **Status 2026-11-28** Theme, focus, responsive layout rules and automated keyboard checks are implemented and pushed. Manual phone/tablet/desktop and screen-reader acceptance remains open because Computer Use is unavailable in this session.
   - **Work and purpose** Finish light and dark modes and responsive layouts across study screens. Add visible focus, form labels, text feedback, reduced-motion support, status announcements, and predictable dialog focus.
   - **Files** `client/src/components/ui/`, `client/src/features/quizzes/`, `client/src/features/analytics/`, `client/src/features/dashboard/` · **Depends on** P5-T03, P5-T06, P5-T14, P5-T18, P5-T23, P5-T25
   - **Output** Study flows operable by keyboard and across desktop, tablet and phone sizes.
@@ -930,6 +931,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
   - **Verify** Run the session twice from clean fixtures and compare provider calls, final scores, history entries and dashboard totals.
 
 - [ ] **P5-T28 · Explore topic-level performance** (Optional)
+  - **Disposition 2026-11-28** Deferred. The current question schema and generated contract have no stable topic annotations. Difficulty and question-type reporting remain available. Revisit after explicit version-bound topic IDs and attribution rules exist; reports must preserve untagged coverage.
   - **Work and purpose** When stable topic annotations exist, group completed outcomes by topic and display sample sizes and untagged coverage so the user can interpret a weak topic.
   - **Files** `server/src/services/analytics.service.ts`, `client/src/features/analytics/TopicPerformance.tsx`, `docs/ANALYTICS.md` · **Depends on** P5-T21, P5-T23
   - **Output** An optional topic breakdown with explicit coverage.

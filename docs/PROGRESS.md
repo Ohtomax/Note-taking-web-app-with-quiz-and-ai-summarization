@@ -274,3 +274,7 @@ Every frontend task has its own commit and push to main, including implemented t
 - **P5-T26 deferred 2026-11-27** Implementation and automated keyboard/theme/dialog-focus checks pass. Real-browser phone/tablet/desktop and screen-reader acceptance is deferred because Computer Use native pipe is unavailable; the task remains unchecked.
 
 - **P5-T27 completed 2026-11-28** Both clean-fixture React/real HTTP/Prisma study sessions reconcile mock calls, scores, retakes, all analytics scopes, dashboard, usage and account isolation. Final regression: 39 server unit, 63 database/API, 38 frontend tests; type/lint/format/build pass. Four automated phase verification items checked. Browser/screen-reader acceptance remains open in T26; audit findings and bundle/driver warnings are recorded in TESTING.md.
+
+Phase 5 implementation status: 26 of 27 MVP task checkboxes are complete. P5-T26 has shipped code and automated checks but manual browser/screen-reader acceptance is still open. P5-T28 has a documented optional deferral. Each Phase 5 task implementation/disposition has its own commit and push. Owner secrets, hosted migrations and deployment remain untouched.
+
+- **P5-T28 deferred 2026-11-28** No stable topic annotations exist in the schema/validated generation contract, so topic reporting is deferred without inferred tags. ANALYTICS.md records prerequisites and coverage requirements. T26 manual acceptance remains explicitly open.
