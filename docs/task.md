@@ -1026,6 +1026,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
   - **Verify** Run the same queries and fixtures before and after tuning, compare query plans and timings, and rerun analytics assertions.
 
 - [ ] **P6-T10 · Measure frontend loading and editor responsiveness** (MVP)
+  - **Status 2026-11-28** Static production JS sizes and route import graphs are recorded. Mobile throttling, cold-load timing and editor interaction/typing measurements remain deferred because browser automation is unavailable; no unmeasured bundle-boundary rewrite was applied.
   - **Work and purpose** Profile a production client build on a representative mobile connection. Inspect initial route assets, editor startup, and chart loading before changing bundle boundaries.
   - **Files** `client/src/routes/`, `client/src/features/notes/`, `client/src/features/analytics/`, `docs/TESTING.md` · **Depends on** P6-T08
   - **Output** Baseline and release measurements for the dashboard and note editor.

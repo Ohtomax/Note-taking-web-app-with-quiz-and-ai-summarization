@@ -296,3 +296,5 @@ Phase 5 implementation status: 26 of 27 MVP task checkboxes are complete. P5-T26
 - **P6-T08 deferred/partial 2026-11-28** Computer Use native pipe is unavailable. Desktop/phone browser, focus, refresh and sign-out acceptance stays unchecked; TESTING.md records the concrete manual scenario and distinguishes passing jsdom/real-HTTP sessions from browser evidence.
 
 - **P6-T09 completed 2026-11-28** 120 projects, 6000 notes and 12000 attempts: all local p95 budgets pass; median/p95/query counts and actual EXPLAIN summaries recorded. Owner totals, pagination and known scores reconcile. Existing plans do not justify an index/query rewrite; hosted/network SLOs remain unmeasured.
+
+- **P6-T10 deferred/partial 2026-11-28** Manifest-based raw/gzip JS and route dependency reporting runs successfully on a production build. Actual mobile cold-load/typing measurements require unavailable browser access and remain unchecked; no speculative chunk rewrite.

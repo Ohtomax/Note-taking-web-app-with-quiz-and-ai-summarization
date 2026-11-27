@@ -142,3 +142,9 @@ client/tests/autosave.integration.test.tsx runs two independent useNoteSave edit
 ### P6-T08 manual browser scenario pending
 
 When browser access is available, use the same deterministic study fixture as study-session.integration.test.tsx and test desktop and phone widths. Create/edit two notes, generate/save one summary and quiz, complete practice and exam by keyboard, refresh results and a shuffled retake, then compare history and all analytics scopes. Verify focus after dialogs/question changes and light/dark feedback. Sign out, sign in as the second test identity, and verify that previous notes, attempts and usage are absent. Record viewport sizes, focus observations and the persisted attempt IDs. Actual Firebase sign-in remains a separate owner-configured check. This session returned Computer Use native pipe unavailable; no equivalent jsdom test is labeled as a browser result.
+
+### P6-T10 static assets and pending browser profile
+
+scripts/report-client-assets.mjs reads a production Vite manifest and reports raw/gzip JavaScript sizes and each dashboard/editor/analytics static dependency closure, including the application entry. Run client npm run build -- --manifest, then node ../scripts/report-client-assets.mjs. This reports transfer sizes, not loading or responsiveness measurements. Current main JS is approximately 539 kB raw / 154 kB gzip; the lazy note-editor asset is approximately 419 kB raw / 134 kB gzip and charts/analytics approximately 475 kB raw / 135 kB gzip. The remaining route assets are included by the report rather than treating one chunk as the complete route download.
+
+Actual cold loads on a representative mobile connection, editor startup and typing latency remain unmeasured because the browser provider is unavailable. Capture those baselines under a recorded network/CPU profile before changing chunk boundaries or accepting a mobile budget. No production or mobile performance claim is made from a successful build.
