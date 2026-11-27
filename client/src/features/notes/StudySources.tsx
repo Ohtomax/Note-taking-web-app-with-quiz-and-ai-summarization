@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { SourcePicker, type SourcePickerProps } from './SourcePicker';
 import type { SourceChoice } from '@/types/study-sources';
 import { SummaryGenerator } from '@/features/summaries/SummaryGenerator';
+import { QuizGenerator } from '@/features/quizzes/QuizGenerator';
 export function StudySources(props: Omit<SourcePickerProps, 'onChange'>) {
   const [choice, setChoice] = useState<SourceChoice | null>(null);
   return (
@@ -12,6 +13,7 @@ export function StudySources(props: Omit<SourcePickerProps, 'onChange'>) {
       <div className="mt-3">
         <SourcePicker {...props} onChange={setChoice} />
         <SummaryGenerator projectId={props.projectId} choice={choice} />
+        <QuizGenerator projectId={props.projectId} choice={choice} />
         {choice?.projectId === props.projectId && (
           <p className="mt-2 text-xs text-slate-500">
             Source ready for study tools: {choice.description}

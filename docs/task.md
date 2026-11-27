@@ -761,7 +761,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
   - **Accept when** Reopening a saved summary uses the stored text, and editing a source note makes the change visible in its summary.
   - **Verify** Save and rename a summary, revise a source note, reopen the summary, then delete it and refresh the list.
 
-- [ ] **P5-T04 · Configure quiz generation** (MVP)
+- [x] **P5-T04 · Configure quiz generation** (MVP)
   - **Work and purpose** Collect the title, sources, question count, difficulty, question type or mixed set, practice or exam mode, and explanation preference. Surface validation, quota, loading and recovery states.
   - **Files** `client/src/features/quizzes/QuizGenerator.tsx` · **Depends on** P5-T01
   - **Output** A quiz form backed by the generation API.
