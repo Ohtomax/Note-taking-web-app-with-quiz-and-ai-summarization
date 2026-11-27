@@ -796,7 +796,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
   - **Accept when** An open exam contains no keys, explanations or correctness flags. Practice feedback is limited to previously submitted questions.
   - **Verify** Inspect start and resume payloads for both modes, including after viewing the quiz editor and after switching users.
 
-- [ ] **P5-T09 · Score answers deterministically** (MVP)
+- [x] **P5-T09 · Score answers deterministically** (MVP)
   - **Work and purpose** Grade single-choice and true/false by option ID, multiple-select by exact set, and identification against normalized accepted variations. Document whitespace and case handling, unmatched synonyms and the unanswered-question rule.
   - **Files** `server/src/services/quiz-scoring.service.ts`, `docs/QUIZ_SYSTEM.md` · **Depends on** None
   - **Output** A pure scoring function with per-question outcomes.
