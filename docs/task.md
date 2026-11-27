@@ -1089,6 +1089,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
   - **Verify** Restore to an isolated target, sign in with a mapped test identity, and compare project counts and a known historical attempt against pre-backup values.
 
 - [ ] **P6-T18 · Rehearse schema migration and application rollback** (MVP)
+  - **Status 2026-11-28** Release/staging rollback rehearsal is deferred with deployment. The local harness applies all eight migrations and confirms idempotent replay, but no previous production image or approved staging recovery target was exercised.
   - **Work and purpose** Apply release migrations to a staging copy using a designated migration runner. Document how to revert an application release with existing data and how to recover if a migration fails.
   - **Files** `server/prisma/migrations/`, `docs/DEPLOYMENT.md` · **Depends on** P6-T13, P6-T17
   - **Output** A tested migration and rollback sequence tied to a specific release.
