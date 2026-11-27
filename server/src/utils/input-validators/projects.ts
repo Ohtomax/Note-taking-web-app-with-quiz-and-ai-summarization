@@ -32,3 +32,16 @@ export const projectListSchema = z
   .strict();
 
 export type ProjectListInput = z.infer<typeof projectListSchema>;
+
+export const updateProjectSchema = z
+  .object({
+    title: metadata.title.optional(),
+    description: metadata.description.optional(),
+    color: metadata.color.optional(),
+    icon: metadata.icon.optional(),
+    expectedRevision: z.number().int().positive(),
+  })
+  .strict()
+  .refine((value) => Object.keys(value).length > 1);
+
+export type UpdateProjectInput = z.infer<typeof updateProjectSchema>;

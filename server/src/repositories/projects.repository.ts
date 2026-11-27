@@ -1,8 +1,25 @@
 import type { PrismaClient } from '@/generated/prisma/client.js';
 import type { CreateProjectInput } from '@/utils/input-validators/projects.js';
 import type { ProjectListInput } from '@/utils/input-validators/projects.js';
+import type { UpdateProjectInput } from '@/utils/input-validators/projects.js';
+import { lockProject, checkRevision } from '@/repositories/workspace.repository.js';
 
 export const createProjectsRepository = (db: PrismaClient) => ({
+  update: (ownerId: string, projectId: string, input: UpdateProjectInput) =>
+    db.$transaction(async (tx) => {
+      const project = await lockProject(tx, ownerId, projectId);
+      checkRevision(project.revision, input.expectedRevision);
+      return tx.project.update({
+        where: { id: project.id },
+        data: {
+          ...(input.title !== undefined ? { title: input.title } : {}),
+          ...(input.description !== undefined ? { description: input.description } : {}),
+          ...(input.color !== undefined ? { color: input.color } : {}),
+          ...(input.icon !== undefined ? { icon: input.icon } : {}),
+          revision: { increment: 1 },
+        },
+      });
+    }),
   find: (ownerId: string, projectId: string) =>
     db.project.findFirst({
       where: { id: projectId, ownerId, deletedAt: null },

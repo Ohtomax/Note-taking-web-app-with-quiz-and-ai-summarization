@@ -80,3 +80,38 @@ test('P3-T03 owner detail hides missing and foreign projects identically', async
     assert.deepEqual(foreign.body.error, absent.body.error);
   });
 });
+
+test('P3-T04 partial metadata updates preserve ownership and reject invalid colors', async () => {
+  await withWorkspace(async ({ db, alice, bob, project, api }) => {
+    const update = await api
+      .patch('/api/v1/projects/' + project.id)
+      .set('Authorization', 'Bearer alice')
+      .send({ expectedRevision: 1, title: 'Renamed' });
+    assert.equal(update.status, 200);
+    assert.equal(update.body.data.title, 'Renamed');
+    assert.equal(update.body.data.revision, 2);
+    for (const fields of [{ color: 'invalid' }, { ownerId: bob.id }])
+      assert.equal(
+        (
+          await api
+            .patch('/api/v1/projects/' + project.id)
+            .set('Authorization', 'Bearer alice')
+            .send({ expectedRevision: 2, ...fields })
+        ).status,
+        400,
+      );
+    assert.equal(
+      (await db.project.findUniqueOrThrow({ where: { id: project.id } })).ownerId,
+      alice.id,
+    );
+    assert.equal(
+      (
+        await api
+          .patch('/api/v1/projects/' + project.id)
+          .set('Authorization', 'Bearer alice')
+          .send({ expectedRevision: 1, title: 'Stale' })
+      ).status,
+      409,
+    );
+  });
+});

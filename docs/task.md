@@ -377,7 +377,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
   - **Accept when** An owner sees the project metadata and another account receives the same response as for a missing project.
   - **Verify** Read a known folder as its owner, as another account and with an unknown ID.
 
-- [ ] **P3-T04 · Edit project metadata** (MVP)
+- [x] **P3-T04 · Edit project metadata** (MVP)
   - **Work and purpose** Allow partial updates to the name, description, color and icon using an explicit field allowlist to preserve ownership.
   - **Files** `server/src/controllers/projects.controller.ts`, `server/src/utils/input-validators/projects.ts`, `server/src/repositories/projects.repository.ts` · **Depends on** P3-T03
   - **Output** Validated project edit endpoint.
