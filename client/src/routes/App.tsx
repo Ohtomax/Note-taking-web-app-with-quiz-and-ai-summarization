@@ -4,7 +4,7 @@ import { ProtectedRoute } from './ProtectedRoute';
 import { useSession } from '@/store/session';
 import { WorkspaceLayout } from '@/features/dashboard/WorkspaceLayout';
 
-const WorkspacePage = lazy(() => import('@/pages/WorkspacePage'));
+const ProjectLibrary = lazy(() => import('@/features/projects/ProjectLibrary'));
 const AuthPage = lazy(() => import('@/features/auth/AuthPage'));
 
 export function App() {
@@ -25,10 +25,10 @@ export function App() {
           />
           <Route element={<ProtectedRoute />}>
             <Route element={<WorkspaceLayout />}>
-              <Route path="/" element={<WorkspacePage />} />
+              <Route path="/" element={<ProjectLibrary />} />
               <Route
                 path="/projects/new"
-                element={<p>Create a project from your library in the next task.</p>}
+                element={<Navigate to="/?create=true" replace />}
               />
               <Route
                 path="/settings"

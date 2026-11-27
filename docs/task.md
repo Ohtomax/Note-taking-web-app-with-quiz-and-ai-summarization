@@ -482,7 +482,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
   - **Accept when** Keyboard and touch users can reach project and note actions and see meaningful loading, empty and error states.
   - **Verify** Walk through the shell at mobile, tablet and desktop widths using keyboard navigation.
 
-- [ ] **P3-T19 · Build the project library** (MVP)
+- [x] **P3-T19 · Build the project library** (MVP)
   - **Work and purpose** Present search, paginated cards, note counts and dates with controls to create, customize, archive, restore and confirm deletion of folders.
   - **Files** `client/src/features/projects`, `client/src/api/projects.ts` · **Depends on** P3-T02, P3-T04, P3-T05, P3-T06, P3-T18
   - **Output** Interactive project library backed by project APIs.
