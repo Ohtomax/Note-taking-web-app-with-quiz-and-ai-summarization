@@ -18,6 +18,11 @@
   },
   "dependencies": {
     "@tanstack/react-query": "5.104.5",
+    "@tiptap/core": "3.34.0",
+    "@tiptap/extension-list": "3.34.0",
+    "@tiptap/pm": "3.34.0",
+    "@tiptap/react": "3.34.0",
+    "@tiptap/starter-kit": "3.34.0",
     "axios": "1.21.1",
     "firebase": "12.19.0",
     "react": "19.3.1",

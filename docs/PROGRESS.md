@@ -158,3 +158,5 @@ The pending frontend changes are preserved in the original folder. No deployment
 - **P3-T19 completed 2026-11-27** Project library mutations, invalidation and deletion cancellation pass UI tests.
 
 - **P3-T20 completed 2026-11-27** Note workspace actions and source/destination cache invalidation pass UI tests.
+
+- **P3-T21 completed 2026-11-27** Rich-text formatting, safe HTML normalization and explicit note saves pass tests.

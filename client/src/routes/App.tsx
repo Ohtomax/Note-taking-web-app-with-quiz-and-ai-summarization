@@ -7,6 +7,7 @@ import { WorkspaceLayout } from '@/features/dashboard/WorkspaceLayout';
 const ProjectLibrary = lazy(() => import('@/features/projects/ProjectLibrary'));
 const AuthPage = lazy(() => import('@/features/auth/AuthPage'));
 const ProjectDetail = lazy(() => import('@/features/projects/ProjectDetail'));
+const NotePage = lazy(() => import('@/features/notes/NotePage'));
 
 export function App() {
   const { user, loading } = useSession();
@@ -28,6 +29,7 @@ export function App() {
             <Route element={<WorkspaceLayout />}>
               <Route path="/" element={<ProjectLibrary />} />
               <Route path="/projects/:projectId" element={<ProjectDetail />} />
+              <Route path="/projects/:projectId/notes/:noteId" element={<NotePage />} />
               <Route
                 path="/projects/new"
                 element={<Navigate to="/?create=true" replace />}

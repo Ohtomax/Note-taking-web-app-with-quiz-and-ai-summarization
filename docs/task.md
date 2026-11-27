@@ -496,7 +496,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
   - **Accept when** Mutations update affected project counts and note lists, including source and destination after a move.
   - **Verify** Create, duplicate, move, pin, archive and restore notes across two projects and check lists after reload.
 
-- [ ] **P3-T21 · Implement the note editor** (MVP)
+- [x] **P3-T21 · Implement the note editor** (MVP)
   - **Work and purpose** Render the approved document format with headings, paragraphs, bold, italic, underline, lists, checklists, code and quotes. Support title edits and keyboard controls.
   - **Files** `client/src/features/notes/editor`, `client/src/features/notes` · **Depends on** P3-T07, P3-T09, P3-T20
   - **Output** Accessible rich-text editor with explicit save.
