@@ -43,14 +43,12 @@ it('shows incomplete status, version-aware comparison and empty filtered project
     elapsedMs: null,
     finishedAt: null,
   };
-  const list = vi
-    .spyOn(historyApi, 'list')
-    .mockImplementation(async (query) => ({
-      data: query.status === 'ABANDONED' ? [] : [entry, incomplete],
-      total: query.status === 'ABANDONED' ? 0 : 2,
-      page: 1,
-      pageSize: 12,
-    }));
+  const list = vi.spyOn(historyApi, 'list').mockImplementation(async (query) => ({
+    data: query.status === 'ABANDONED' ? [] : [entry, incomplete],
+    total: query.status === 'ABANDONED' ? 0 : 2,
+    page: 1,
+    pageSize: 12,
+  }));
   const selected = {
     id: entry.id,
     versionId: entry.versionId,

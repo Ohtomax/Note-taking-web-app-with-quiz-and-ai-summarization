@@ -102,6 +102,12 @@ function ProjectWorkspace({ projectId }: { projectId: string }) {
             </Link>
             <Link
               className="text-teal-800 underline"
+              to={'/projects/' + projectId + '/analytics'}
+            >
+              Analytics
+            </Link>
+            <Link
+              className="text-teal-800 underline"
               to={'/projects/' + projectId + '/summaries'}
             >
               Saved summaries

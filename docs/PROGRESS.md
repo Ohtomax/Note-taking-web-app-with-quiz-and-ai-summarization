@@ -264,3 +264,5 @@ Every frontend task has its own commit and push to main, including implemented t
 - **P5-T21 completed 2026-11-27** Project fixtures reconcile per-version difficulty and per-type assigned/answered/correct/skipped snapshots. New author versions and another project's attempts cannot reclassify the recorded results; empty and foreign scopes are covered.
 
 - **P5-T22 completed 2026-11-27** Fixture checks reconcile retakes, completed means/improvement/duration, paginated version comparisons and wrong/answered/skipped question samples. Soft deletion preserves private historical metrics and foreign reports are hidden.
+
+- **P5-T23 completed 2026-11-27** Added lazy global/project/quiz chart routes, cards, daily tables, version comparisons, missed-question samples and date filters. Fixture and scope-switch component checks pass. Charts use responsive containers and static rendering; actual viewport verification is tracked in P5-T26.

@@ -894,7 +894,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
   - **Accept when** Skipped and incorrectly answered questions follow their documented counting rules, and edits cannot merge unrelated questions.
   - **Verify** Seed a retake, an abandoned attempt and an edited question. Check tie-breaking, duration and most-missed results.
 
-- [ ] **P5-T23 · Display analytics charts** (MVP)
+- [x] **P5-T23 · Display analytics charts** (MVP)
   - **Work and purpose** Render a time-series line chart, comparison bars, an answer-distribution donut, progress indicators and metric cards with text or table equivalents. Use the API’s computed values and link each project’s study view to its summaries, quizzes and analytics.
   - **Files** `client/src/features/analytics/AnalyticsPage.tsx` · **Depends on** P5-T20, P5-T21, P5-T22
   - **Output** Global, project and quiz analytics views.

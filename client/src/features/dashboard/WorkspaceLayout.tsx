@@ -57,6 +57,13 @@ export function WorkspaceLayout() {
             <nav aria-label="Workspace" className="grid gap-2">
               <NavLink
                 className="rounded-lg px-3 py-2 hover:bg-slate-100"
+                to="/analytics"
+                onClick={closeSidebar}
+              >
+                Analytics
+              </NavLink>
+              <NavLink
+                className="rounded-lg px-3 py-2 hover:bg-slate-100"
                 to="/history"
                 onClick={closeSidebar}
               >

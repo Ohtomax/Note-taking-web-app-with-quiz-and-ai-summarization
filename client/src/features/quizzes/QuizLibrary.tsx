@@ -81,6 +81,12 @@ export function QuizDetail() {
           >
             Back to quizzes
           </Link>
+          <Link
+            className="text-teal-800 underline"
+            to={'/quizzes/' + quizId + '/analytics'}
+          >
+            Quiz analytics
+          </Link>
           <h1 className="my-5 text-2xl font-semibold">{data.title}</h1>
           <OpenAttempts quizId={quizId} />
           <p className="mb-4 text-sm text-slate-600">
