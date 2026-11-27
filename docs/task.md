@@ -1003,7 +1003,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
   - **Accept when** Scores match the key, response payloads follow mode-specific disclosure rules, and each retake adds exactly one independent attempt without a provider call.
   - **Verify** Submit twice concurrently, edit a correct answer on a newer version, and compare the original attempt's returned answers, score, and version before and after.
 
-- [ ] **P6-T07 · Reconcile analytics with hand-calculated results** (MVP)
+- [x] **P6-T07 · Reconcile analytics with hand-calculated results** (MVP)
   - **Work and purpose** Seed different quiz lengths, difficulties, versions, unfinished attempts, and two accounts. Check groupings, date boundaries, and zero-data results.
   - **Files** `server/tests/integration/analytics.test.ts`, `server/tests/fixtures/analytics/`, `docs/ANALYTICS.md` · **Depends on** P6-T01
   - **Output** Expected global, project, and quiz results for a documented dataset.

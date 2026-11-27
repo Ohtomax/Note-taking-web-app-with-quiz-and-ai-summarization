@@ -290,3 +290,5 @@ Phase 5 implementation status: 26 of 27 MVP task checkboxes are complete. P5-T26
 - **P6-T05 completed 2026-11-28** Three API/DB checks pass: one remaining request under concurrency, stable replays, UTC lease recovery, fake-clock retry settlement and conservative timeout accounting. Provider and ledger counts reconcile; strict test types/lint pass.
 
 - **P6-T06 completed 2026-11-28** The all-type practice/exam key, interrupted reload, duplicate-finalization, post-edit historical review and replayed shuffled retake scenario passes with zero AI calls. Existing pure scorer and race/disclosure cases pass.
+
+- **P6-T07 completed 2026-11-28** The 1/1 plus 1/3 fully answered fixture reconciles 66.67% mean versus 50% accuracy in all three scopes, distinct version difficulty, time bounds, empty windows and foreign/unfinished exclusions. API/DB test and strict checks pass.

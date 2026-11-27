@@ -49,3 +49,7 @@ Implementation uses database aggregates and bounded group sets. Completion captu
 ## Optional topic report disposition (2026-11-28)
 
 P5-T28 is deferred because the current QuizQuestion schema and validated generation contract have no stable topic annotations. Prompt text, note titles and keyword guesses do not establish a reliable topic identity. No topic percentages are inferred or displayed. Difficulty and question-type breakdowns are available now. Future topic reporting requires explicit version-bound annotations, a policy for overlapping tags and sample/untagged coverage before aggregation and UI acceptance tests can be meaningful.
+
+## Phase 6 arithmetic and UTC boundary acceptance
+
+P6-T07 completes version-1 1/1 and version-2 1/3 attempts through the normal exam API, with every question answered. It verifies assigned 4, answered 4, correct 2, incorrect 2, skipped 0, mean score 66.67% and answer accuracy 50% across global/project/quiz endpoints. First/highest is 100%, latest 33.33%, and mean duration is 1,500 ms. Version difficulties remain EASY/HARD. Completion at the inclusive lower UTC boundary is included; the exclusive upper boundary is excluded. Empty windows return null ratios. Foreign completed and unfinished owned attempts do not change the scored aggregates.
