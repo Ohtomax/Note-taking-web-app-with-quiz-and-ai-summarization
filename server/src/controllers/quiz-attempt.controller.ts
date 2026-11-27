@@ -15,16 +15,24 @@ export const startQuizAttempt =
           'A valid Idempotency-Key header is required.',
           400,
         );
-      res
-        .status(201)
-        .json({
-          data: await service.start(
-            req.account!.id,
-            req.params.quizId!,
-            key.data,
-            req.body as StartAttemptInput,
-          ),
-        });
+      res.status(201).json({
+        data: await service.start(
+          req.account!.id,
+          req.params.quizId!,
+          key.data,
+          req.body as StartAttemptInput,
+        ),
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+export const readQuizAttempt =
+  (service: QuizAttemptService) =>
+  async (req: AuthRequest, res: Response, next: NextFunction) => {
+    try {
+      res.json({ data: await service.read(req.account!.id, req.params.attemptId!) });
     } catch (error) {
       next(error);
     }

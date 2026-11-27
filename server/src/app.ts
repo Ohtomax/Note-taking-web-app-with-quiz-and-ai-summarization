@@ -15,7 +15,10 @@ import type { ProjectsService } from '@/services/projects.service.js';
 import type { NotesService } from '@/services/notes.service.js';
 import { createNotesRouter } from '@/routes/notes.routes.js';
 import { ServiceError } from '@/utils/error-handler/ServiceError.js';
-import { createQuizStartRouter } from '@/routes/quiz-attempt.routes.js';
+import {
+  createQuizStartRouter,
+  createAttemptRouter,
+} from '@/routes/quiz-attempt.routes.js';
 import { createProjectQuizRouter, createQuizRouter } from '@/routes/quizzes.routes.js';
 import {
   createSavedSummaryRouter,
@@ -74,6 +77,11 @@ export function createApp(
       }),
   );
   if (services) {
+    if (services.quizAttemptService)
+      app.use(
+        '/api/v1/attempts',
+        createAttemptRouter(services, services.quizAttemptService),
+      );
     if (services.quizAttemptService)
       app.use(
         '/api/v1/quizzes/:quizId/attempts',

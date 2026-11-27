@@ -234,3 +234,5 @@ Every frontend task has its own commit and push to main, including implemented t
 - **P5-T06 completed 2026-11-27** Library tests verify independent duplication, rename, deletion confirmation and retained-history feedback. Regeneration displays captured sources, uses a metered request and accepts edited previews into an idempotent successor version.
 
 - **P5-T07 completed 2026-11-27** Concurrent real HTTP starts share one attempt; a new key creates a new attempt, changed settings conflict and foreign versions are hidden. Start responses expose no grading keys.
+
+- **P5-T08 completed 2026-11-27** HTTP fixtures inspect start/resume responses after authoring access: open exams expose no keys, explanations or correctness; practice reveals only committed questions. Player schemas/cache keys are separate and foreign reads are hidden.

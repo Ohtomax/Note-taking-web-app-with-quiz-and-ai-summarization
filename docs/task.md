@@ -789,7 +789,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
   - **Accept when** A repeated start request returns one attempt, an explicit new start creates another, and a foreign quiz is inaccessible.
   - **Verify** Submit two concurrent starts with the same request key, then try the same quiz as a second user.
 
-- [ ] **P5-T08 · Read an attempt safely** (MVP)
+- [x] **P5-T08 · Read an attempt safely** (MVP)
   - **Work and purpose** Return only the fields permitted by the attempt’s mode, status and recorded answers. Keep the player’s API types and query cache separate from the authoring view.
   - **Files** `server/src/services/quiz-attempt.service.ts`, `client/src/features/quizzes/attemptQueries.ts`, `server/tests/quiz-attempt-read.test.ts` · **Depends on** P5-T07
   - **Output** An owner-scoped player response for start, navigation and resume.
