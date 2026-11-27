@@ -754,7 +754,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
   - **Accept when** A retry preserves the selection and settings, and the source note retains its saved contents.
   - **Verify** Mock success, timeout and quota exhaustion, then compare the saved note before and after a successful generation.
 
-- [ ] **P5-T03 · Manage the summary library** (MVP)
+- [x] **P5-T03 · Manage the summary library** (MVP)
   - **Work and purpose** List saved summaries by project and generation date. Open, edit, rename and delete them with confirmation, retaining source references and indicating changed source revisions.
   - **Files** `client/src/features/summaries/SummaryLibrary.tsx` · **Depends on** P5-T02
   - **Output** A searchable or paginated history of saved summaries.

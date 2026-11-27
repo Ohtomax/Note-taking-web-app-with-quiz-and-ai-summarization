@@ -93,6 +93,14 @@ function ProjectWorkspace({ projectId }: { projectId: string }) {
       {data && (
         <>
           {!data.archivedAt && <StudySources projectId={projectId} />}
+          <nav aria-label="Project study materials" className="my-4 flex gap-4">
+            <Link
+              className="text-teal-800 underline"
+              to={'/projects/' + projectId + '/summaries'}
+            >
+              Saved summaries
+            </Link>
+          </nav>
           <div className="my-5 flex flex-wrap items-center justify-between gap-4">
             <div>
               <h1 className="text-3xl font-semibold">{data.title}</h1>
