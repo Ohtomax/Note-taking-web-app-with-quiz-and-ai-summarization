@@ -398,7 +398,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
   - **Accept when** The confirmation targets the same owned project and its current impact, and protected history remains reviewable.
   - **Verify** Use a populated fixture, change its contents after preview, and test cancel, stale confirmation and confirmed deletion.
 
-- [ ] **P3-T07 · Define the rich-text document** (MVP)
+- [x] **P3-T07 · Define the rich-text document** (MVP)
   - **Work and purpose** Specify a versioned document format, allowed nodes, size limits and plain-text extraction so the editor, search and AI share one content contract. Record the storage tradeoffs.
   - **Files** `server/src/utils/input-validators/note-content.ts`, `client/src/features/notes`, `docs/DATABASE.md` · **Depends on** None
   - **Output** Validated rich-text fixtures and a documented storage format.
