@@ -1,0 +1,1 @@
+ALTER TABLE "AIUsage" ADD COLUMN "result" JSONB, ADD COLUMN "errorCode" VARCHAR(50);

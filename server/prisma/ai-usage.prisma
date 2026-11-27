@@ -12,6 +12,8 @@ enum AIStatus {
 }
 
 model AIUsage {
+  result Json?
+  errorCode String? @db.VarChar(50)
   accountedTokens Int @default(0)
   calls          AICall[]
   completedAt    DateTime?   @db.Timestamptz(6)

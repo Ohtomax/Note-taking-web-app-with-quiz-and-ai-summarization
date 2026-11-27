@@ -607,7 +607,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
   - **Accept when** Rejections incur no provider call and failed or interrupted work releases capacity according to the approved accounting policy.
   - **Verify** Race requests near the quota and concurrency thresholds and simulate stale reservation recovery.
 
-- [ ] **P4-T10 · Deduplicate generation requests** (MVP)
+- [x] **P4-T10 · Deduplicate generation requests** (MVP)
   - **Work and purpose** Bind an idempotency key to the owner, request settings and source revisions, then return the original result or status on a retry to avoid duplicate charges.
   - **Files** `server/src/services/ai-generation.service.ts`, `server/src/repositories/ai-usage.repository.ts`, `server/tests/ai/idempotency.test.ts` · **Depends on** P4-T03, P4-T07, P4-T08, P4-T09
   - **Output** Retry-safe generation lifecycle with explicit success and failure states.

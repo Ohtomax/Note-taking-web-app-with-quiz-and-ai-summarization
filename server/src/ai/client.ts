@@ -35,6 +35,7 @@ export interface AIResult<T> {
   usage: AIUsageCounts;
 }
 export interface AIClient {
+  available?: boolean;
   provider: string;
   model: string;
   generate: <T>(request: AIRequest<T>) => Promise<AIResult<T>>;
@@ -64,6 +65,7 @@ export function createAIClient(
     ...(transport ? { fetch: transport } : {}),
   });
   return {
+    available: config.enabled,
     provider: 'groq',
     model: config.model,
     generate: async (request) => {
