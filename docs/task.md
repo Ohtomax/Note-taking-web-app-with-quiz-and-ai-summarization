@@ -1049,6 +1049,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
   - **Verify** Repeat the audit against the final lockfiles, then rebuild and rerun tests for any packages changed.
 
 - [ ] **P6-T13 · Build the backend runtime image** (MVP)
+  - **Status 2026-11-28** Skipped under the owner rule to defer deployment-associated work. No Dockerfile/image build or TLS runtime deployment validation was performed.
   - **Work and purpose** Build TypeScript and generate Prisma in a build stage. Package the compiled entry point, required runtime libraries, and CA certificate in a non-root image. Exclude private environment files and credentials from the context.
   - **Files** `server/Dockerfile`, `server/.dockerignore`, `docs/DEPLOYMENT.md` · **Depends on** P6-T12
   - **Output** A reproducible backend image with a documented start command.
