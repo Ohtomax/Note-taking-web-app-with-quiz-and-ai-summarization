@@ -314,3 +314,5 @@ Phase 5 implementation status: 26 of 27 MVP task checkboxes are complete. P5-T26
 - **P6-T17 deferred/partial 2026-11-28** Local custom dump (209 ms) and restore (627 ms) reconcile 2 users, 3 projects, source links, 3 quiz versions and 5 attempts. Restored UID ownership and known 100%/62.5%/60% results pass with zero AI calls. RECOVERY.md distinguishes proposed policy and deferred live Firebase recovery; task stays open for owner-dependent acceptance.
 
 - **P6-T18 deferred/partial 2026-11-28** Release/staging rollback rehearsal is deferred with deployment. The local harness applies all eight migrations and confirms idempotent replay, but no previous production image or approved staging recovery target was exercised.
+
+- **P6-T19 deferred/partial 2026-11-28** Skipped under the owner rule. No production connection, recovery point or migration runner was configured; migrations were applied only to newly created disposable loopback databases.

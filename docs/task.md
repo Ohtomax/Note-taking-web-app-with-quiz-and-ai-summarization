@@ -1097,6 +1097,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
   - **Verify** Migrate the staged schema, exercise the candidate API, then rehearse the previous compatible build or the documented recovery procedure.
 
 - [ ] **P6-T19 · Apply production schema migrations** (MVP)
+  - **Status 2026-11-28** Skipped under the owner rule. No production connection, recovery point or migration runner was configured; migrations were applied only to newly created disposable loopback databases.
   - **Work and purpose** Confirm the target and available recovery point, then apply the rehearsed migrations through one authorized production release runner.
   - **Files** `server/prisma/migrations/`, `docs/DEPLOYMENT.md` · **Depends on** P6-T15, P6-T18
   - **Output** A release record containing the applied migration identifiers and recovery reference.
