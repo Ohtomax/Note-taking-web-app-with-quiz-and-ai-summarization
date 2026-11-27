@@ -1073,6 +1073,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
   - **Verify** Validate required names and types using staging equivalents, inspect client build artifacts for test secret markers, and compare configured origins to the deployment inventory.
 
 - [ ] **P6-T16 · Verify health checks and operational signals** (MVP)
+  - **Status 2026-11-28** Staging/operational verification is deferred with deployment. Existing local health/log-redaction tests pass; production dependency interruption, bounded readiness/latency acceptance and an external alert path remain unverified.
   - **Work and purpose** Supply a lightweight health endpoint for Render and a bounded readiness check for required dependencies. Record request errors, latency, and AI quota or provider failures without logging note content or credentials.
   - **Files** `server/src/routes/health.routes.ts`, `server/src/middlewares/`, `docs/DEPLOYMENT.md` · **Depends on** P6-T13
   - **Output** Health and readiness responses, privacy-safe logs, and a documented alert path.
