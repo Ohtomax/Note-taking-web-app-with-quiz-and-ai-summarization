@@ -845,7 +845,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
   - **Accept when** The review reflects the attempted wording, options and key after the quiz is edited.
   - **Verify** Complete a quiz with an unanswered question, edit the quiz, and reopen the original result.
 
-- [ ] **P5-T16 · Retake a saved quiz** (MVP)
+- [x] **P5-T16 · Retake a saved quiz** (MVP)
   - **Work and purpose** Create a new attempt against the reviewed version with optional question and option shuffling. Persist the chosen order and expose a distinct regenerate-from-sources action.
   - **Files** `server/src/services/quiz-attempt.service.ts`, `client/src/features/quizzes/RetakeQuiz.tsx` · **Depends on** P5-T07, P5-T13, P5-T15
   - **Output** A retake action on completed results.

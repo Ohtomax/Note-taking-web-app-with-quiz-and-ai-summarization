@@ -250,3 +250,5 @@ Every frontend task has its own commit and push to main, including implemented t
 - **P5-T14 completed 2026-11-27** Keyboard-driven component flows complete all four question types in both modes. Practice reveals committed feedback; exams retain hidden grading, save drafts, navigate persisted locations and confirm final submission.
 
 - **P5-T15 completed 2026-11-27** UI results show score, elapsed time, correct/incorrect/skipped counts and source-linked review. HTTP fixtures prove a later author edit cannot change the attempted wording, key, score or review; unfinished/foreign results are protected.
+
+- **P5-T16 completed 2026-11-27** Retakes survive author edits, create independent answers and stable shuffled order, deduplicate retries and make zero provider calls. UI uses the reviewed version and separates regeneration as metered source work.

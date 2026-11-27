@@ -6,6 +6,7 @@ import { useSession } from '@/store/session';
 import { AsyncState } from '@/components/ui/AsyncState';
 import { formatDuration, formatPercent } from '@/utils/display';
 import { normalizeAnswer } from '@/utils/answer-normalization';
+import { RetakeQuiz } from './RetakeQuiz';
 export default function QuizResults() {
   const { attemptId = '' } = useParams(),
     uid = useSession((state) => state.user!.uid),
@@ -70,6 +71,7 @@ export default function QuizResults() {
             questions earn zero and remain separate from incorrect answers. Elapsed time
             includes pauses.
           </p>
+          <RetakeQuiz attempt={attempt} />
           <ol className="grid gap-4">
             {attempt.questions.map((question, index) => {
               const answer = attempt.answers.find(

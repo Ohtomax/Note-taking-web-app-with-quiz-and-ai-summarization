@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams, useSearchParams } from 'react-router-dom';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { quizzesApi } from '@/api/quizzes';
 import { useSession } from '@/store/session';
@@ -12,10 +12,11 @@ import type { SourceChoice } from '@/types/study-sources';
 import { OpenAttempts } from './ResumeAttempt';
 import { StartAttempt } from './StartAttempt';
 export function QuizDetail() {
+  const [params] = useSearchParams();
   const { quizId = '' } = useParams(),
     uid = useSession((state) => state.user!.uid);
   const [page, setPage] = useState(1),
-    [regenerating, setRegenerating] = useState(false);
+    [regenerating, setRegenerating] = useState(params.get('regenerate') === 'true');
   const quiz = useQuery({
     queryKey: [uid, 'quiz', quizId],
     queryFn: ({ signal }) => quizzesApi.find(quizId, signal),
