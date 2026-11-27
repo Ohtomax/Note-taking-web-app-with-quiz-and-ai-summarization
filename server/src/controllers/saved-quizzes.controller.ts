@@ -151,15 +151,13 @@ export const duplicateQuiz =
   (service: QuizzesService) =>
   async (req: AuthRequest, res: Response, next: NextFunction) => {
     try {
-      res
-        .status(201)
-        .json({
-          data: await service.duplicate(
-            req.account!.id,
-            req.params.quizId!,
-            req.body.expectedVersion as number,
-          ),
-        });
+      res.status(201).json({
+        data: await service.duplicate(
+          req.account!.id,
+          req.params.quizId!,
+          req.body.expectedVersion as number,
+        ),
+      });
     } catch (error) {
       AIHandleError(error, next);
     }

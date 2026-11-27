@@ -1,6 +1,7 @@
 import type { PrismaClient, AIOperation } from '@/generated/prisma/client.js';
 import type { CallEvent } from '@/ai/call-policy.js';
 import { ServiceError } from '@/utils/error-handler/ServiceError.js';
+import { quotaPolicy, quotaWindow } from './ai-admission.repository.js';
 export interface Pricing {
   version: string;
   input: number;
@@ -30,13 +31,45 @@ export const usageSelect = {
   createdAt: true,
   completedAt: true,
   resultId: true,
+  accountedTokens: true,
+  _count: { select: { calls: true } },
 } as const;
 export const createAIUsageRepository = (db: PrismaClient) => ({
+  quota: async (userId: string, policy = quotaPolicy, now = new Date()) => {
+    const [daily, active] = await Promise.all([
+      db.aIUsage.aggregate({
+        where: { userId, createdAt: { gte: quotaWindow(now) } },
+        _count: true,
+        _sum: { accountedTokens: true },
+      }),
+      db.aIUsage.count({
+        where: {
+          userId,
+          status: { in: ['RESERVED', 'RUNNING'] },
+          leaseExpiresAt: { gt: now },
+        },
+      }),
+    ]);
+    return {
+      requestsUsed: daily._count,
+      requestLimit: policy.dailyRequests,
+      accountedTokens: daily._sum.accountedTokens ?? 0,
+      tokenLimit: policy.dailyUserTokens,
+      active,
+      concurrencyLimit: policy.userConcurrency,
+      resetsAt: new Date(quotaWindow(now).getTime() + 86400000),
+    };
+  },
   start: (input: UsageStart) => db.aIUsage.create({ data: input }),
   recordCall: (userId: string, usageId: string, event: CallEvent, pricing?: Pricing) =>
     db.$transaction(async (tx) => {
       const usage = await tx.aIUsage.findFirst({ where: { id: usageId, userId } });
       if (!usage) throw new ServiceError('RESOURCE_NOT_FOUND', 'Resource not found', 404);
+      const active =
+        ['RESERVED', 'RUNNING'].includes(usage.status) &&
+        Boolean(usage.leaseExpiresAt && usage.leaseExpiresAt > new Date());
+      if (event.status === 'RUNNING' && !active)
+        throw new ServiceError('AI_INTERRUPTED', 'Generation is no longer active.', 409);
       const completed = event.status !== 'RUNNING';
       await tx.aICall.upsert({
         where: { usageId_number: { usageId, number: event.number } },
@@ -69,7 +102,7 @@ export const createAIUsageRepository = (db: PrismaClient) => ({
       await tx.aIUsage.update({
         where: { id: usageId },
         data: {
-          status: 'RUNNING',
+          status: active ? 'RUNNING' : usage.status,
           inputTokens,
           outputTokens,
           estimatedCost:

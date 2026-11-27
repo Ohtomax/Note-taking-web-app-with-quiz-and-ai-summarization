@@ -13,13 +13,27 @@ import { createSummariesService } from '@/services/summaries.service.js';
 import { createQuizGenerationService } from '@/services/quiz-generation.service.js';
 import { createQuizzesRepository } from '@/repositories/quizzes.repository.js';
 import { createQuizzesService } from '@/services/quizzes.service.js';
-export function createStudyServices(db: PrismaClient, client: AIClient) {
-  const aiUsageService = createAIUsageService(createAIUsageRepository(db));
+import { quotaPolicy } from '@/repositories/ai-admission.repository.js';
+import type { Pricing } from '@/repositories/ai-usage.repository.js';
+export interface StudyServiceOptions {
+  quota?: typeof quotaPolicy;
+  pricing?: Pricing;
+}
+export function createStudyServices(
+  db: PrismaClient,
+  client: AIClient,
+  options: StudyServiceOptions = {},
+) {
+  const aiUsageService = createAIUsageService(
+    createAIUsageRepository(db),
+    options.pricing,
+    options.quota,
+  );
   const generationService = createAIGenerationService({
     client,
     sources: createAISourcesService(createAISourcesRepository(db)),
     repository: createAIGenerationRepository(db),
-    admission: createAIAdmissionRepository(db),
+    admission: createAIAdmissionRepository(db, options.quota),
     usage: aiUsageService,
   });
   return {

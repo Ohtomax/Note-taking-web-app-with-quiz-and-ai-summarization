@@ -13,9 +13,10 @@ export function quotaWindow(now: Date) {
   return new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
 }
 export const createAIAdmissionRepository = (db: PrismaClient, policy = quotaPolicy) => ({
-  reserve: (input: UsageStart, now = new Date()) =>
-    serializable(db, async (tx) => {
-      await tx.aIUsage.updateMany({
+  reserve: async (input: UsageStart, now = new Date()) => {
+    // Recovery must commit even when the following admission is rejected.
+    await db.$transaction([
+      db.aIUsage.updateMany({
         where: { status: 'RESERVED', leaseExpiresAt: { lte: now } },
         data: {
           status: 'FAILED',
@@ -23,11 +24,13 @@ export const createAIAdmissionRepository = (db: PrismaClient, policy = quotaPoli
           completedAt: now,
           leaseExpiresAt: null,
         },
-      });
-      await tx.aIUsage.updateMany({
+      }),
+      db.aIUsage.updateMany({
         where: { status: 'RUNNING', leaseExpiresAt: { lte: now } },
         data: { status: 'UNCERTAIN', completedAt: now, leaseExpiresAt: null },
-      });
+      }),
+    ]);
+    return serializable(db, async (tx) => {
       const active = {
         status: { in: ['RESERVED', 'RUNNING'] as Array<'RESERVED' | 'RUNNING'> },
       };
@@ -68,6 +71,7 @@ export const createAIAdmissionRepository = (db: PrismaClient, policy = quotaPoli
       return tx.aIUsage.create({
         data: { ...input, accountedTokens: input.reservedTokens },
       });
-    }),
+    });
+  },
 });
 export type AIAdmissionRepository = ReturnType<typeof createAIAdmissionRepository>;

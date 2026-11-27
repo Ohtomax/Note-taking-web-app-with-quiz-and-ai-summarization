@@ -705,7 +705,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
   - **Accept when** A duplicate has its own identity, deleted quizzes leave active listings, and historical attempts still resolve their snapshots.
   - **Verify** Duplicate and rename a quiz, delete the source, review an existing attempt and verify every operation rejects another account.
 
-- [ ] **P4-T24 · Verify generation boundaries end to end** (MVP)
+- [x] **P4-T24 · Verify generation boundaries end to end** (MVP)
   - **Work and purpose** Run the full generation and management path with mock AI and a two-user database fixture to catch authorization, quota, output-validation and artifact-integrity regressions.
   - **Files** `server/tests/ai`, `server/tests/quizzes`, `server/tests/summaries`, `docs/TESTING.md` · **Depends on** P4-T09, P4-T10, P4-T15, P4-T20, P4-T22, P4-T23
   - **Output** Repeatable safety and integration checks with expected call counts.
@@ -721,9 +721,9 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
 
 ### Phase verification
 
-- [ ] Run all automated generation scenarios against a deterministic mock provider.
-- [ ] Use a two-account fixture to cover every source scope and management endpoint.
-- [ ] Verify chunk coverage, output validation, failure recovery, quota races and the integrity of historical quiz versions.
+- [x] Run all automated generation scenarios against a deterministic mock provider.
+- [x] Use a two-account fixture to cover every source scope and management endpoint.
+- [x] Verify chunk coverage, output validation, failure recovery, quota races and the integrity of historical quiz versions.
 
 **Complete when** The MVP tasks pass using mock responses, all four source scopes work for both outputs, and saved results, costs and version history can be verified from stored records.
 

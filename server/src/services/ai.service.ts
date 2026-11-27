@@ -1,8 +1,10 @@
 import { z } from 'zod';
+import { zodSchema } from 'ai';
 import type { AIClient, AIRequest, AIResult, AIUsageCounts } from '@/ai/client.js';
 import { AIProviderError } from '@/ai/client.js';
 import {
   buildStudyPrompt,
+  promptSourceKeys,
   type AIOperation,
   type PromptSource,
 } from '@/ai/prompts/study.js';
@@ -56,10 +58,13 @@ export const createAIService = (client: AIClient, limits = generationLimits) => 
       shape: z.ZodType<U>,
     ) => {
       const prompt = buildStudyPrompt(operation, settings, sources, stage);
+      const schemaTokens = estimateTokens(JSON.stringify(zodSchema(shape).jsonSchema));
       if (
-        estimateTokens(prompt.system + prompt.prompt) + limits.outputTokens >
+        estimateTokens(prompt.system + prompt.prompt) +
+          schemaTokens +
+          limits.outputTokens >
           limits.contextTokens ||
-        estimateTokens(prompt.system + prompt.prompt) >
+        estimateTokens(prompt.system + prompt.prompt) + schemaTokens >
           limits.chunkTokens + limits.promptReserve
       )
         throw new ServiceError(
@@ -81,7 +86,11 @@ export const createAIService = (client: AIClient, limits = generationLimits) => 
         input += result.usage.inputTokens;
         output += result.usage.outputTokens;
       }
-      if (estimateTokens(JSON.stringify(result.object)) > limits.outputTokens)
+      if (
+        estimateTokens(JSON.stringify(result.object)) > limits.outputTokens * 4 ||
+        (result.usage.outputTokens !== null &&
+          result.usage.outputTokens > limits.outputTokens)
+      )
         throw new AIProviderError('INVALID');
       return shape.parse(result.object);
     };
@@ -93,7 +102,19 @@ export const createAIService = (client: AIClient, limits = generationLimits) => 
         chunk.sources,
         plan.chunks.length === 1 ? 'FINAL' : 'MAP',
       );
-      if (estimateTokens(p.system + p.prompt) > limits.chunkTokens + limits.promptReserve)
+      const schemaTokens = estimateTokens(
+        JSON.stringify(
+          plan.chunks.length === 1
+            ? zodSchema(schema).jsonSchema
+            : zodSchema(mapResultSchema).jsonSchema,
+        ),
+      );
+      if (
+        estimateTokens(p.system + p.prompt) + schemaTokens >
+          limits.chunkTokens + limits.promptReserve ||
+        estimateTokens(p.system + p.prompt) + schemaTokens + limits.outputTokens >
+          limits.contextTokens
+      )
         throw new ServiceError(
           'SOURCE_LIMIT',
           'Generation prompt exceeds its budget.',
@@ -106,15 +127,30 @@ export const createAIService = (client: AIClient, limits = generationLimits) => 
       let level: Array<{ sources: PromptSource[]; result: MapResult }> = [];
       for (const chunk of plan.chunks) {
         const result = await invoke(chunk.sources, 'MAP', mapResultSchema);
-        validateCoverage(result, [...new Set(chunk.sources.map((s) => s.sourceKey))]);
+        validateCoverage(result, promptSourceKeys(chunk.sources));
         level.push({ sources: chunk.sources, result });
       }
       const compact = (item: (typeof level)[number]): PromptSource[] =>
-        [...new Set(item.sources.map((s) => s.sourceKey))].map((key) => ({
-          ...item.sources.find((s) => s.sourceKey === key)!,
-          text: JSON.stringify(
-            item.result.sections.filter((section) => section.sourceKeys.includes(key)),
-          ),
+        item.result.sections.map((section) => ({
+          sourceKey: section.sourceKeys[0]!,
+          sourceKeys: section.sourceKeys,
+          revision: item.sources[0]!.revision,
+          references: [
+            ...new Map(
+              item.sources
+                .flatMap(
+                  (source) =>
+                    source.references ?? [
+                      { sourceKey: source.sourceKey, revision: source.revision },
+                    ],
+                )
+                .filter((reference) => section.sourceKeys.includes(reference.sourceKey))
+                .map((reference) => [reference.sourceKey, reference]),
+            ).values(),
+          ],
+          text: section.text,
+          rangeStart: null,
+          rangeEnd: null,
         }));
       while (level.length > 1) {
         const next: typeof level = [];
@@ -125,7 +161,7 @@ export const createAIService = (client: AIClient, limits = generationLimits) => 
           }
           const sources = [...compact(level[index]!), ...compact(level[index + 1]!)];
           const result = await invoke(sources, 'MERGE', mapResultSchema);
-          validateCoverage(result, [...new Set(sources.map((s) => s.sourceKey))]);
+          validateCoverage(result, promptSourceKeys(sources));
           next.push({ sources, result });
         }
         level = next;

@@ -6,7 +6,7 @@ export const generationLimits = {
   chunkTokens: 20000,
   sourceTokens: 100000,
   outputTokens: 8000,
-  promptReserve: 6000,
+  promptReserve: 20000,
   maxCalls: 32,
   retries: 2,
   callTimeoutMs: 20000,

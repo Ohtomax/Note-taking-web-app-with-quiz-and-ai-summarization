@@ -1,5 +1,7 @@
 export const PROMPT_VERSION = 'study-v1';
 export interface PromptSource {
+  sourceKeys?: string[];
+  references?: Array<{ sourceKey: string; revision: number }>;
   sourceKey: string;
   revision: number;
   text: string;
@@ -8,6 +10,9 @@ export interface PromptSource {
 }
 export type AIOperation = 'SUMMARY' | 'QUIZ';
 export type PromptStage = 'MAP' | 'MERGE' | 'FINAL';
+export const promptSourceKeys = (sources: PromptSource[]) => [
+  ...new Set(sources.flatMap((source) => source.sourceKeys ?? [source.sourceKey])),
+];
 export function buildStudyPrompt(
   operation: AIOperation,
   settings: Record<string, unknown>,
@@ -29,14 +34,29 @@ export function buildStudyPrompt(
     operation,
     stage,
     settings,
-    allowedSourceKeys: [...new Set(sources.map((s) => s.sourceKey))],
-    sources: sources.map(({ sourceKey, revision, text, rangeStart, rangeEnd }) => ({
-      sourceKey,
-      revision,
-      text,
-      rangeStart,
-      rangeEnd,
-    })),
+    allowedSourceKeys: promptSourceKeys(sources),
+    sourceVersions: [
+      ...new Map(
+        sources
+          .flatMap(
+            (source) =>
+              source.references ?? [
+                { sourceKey: source.sourceKey, revision: source.revision },
+              ],
+          )
+          .map((reference) => [reference.sourceKey, reference]),
+      ).values(),
+    ],
+    sources: sources.map(
+      ({ sourceKey, sourceKeys, revision, text, rangeStart, rangeEnd }) => ({
+        sourceKey,
+        ...(sourceKeys ? { sourceKeys } : {}),
+        revision,
+        text,
+        rangeStart,
+        rangeEnd,
+      }),
+    ),
   });
   return { system, prompt };
 }

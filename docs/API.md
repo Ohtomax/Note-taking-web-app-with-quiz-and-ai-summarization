@@ -56,3 +56,28 @@ Player endpoints suppress grading keys throughout an open exam and suppress prac
 ## Generation status
 
 POST generation returns 201 with the completed artifact or a persisted operation status. GET /generations/:generationId returns RESERVED, RUNNING, SUCCEEDED, FAILED or UNCERTAIN with a safe public error and retry guidance. A response timeout does not imply that the provider incurred zero usage. The existing idempotency key retrieves the original status.
+
+## Phase 4 implemented generation contract
+
+All generation paths use the same guarded endpoint and return a persisted operation: {data:{id,status,resultId,errorCode,result}}. result is present only for SUCCEEDED and includes projectId, operation, settings, output and captured source metadata. Raw source text is not included in that response. Validation/admission failures return the normal HTTP error shape before a provider call. Execution failures return the persisted FAILED or UNCERTAIN operation with a safe code. Missing enabled AI setup returns 503. Retrieve status after a lost response or uncertain outcome; do not silently submit a new key.
+
+Keys are scoped to the current owner by the existing database unique constraint. The operation, settings and exact captured source revisions are bound into the input hash. Reusing an owner's key for a different operation also returns 409. This is stricter than allowing the same key independently for summary and quiz operations. Same input/key returns the original status/result and creates no new usage or artifact.
+
+| Method | Path | Implemented body/query |
+| --- | --- | --- |
+| POST | /projects/:projectId/summaries | {generationId}; accept a completed summary draft once |
+| POST | /summaries/:summaryId/regenerate | Full SUMMARY generation body and a fresh Idempotency-Key; returns a new preview, keeps the saved original |
+| POST | /projects/:projectId/quizzes | {generationId}; accept a completed quiz draft into version one |
+| GET | /quizzes/:quizId/versions | page, pageSize; metadata without answer keys |
+| POST | /quizzes/:quizId/versions | {expectedVersion,settings,content}, or {expectedVersion,generationId} to accept metered regeneration |
+| POST | /quizzes/:quizId/regenerate | Full QUIZ generation body and fresh Idempotency-Key; explicit publishing is required afterward |
+| POST | /quizzes/:quizId/duplicate | {expectedVersion}; independent quiz, version, question and option IDs |
+| PATCH | /quizzes/:quizId | {title}; no AI call |
+| DELETE | /summaries/:summaryId or /quizzes/:quizId | {confirmed:true}; soft deletion preserves historical references |
+| GET | /ai-usage | page, pageSize; owner ledger, call counts and UTC-day quota/reset metadata |
+
+Summary output is {title,sections:[{heading:string|null,text,sourceKeys}]}. Settings determine paragraph, bullet, key-concept or study-guide rendering. Key-concept and study-guide sections require headings. PATCH summary accepts title and/or content through the same bounded source-key validation.
+
+Quiz output is {title,questions}. Every question has type, prompt, explanation:string|null and sourceKeys. Choice questions contain options:[{id,text}] and correctOptionIds; identification contains acceptedAnswers. Multiple-select requires at least two correct choices and at least one distractor. Requested types must all appear, question count is exact (1–50), normalized prompts must be distinct, and explanation presence must match settings. The authoring endpoint returns persisted question/option UUIDs and isCorrect keys only to the owner. These are authoring APIs; Phase 5 introduces player projections and scoring.
+
+Generation results are drafts until accepted. Repeated draft acceptance is idempotent. Summary regeneration saves a separate summary when accepted. Quiz regeneration can publish a successor version after an expectedVersion check. Editing a quiz never updates earlier version rows or their attempt-linked answer keys. Plain text fields are returned as text; clients must escape them and must not render unsanitized HTML.

@@ -11,14 +11,15 @@ import { createApiLimiter } from '../../src/utils/rate-limiter/apiLimiter.ts';
 import { createTestClient } from './setup.ts';
 import { createNotesRepository } from '../../src/repositories/notes.repository.ts';
 import { createNotesService } from '../../src/services/notes.service.ts';
-import { createStudyServices } from '../../config/ai.ts';
+import { createStudyServices, type StudyServiceOptions } from '../../config/ai.ts';
 import { createMockAIClient, type AIClient } from '../../src/ai/client.ts';
 
 export const withWorkspace = async (
   run: (fixture: Awaited<ReturnType<typeof createWorkspace>>) => Promise<void>,
   client?: AIClient,
+  options?: StudyServiceOptions,
 ) => {
-  const fixture = await createWorkspace(client);
+  const fixture = await createWorkspace(client, options);
   try {
     await run(fixture);
   } finally {
@@ -47,7 +48,7 @@ export const withWorkspace = async (
   }
 };
 
-const createWorkspace = async (client?: AIClient) => {
+const createWorkspace = async (client?: AIClient, options?: StudyServiceOptions) => {
   const db = createTestClient();
   const alice = await db.user.create({ data: { firebaseUid: randomUUID() } });
   const bob = await db.user.create({ data: { firebaseUid: randomUUID() } });
@@ -64,6 +65,7 @@ const createWorkspace = async (client?: AIClient) => {
         createMockAIClient(() => {
           throw new Error('No mock response provided');
         }),
+      options,
     ),
     aiLimiter: createApiLimiter(new MemoryStore(), 500),
     userService: createUserService(createUserRepository(db)),
