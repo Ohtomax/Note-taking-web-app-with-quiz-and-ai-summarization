@@ -1,5 +1,9 @@
 import { createHash, randomInt } from 'node:crypto';
-import { Prisma, type PrismaClient } from '@/generated/prisma/client.js';
+import {
+  Prisma,
+  type PrismaClient,
+  type QuestionType,
+} from '@/generated/prisma/client.js';
 import type { StartAttemptInput } from '@/utils/input-validators/quiz-attempt.validator.js';
 import { serializable } from './serializable.js';
 import { ServiceError } from '@/utils/error-handler/ServiceError.js';
@@ -237,6 +241,23 @@ export const createQuizAttemptRepository = (db: PrismaClient) => ({
           });
       }
       const finishedAt = new Date();
+      const types = new Map<
+        QuestionType,
+        { assigned: number; answered: number; correct: number }
+      >();
+      for (const outcome of result.outcomes) {
+        const type = attempt.version.questions.find(
+          (question) => question.id === outcome.questionId,
+        )!.type;
+        const metric = types.get(type) ?? { assigned: 0, answered: 0, correct: 0 };
+        metric.assigned++;
+        if (outcome.answered) metric.answered++;
+        if (outcome.isCorrect) metric.correct++;
+        types.set(type, metric);
+      }
+      await tx.quizAttemptTypeMetric.createMany({
+        data: [...types].map(([type, metric]) => ({ attemptId: id, type, ...metric })),
+      });
       return tx.quizAttempt.update({
         where: { id },
         data: {

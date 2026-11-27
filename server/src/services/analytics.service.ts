@@ -68,6 +68,15 @@ export const createAnalyticsService = (repository: AnalyticsRepository) => {
     return { ...data, trend: fillDailyTrend(data.trend, window) };
   };
   return {
+    project: async (ownerId: string, projectId: string, query: AnalyticsQuery) => {
+      const window = resolveAnalyticsWindow(query),
+        scope = { kind: 'PROJECT' as const, id: projectId };
+      const [data, breakdowns] = await Promise.all([
+        read(ownerId, query, scope),
+        repository.breakdowns(ownerId, window, scope),
+      ]);
+      return { ...data, breakdowns };
+    },
     global: (ownerId: string, query: AnalyticsQuery) =>
       read(ownerId, query, { kind: 'GLOBAL' }),
   };

@@ -5,6 +5,7 @@ enum AttemptStatus {
 }
 
 model QuizAttempt {
+  typeMetrics QuizAttemptTypeMetric[]
   scoreRatio Float?
   elapsedMs Int?
   completedDay DateTime? @db.Date

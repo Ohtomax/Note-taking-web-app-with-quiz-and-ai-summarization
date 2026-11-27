@@ -880,7 +880,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
   - **Accept when** Counts honor documented retention and date boundaries, and quiz joins do not multiply workspace totals.
   - **Verify** Run the hand-calculated fixture alongside another user's attempts and compare every global total.
 
-- [ ] **P5-T21 · Aggregate project performance** (MVP)
+- [x] **P5-T21 · Aggregate project performance** (MVP)
   - **Work and purpose** Filter by the owned project and group completed results by difficulty, question type and date. Include note, summary, quiz and attempt counts, latest, highest and mean score, and answer distribution.
   - **Files** `server/src/repositories/analytics.repository.ts`, `server/src/services/analytics.service.ts` · **Depends on** P5-T19, P5-T20
   - **Output** A project analytics API.

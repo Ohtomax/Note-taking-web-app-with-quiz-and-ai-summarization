@@ -198,6 +198,8 @@ export async function seedAnalyticsFixture(
     .set('Authorization', 'Bearer alice')
     .set('Idempotency-Key', randomUUID())
     .send({ versionId: secondVersion.id, mode: 'EXAM' });
+  assert.equal(open.status, 201, JSON.stringify(open.body.error));
+  assert.equal(abandoned.status, 201, JSON.stringify(abandoned.body.error));
   await api
     .post('/api/v1/attempts/' + abandoned.body.data.id + '/abandon')
     .set('Authorization', 'Bearer alice')

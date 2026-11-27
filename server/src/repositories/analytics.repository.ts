@@ -1,4 +1,9 @@
-import type { Prisma, PrismaClient } from '@/generated/prisma/client.js';
+import type {
+  Prisma,
+  PrismaClient,
+  Difficulty,
+  QuestionType,
+} from '@/generated/prisma/client.js';
 import { expireAttempts } from './quiz-attempt.repository.js';
 import type { AnalyticsWindow } from '@/utils/input-validators/analytics.js';
 import { ServiceError } from '@/utils/error-handler/ServiceError.js';
@@ -55,6 +60,71 @@ export function completedWhere(
   };
 }
 export const createAnalyticsRepository = (db: PrismaClient) => ({
+  breakdowns: async (ownerId: string, window: AnalyticsWindow, scope: AnalyticsScope) => {
+    const resolved = await analyticsScope(db, ownerId, scope);
+    const where = {
+      ...completedWhere(resolved.version, window),
+      scoreRatio: { not: null },
+    };
+    const difficultyLevels: Difficulty[] = ['EASY', 'MEDIUM', 'HARD'];
+    const [typeRows, difficulty] = await Promise.all([
+      db.quizAttemptTypeMetric.groupBy({
+        by: ['type'],
+        where: { attempt: where },
+        _count: { _all: true },
+        _sum: { assigned: true, answered: true, correct: true },
+      }),
+      Promise.all(
+        difficultyLevels.map(async (level) => {
+          const stats = await db.quizAttempt.aggregate({
+            where: { ...where, version: { ...resolved.version, difficulty: level } },
+            _count: { _all: true },
+            _sum: { totalQuestions: true, answeredCount: true, correctCount: true },
+            _avg: { scoreRatio: true },
+          });
+          const assigned = stats._sum.totalQuestions ?? 0,
+            answered = stats._sum.answeredCount ?? 0,
+            correct = stats._sum.correctCount ?? 0;
+          return {
+            difficulty: level,
+            attempts: stats._count._all,
+            assigned,
+            answered,
+            correct,
+            incorrect: answered - correct,
+            skipped: assigned - answered,
+            meanScore:
+              stats._avg.scoreRatio === null ? null : 100 * stats._avg.scoreRatio,
+            accuracy: answered ? (100 * correct) / answered : null,
+          };
+        }),
+      ),
+    ]);
+    const questionTypes: QuestionType[] = [
+      'MULTIPLE_CHOICE',
+      'TRUE_FALSE',
+      'MULTIPLE_SELECT',
+      'IDENTIFICATION',
+    ];
+    const types = questionTypes.map((type) => {
+      const row = typeRows.find((item) => item.type === type),
+        assigned = row?._sum.assigned ?? 0,
+        answered = row?._sum.answered ?? 0,
+        correct = row?._sum.correct ?? 0;
+      return {
+        type,
+        attempts: row?._count._all ?? 0,
+        assigned,
+        answered,
+        correct,
+        incorrect: answered - correct,
+        skipped: assigned - answered,
+        score: assigned ? (100 * correct) / assigned : null,
+        accuracy: answered ? (100 * correct) / answered : null,
+      };
+    });
+    return { difficulty, types };
+  },
   aggregate: async (ownerId: string, window: AnalyticsWindow, scope: AnalyticsScope) => {
     await expireAttempts(db, ownerId);
     const resolved = await analyticsScope(db, ownerId, scope);

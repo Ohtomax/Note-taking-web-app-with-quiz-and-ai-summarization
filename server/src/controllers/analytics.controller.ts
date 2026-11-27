@@ -16,3 +16,19 @@ export const globalAnalytics =
       next(error);
     }
   };
+
+export const projectAnalytics =
+  (service: AnalyticsService) =>
+  async (req: AuthRequest, res: Response, next: NextFunction) => {
+    try {
+      res.json({
+        data: await service.project(
+          req.account!.id,
+          req.params.projectId!,
+          analyticsQuerySchema.parse(req.query),
+        ),
+      });
+    } catch (error) {
+      next(error);
+    }
+  };

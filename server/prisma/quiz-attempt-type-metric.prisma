@@ -1,0 +1,11 @@
+
+model QuizAttemptTypeMetric {
+ attemptId String @db.Uuid
+ attempt QuizAttempt @relation(fields:[attemptId],references:[id],onDelete:Cascade)
+ type QuestionType
+ assigned Int
+ answered Int
+ correct Int
+ @@id([attemptId,type])
+ @@index([type,attemptId])
+}

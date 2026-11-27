@@ -260,3 +260,5 @@ Every frontend task has its own commit and push to main, including implemented t
 - **P5-T19 completed 2026-11-27** The 2/2 and 1/4 fixture verifies 62.5% equal-weight mean score, 60% answer accuracy and separate skipped/wrong counts. UTC windows, retention, completed samples and stable comparison rules are documented.
 
 - **P5-T20 completed 2026-11-27** Real API-scored fixtures reconcile 62.5% mean, 60% accuracy, workspace counts, statuses, UTC trends and duration without foreign rows or join multiplication. Completion stores raw ratio/day/time snapshots atomically.
+
+- **P5-T21 completed 2026-11-27** Project fixtures reconcile per-version difficulty and per-type assigned/answered/correct/skipped snapshots. New author versions and another project's attempts cannot reclassify the recorded results; empty and foreign scopes are covered.
