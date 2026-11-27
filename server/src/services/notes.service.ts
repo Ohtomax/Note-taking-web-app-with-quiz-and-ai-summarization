@@ -2,8 +2,11 @@ import type { NotesRepository } from '@/repositories/notes.repository.js';
 import type { CreateNoteInput } from '@/utils/input-validators/notes.js';
 import { ServiceError } from '@/utils/error-handler/ServiceError.js';
 import type { UpdateNoteInput } from '@/utils/input-validators/notes.js';
+import type { NoteListInput } from '@/utils/input-validators/notes.js';
 
 export const createNotesService = (repository: NotesRepository) => ({
+  list: (ownerId: string, projectId: string, query: NoteListInput) =>
+    repository.list(ownerId, projectId, query),
   update: (ownerId: string, projectId: string, noteId: string, input: UpdateNoteInput) =>
     repository.update(ownerId, projectId, noteId, input),
   create: (ownerId: string, projectId: string, input: CreateNoteInput) =>

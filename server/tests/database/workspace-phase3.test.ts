@@ -293,3 +293,38 @@ test('P3-T09 concurrent note revisions allow one winner and preserve newer conte
     );
   });
 });
+
+test('P3-T10 note lists search extracted content with stable paging and owner scope', async () => {
+  await withWorkspace(async ({ db, project, foreign, api }) => {
+    const doc = {
+      type: 'doc',
+      content: [
+        {
+          type: 'paragraph',
+          content: [
+            { type: 'text', text: 'Searchable layer', marks: [{ type: 'bold' }] },
+          ],
+        },
+      ],
+    };
+    await api
+      .post('/api/v1/projects/' + project.id + '/notes')
+      .set('Authorization', 'Bearer alice')
+      .send({ title: 'OSI', content: doc });
+    await db.note.createMany({
+      data: [
+        { projectId: project.id, title: 'Another', plainText: 'Searchable layer' },
+        { projectId: foreign.id, title: 'Foreign', plainText: 'Searchable layer' },
+      ],
+    });
+    const url =
+      '/api/v1/projects/' +
+      project.id +
+      '/notes?search=layer&sort=title&order=asc&pageSize=1';
+    const first = await api.get(url).set('Authorization', 'Bearer alice');
+    const second = await api.get(url + '&page=2').set('Authorization', 'Bearer alice');
+    assert.equal(first.status, 200);
+    assert.equal(first.body.total, 2);
+    assert.notEqual(first.body.data[0].id, second.body.data[0].id);
+  });
+});

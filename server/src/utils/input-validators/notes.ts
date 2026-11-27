@@ -27,3 +27,16 @@ export const updateNoteSchema = z
   .refine((value) => Object.keys(value).length > 1);
 
 export type UpdateNoteInput = z.infer<typeof updateNoteSchema>;
+
+export const noteListSchema = z
+  .object({
+    page: z.coerce.number().int().min(1).default(1),
+    pageSize: z.coerce.number().int().min(1).max(50).default(20),
+    search: z.string().trim().max(200).default(''),
+    archived: z.enum(['true', 'false']).default('false'),
+    sort: z.enum(['title', 'createdAt', 'updatedAt']).default('updatedAt'),
+    order: z.enum(['asc', 'desc']).default('desc'),
+  })
+  .strict();
+
+export type NoteListInput = z.infer<typeof noteListSchema>;

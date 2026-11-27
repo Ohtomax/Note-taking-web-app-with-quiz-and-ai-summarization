@@ -2,6 +2,25 @@ import type { Response, NextFunction } from 'express';
 import type { AuthRequest } from '@/types/auth.type.js';
 import type { NotesService } from '@/services/notes.service.js';
 import { UserHandleError } from '@/utils/error-handler/userErrorHandler.js';
+import type { NoteListInput } from '@/utils/input-validators/notes.js';
+
+export const listNotes =
+  (service: NotesService) =>
+  async (req: AuthRequest, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      res
+        .status(200)
+        .json(
+          await service.list(
+            req.account!.id,
+            req.params.projectId!,
+            req.query as unknown as NoteListInput,
+          ),
+        );
+    } catch (error) {
+      UserHandleError(error, next);
+    }
+  };
 
 export const updateNote =
   (service: NotesService) =>

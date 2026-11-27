@@ -419,7 +419,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
   - **Accept when** Two updates using the same revision have one winner and one explicit conflict, and neither produces a partial write.
   - **Verify** Submit concurrent edits from the same revision, including one title-only update, then read the winning record.
 
-- [ ] **P3-T10 · Search and sort notes** (MVP)
+- [x] **P3-T10 · Search and sort notes** (MVP)
   - **Work and purpose** Implement paginated note lists with database-level title and plain-text content search and deterministic sorting by title, creation or modification date.
   - **Files** `server/src/repositories/notes.repository.ts`, `server/src/utils/input-validators/notes.ts` · **Depends on** P3-T07, P3-T08
   - **Output** Scoped project note list with query controls.

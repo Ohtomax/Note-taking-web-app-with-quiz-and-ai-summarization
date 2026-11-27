@@ -3,9 +3,54 @@ import type { CreateNoteInput } from '@/utils/input-validators/notes.js';
 import { lockProject, checkRevision } from '@/repositories/workspace.repository.js';
 import { ServiceError } from '@/utils/error-handler/ServiceError.js';
 import type { UpdateNoteInput } from '@/utils/input-validators/notes.js';
+import type { NoteListInput } from '@/utils/input-validators/notes.js';
 import { extractPlainText } from '@/utils/input-validators/note-content.js';
 
 export const createNotesRepository = (db: PrismaClient) => ({
+  list: (ownerId: string, projectId: string, query: NoteListInput) =>
+    db.$transaction(async (tx) => {
+      const project = await tx.project.findFirst({
+        where: { id: projectId, ownerId, deletedAt: null },
+        select: { id: true },
+      });
+      if (!project)
+        throw new ServiceError('RESOURCE_NOT_FOUND', 'Resource not found', 404);
+      const where: Prisma.NoteWhereInput = {
+        projectId,
+        deletedAt: null,
+        project: { ownerId, deletedAt: null },
+        archivedAt: query.archived === 'true' ? { not: null } : null,
+        OR: [
+          { title: { contains: query.search, mode: 'insensitive' } },
+          { plainText: { contains: query.search, mode: 'insensitive' } },
+        ],
+      };
+      const [data, total] = await Promise.all([
+        tx.note.findMany({
+          where,
+          orderBy: [
+            { pinned: 'desc' },
+            { [query.sort]: query.order },
+            { id: query.order },
+          ],
+          skip: (query.page - 1) * query.pageSize,
+          take: query.pageSize,
+          select: {
+            id: true,
+            projectId: true,
+            title: true,
+            revision: true,
+            pinned: true,
+            archivedAt: true,
+            createdAt: true,
+            updatedAt: true,
+            lastOpenedAt: true,
+          },
+        }),
+        tx.note.count({ where }),
+      ]);
+      return { data, total, page: query.page, pageSize: query.pageSize };
+    }),
   update: (ownerId: string, projectId: string, noteId: string, input: UpdateNoteInput) =>
     db.$transaction(async (tx) => {
       await lockProject(tx, ownerId, projectId);
