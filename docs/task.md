@@ -1105,6 +1105,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
   - **Verify** Check migration status from the release runner and perform a read-only check of a representative relation and index.
 
 - [ ] **P6-T20 · Deploy the API to Render** (MVP)
+  - **Status 2026-11-28** Skipped under the owner rule. No Render service, runtime secret or image deployment was created or modified; no healthy production API is claimed.
   - **Work and purpose** Deploy the reviewed image with runtime secrets, the designated listening port, and the health-check path. Tie the deployment to the release revision so rollback is repeatable.
   - **Files** `server/Dockerfile`, `docs/DEPLOYMENT.md` · **Depends on** P6-T09, P6-T11, P6-T16, P6-T19
   - **Output** A healthy HTTPS API deployment and recorded revision.
