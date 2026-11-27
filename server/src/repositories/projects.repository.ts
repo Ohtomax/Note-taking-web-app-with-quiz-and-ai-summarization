@@ -5,6 +5,34 @@ import type { UpdateProjectInput } from '@/utils/input-validators/projects.js';
 import { lockProject, checkRevision } from '@/repositories/workspace.repository.js';
 
 export const createProjectsRepository = (db: PrismaClient) => ({
+  deletionPreview: (ownerId: string, projectId: string) =>
+    db.$transaction(async (tx) => {
+      const project = await lockProject(tx, ownerId, projectId, false);
+      const [notes, summaries, quizzes, attempts] = await Promise.all([
+        tx.note.count({ where: { projectId, deletedAt: null } }),
+        tx.summary.count({ where: { projectId, deletedAt: null } }),
+        tx.quiz.count({ where: { projectId, deletedAt: null } }),
+        tx.quizAttempt.count({ where: { version: { quiz: { projectId } } } }),
+      ]);
+      return {
+        projectId,
+        title: project.title,
+        impactRevision: project.revision,
+        notes,
+        summaries,
+        quizzes,
+        retainedAttempts: attempts,
+      };
+    }),
+  remove: (ownerId: string, projectId: string, impactRevision: number) =>
+    db.$transaction(async (tx) => {
+      const project = await lockProject(tx, ownerId, projectId, false);
+      checkRevision(project.revision, impactRevision);
+      await tx.project.update({
+        where: { id: project.id },
+        data: { deletedAt: new Date(), revision: { increment: 1 } },
+      });
+    }),
   setArchived: (
     ownerId: string,
     projectId: string,

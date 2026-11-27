@@ -391,7 +391,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
   - **Accept when** Archiving hides the project from the active list, restoring brings it back and both preserve its contents.
   - **Verify** Repeat each operation and compare project identity, listing and retained records.
 
-- [ ] **P3-T06 · Confirm project deletion** (MVP)
+- [x] **P3-T06 · Confirm project deletion** (MVP)
   - **Work and purpose** Report affected content, require explicit confirmation and apply the approved retention policy atomically so a folder action cannot erase historical attempts accidentally.
   - **Files** `server/src/services/projects.service.ts`, `server/src/repositories/projects.repository.ts`, `server/tests/projects/deletion.test.ts` · **Depends on** P3-T03, P3-T05
   - **Output** Deletion preview and confirmed project removal behavior.

@@ -4,6 +4,33 @@ import type { ProjectsService } from '@/services/projects.service.js';
 import { UserHandleError } from '@/utils/error-handler/userErrorHandler.js';
 import type { ProjectListInput } from '@/utils/input-validators/projects.js';
 
+export const deletionPreview =
+  (service: ProjectsService) =>
+  async (req: AuthRequest, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      res.status(200).json({
+        data: await service.deletionPreview(req.account!.id, req.params.projectId!),
+      });
+    } catch (error) {
+      UserHandleError(error, next);
+    }
+  };
+
+export const deleteProject =
+  (service: ProjectsService) =>
+  async (req: AuthRequest, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      await service.remove(
+        req.account!.id,
+        req.params.projectId!,
+        req.body.impactRevision,
+      );
+      res.status(204).end();
+    } catch (error) {
+      UserHandleError(error, next);
+    }
+  };
+
 export const archiveProject =
   (service: ProjectsService, archived: boolean) =>
   async (req: AuthRequest, res: Response, next: NextFunction): Promise<void> => {

@@ -49,3 +49,10 @@ export const updateProjectSchema = z
   .refine((value) => Object.keys(value).length > 1);
 
 export type UpdateProjectInput = z.infer<typeof updateProjectSchema>;
+
+export const deleteProjectSchema = z
+  .object({
+    confirmed: z.literal(true),
+    impactRevision: z.number().int().positive(),
+  })
+  .strict();

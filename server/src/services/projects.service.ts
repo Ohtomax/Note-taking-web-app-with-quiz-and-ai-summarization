@@ -5,6 +5,10 @@ import { ServiceError } from '@/utils/error-handler/ServiceError.js';
 import type { UpdateProjectInput } from '@/utils/input-validators/projects.js';
 
 export const createProjectsService = (repository: ProjectsRepository) => ({
+  deletionPreview: (ownerId: string, projectId: string) =>
+    repository.deletionPreview(ownerId, projectId),
+  remove: (ownerId: string, projectId: string, impactRevision: number) =>
+    repository.remove(ownerId, projectId, impactRevision),
   setArchived: (
     ownerId: string,
     projectId: string,

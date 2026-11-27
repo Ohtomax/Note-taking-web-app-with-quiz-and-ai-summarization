@@ -165,3 +165,70 @@ test('P3-T05 project archive and restore converge and preserve contents', async 
     );
   });
 });
+
+test('P3-T06 project deletion rejects stale impact and preserves historical attempts', async () => {
+  await withWorkspace(async ({ db, project, api }) => {
+    await db.note.create({ data: { projectId: project.id, title: 'Keep' } });
+    const quiz = await db.quiz.create({
+      data: {
+        projectId: project.id,
+        title: 'Quiz',
+        versions: { create: { version: 1, difficulty: 'EASY', promptVersion: 'test' } },
+      },
+      include: { versions: true },
+    });
+    const attempt = await db.quizAttempt.create({
+      data: {
+        versionId: quiz.versions[0]!.id,
+        requestKey: randomUUID(),
+        mode: 'EXAM',
+        totalQuestions: 1,
+        status: 'COMPLETED',
+        correctCount: 1,
+        answeredCount: 1,
+        finishedAt: new Date(),
+      },
+    });
+    const preview = await api
+      .get('/api/v1/projects/' + project.id + '/deletion-preview')
+      .set('Authorization', 'Bearer alice');
+    assert.equal(preview.body.data.notes, 1);
+    assert.equal(preview.body.data.retainedAttempts, 1);
+    await api
+      .patch('/api/v1/projects/' + project.id)
+      .set('Authorization', 'Bearer alice')
+      .send({ expectedRevision: 1, title: 'Changed' });
+    assert.equal(
+      (
+        await api
+          .delete('/api/v1/projects/' + project.id)
+          .set('Authorization', 'Bearer alice')
+          .send({ confirmed: true, impactRevision: 1 })
+      ).status,
+      409,
+    );
+    assert.equal(
+      (
+        await api
+          .delete('/api/v1/projects/' + project.id)
+          .set('Authorization', 'Bearer alice')
+          .send({ confirmed: false, impactRevision: 2 })
+      ).status,
+      400,
+    );
+    assert.equal(
+      (
+        await api
+          .delete('/api/v1/projects/' + project.id)
+          .set('Authorization', 'Bearer alice')
+          .send({ confirmed: true, impactRevision: 2 })
+      ).status,
+      204,
+    );
+    assert.equal(
+      (await db.quizAttempt.findUniqueOrThrow({ where: { id: attempt.id } }))
+        .correctCount,
+      1,
+    );
+  });
+});

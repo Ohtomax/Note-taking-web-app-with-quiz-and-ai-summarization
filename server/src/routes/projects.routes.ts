@@ -9,6 +9,7 @@ import { projectListSchema } from '@/utils/input-validators/projects.js';
 import { projectParamsSchema } from '@/utils/input-validators/projects.js';
 import { updateProjectSchema } from '@/utils/input-validators/projects.js';
 import { revisionSchema } from '@/utils/input-validators/projects.js';
+import { deleteProjectSchema } from '@/utils/input-validators/projects.js';
 import type { UserService } from '@/services/user.service.js';
 import type { ProjectsService } from '@/services/projects.service.js';
 import type { TokenVerifier } from '@/types/auth.type.js';
@@ -20,6 +21,17 @@ export const createProjectsRouter = (
 ) => {
   const router = Router();
   router.use(createVerifyToken(verify), synchronizeUser(users), verifyUser);
+  router.get(
+    '/:projectId/deletion-preview',
+    validate('params', projectParamsSchema),
+    projectsController.deletionPreview(service),
+  );
+  router.delete(
+    '/:projectId',
+    validate('params', projectParamsSchema),
+    validate('body', deleteProjectSchema),
+    projectsController.deleteProject(service),
+  );
   router.post(
     '/:projectId/archive',
     validate('params', projectParamsSchema),
