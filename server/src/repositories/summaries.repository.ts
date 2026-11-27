@@ -2,7 +2,10 @@ import type { PrismaClient } from '@/generated/prisma/client.js';
 import { lockProject } from './workspace.repository.js';
 import { jsonValue } from './ai-generation.repository.js';
 import { storedGenerationSchema } from '@/utils/input-validators/generations.js';
-import { summarySettingsSchema } from '@/utils/input-validators/summaries.js';
+import {
+  summarySettingsSchema,
+  type UpdateSummaryInput,
+} from '@/utils/input-validators/summaries.js';
 import { summaryResultSchema } from '@/ai/schemas/summary.js';
 import { ServiceError } from '@/utils/error-handler/ServiceError.js';
 const sourceSelect = {
@@ -53,6 +56,53 @@ function projectSummary<
   return { ...row, sources, staleSources: sources.some((source) => source.stale) };
 }
 export const createSummariesRepository = (db: PrismaClient) => ({
+  update: (ownerId: string, id: string, input: UpdateSummaryInput) =>
+    db.$transaction(async (tx) => {
+      const summary = await tx.summary.findFirst({
+        where: { id, deletedAt: null, project: { ownerId, deletedAt: null } },
+        select: summarySelect,
+      });
+      if (!summary)
+        throw new ServiceError('RESOURCE_NOT_FOUND', 'Resource not found', 404);
+      await lockProject(tx, ownerId, summary.projectId);
+      const current = await tx.summary.findFirst({
+        where: { id, deletedAt: null },
+        select: summarySelect,
+      });
+      if (!current)
+        throw new ServiceError('RESOURCE_NOT_FOUND', 'Resource not found', 404);
+      const settings = summarySettingsSchema.parse(current.settings);
+      const content = summaryResultSchema(
+        settings,
+        current.sources.map((source) => source.sourceKey),
+      ).parse(input.content ?? current.content);
+      const title = input.title ?? input.content?.title ?? current.title;
+      const updated = await tx.summary.update({
+        where: { id },
+        data: { title, content: jsonValue({ ...content, title }) },
+        select: summarySelect,
+      });
+      await tx.project.update({
+        where: { id: current.projectId },
+        data: { revision: { increment: 1 } },
+      });
+      return projectSummary(updated);
+    }),
+  remove: (ownerId: string, id: string) =>
+    db.$transaction(async (tx) => {
+      const summary = await tx.summary.findFirst({
+        where: { id, deletedAt: null, project: { ownerId, deletedAt: null } },
+        select: { projectId: true },
+      });
+      if (!summary)
+        throw new ServiceError('RESOURCE_NOT_FOUND', 'Resource not found', 404);
+      await lockProject(tx, ownerId, summary.projectId);
+      await tx.summary.update({ where: { id }, data: { deletedAt: new Date() } });
+      await tx.project.update({
+        where: { id: summary.projectId },
+        data: { revision: { increment: 1 } },
+      });
+    }),
   save: (ownerId: string, projectId: string, generationId: string) =>
     db.$transaction(async (tx) => {
       await lockProject(tx, ownerId, projectId);

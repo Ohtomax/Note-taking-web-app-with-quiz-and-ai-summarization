@@ -24,6 +24,7 @@ export const summaryContentSchema = z
   })
   .strict();
 export type SummaryContent = z.infer<typeof summaryContentSchema>;
+export type UpdateSummaryInput = z.infer<typeof updateSummarySchema>;
 export const updateSummarySchema = z
   .object({
     title: z.string().trim().min(1).max(200).optional(),

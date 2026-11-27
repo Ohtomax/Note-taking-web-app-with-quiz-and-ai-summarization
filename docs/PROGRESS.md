@@ -198,3 +198,5 @@ Every frontend task has its own commit and push to main, including implemented t
 - **P4-T13 completed 2026-11-27** Large multi-note and full-folder fixtures cover map/reduce and source metadata. Interrupted chunks produce no completed draft or saved summary.
 
 - **P4-T14 completed 2026-11-27** HTTP/database fixture verifies idempotent atomic saves, retained source metadata, stale indicators after edits/removal, owner-only history and no provider calls on reread.
+
+- **P4-T15 completed 2026-11-27** HTTP fixtures verify free edits/rename/delete, foreign rejection and unchanged saved originals after failed and successful regeneration previews. Acceptance saves a separate new summary.

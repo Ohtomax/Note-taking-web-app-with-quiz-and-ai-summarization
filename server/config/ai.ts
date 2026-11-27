@@ -20,7 +20,10 @@ export function createStudyServices(db: PrismaClient, client: AIClient) {
     usage: aiUsageService,
   });
   return {
-    summariesService: createSummariesService(createSummariesRepository(db)),
+    summariesService: createSummariesService(
+      createSummariesRepository(db),
+      createSummaryGenerationService(generationService),
+    ),
     aiUsageService,
     generationService,
     summaryGenerationService: createSummaryGenerationService(generationService),

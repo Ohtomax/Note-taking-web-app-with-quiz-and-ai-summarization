@@ -642,7 +642,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
   - **Accept when** Saved content can be reread without a provider call and a revised or removed source is identified.
   - **Verify** Save a summary, change one source and remove another, then read its owner-scoped history and check the call count.
 
-- [ ] **P4-T15 · Manage saved summaries** (MVP)
+- [x] **P4-T15 · Manage saved summaries** (MVP)
   - **Work and purpose** Allow owners to edit text, rename or delete a summary. Route explicit regeneration through the metered generator while preserving the saved original until a replacement is accepted.
   - **Files** `server/src/controllers/summaries.controller.ts`, `server/src/services/summaries.service.ts`, `server/tests/summaries` · **Depends on** P4-T10, P4-T14
   - **Output** Summary lifecycle API for editing and regeneration.

@@ -71,6 +71,18 @@ export function createApp(
   if (services) {
     if (services.summariesService) {
       app.use(
+        '/api/v1/summaries/:summaryId/regenerate',
+        services.aiLimiter ??
+          ((_req, _res, next) =>
+            next(
+              new ServiceError(
+                'AI_UNAVAILABLE',
+                'Generation admission is unavailable.',
+                503,
+              ),
+            )),
+      );
+      app.use(
         '/api/v1/projects/:projectId/summaries',
         createSavedSummaryRouter(services, services.summariesService),
       );
