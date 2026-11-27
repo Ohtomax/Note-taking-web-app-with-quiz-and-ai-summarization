@@ -544,7 +544,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
 
 ### Task checklist
 
-- [ ] **P4-T01 · Configure the backend AI client** (MVP)
+- [x] **P4-T01 · Configure the backend AI client** (MVP)
   - **Work and purpose** Wrap the selected provider behind a small generation service, validate its server-only configuration with Zod and provide a deterministic test adapter.
   - **Files** `server/src/ai`, `server/src/services/ai.service.ts`, `server/tests/ai` · **Depends on** None
   - **Output** Configured production client and mock client with the same result contract.

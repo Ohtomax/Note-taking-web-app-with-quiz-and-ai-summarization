@@ -53,3 +53,9 @@ Persist generation state in AIUsage as RESERVED/RUNNING/SUCCEEDED/FAILED/UNCERTA
 Success covers chunks A, B and C, validates the three results and reduces their source keys into one artifact. Failure after B records A/B usage and the failed/uncertain state, saves no complete artifact and releases only unused reservation capacity. The same request key retrieves that state and starts no new provider calls. A new explicitly authorized generation re-resolves current source revisions.
 
 For an excerpt, offsets resolve against the server-owned plainText at the specified revision. A changed revision fails before provider access. The UI identifies the external provider before sending and shows source coverage and limits.
+
+## Phase 4 implementation settings
+
+The server adapter uses AI SDK 4 and its OpenAI-compatible provider with the Groq endpoint, following the requested SDK major and the project provider decision. AI remains disabled by default. The owner can later supply AI_API_KEY and set AI_ENABLED=true; AI_MODEL defaults to openai/gpt-oss-120b. Missing enabled configuration fails with a redacted message. No live credentials or account settings were changed. Production never selects the deterministic adapter.
+
+SDK 4 is marked unsupported in the official documentation; this implementation retains the requested major. Treat a supported SDK migration and dependency advisories as release follow-up. Contract checks use a synthetic HTTP response, not a live Groq call. See [AI SDK 4 generateObject](https://v4.ai-sdk.dev/docs/reference/ai-sdk-core/generate-object), [compatible provider configuration](https://v4.ai-sdk.dev/providers/ai-sdk-providers/openai), and [Groq structured output](https://console.groq.com/docs/structured-outputs).

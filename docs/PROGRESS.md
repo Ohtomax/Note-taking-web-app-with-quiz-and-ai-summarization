@@ -170,3 +170,5 @@ Every frontend task has its own commit and push to main, including implemented t
 - **P3-T23 completed 2026-11-27** Profile settings validate display names, submit only permitted fields, refresh cached profiles and isolate account changes. Reload, invalid input and second-account tests pass; typecheck, lint and production build pass.
 
 - **P3-T24 completed 2026-11-27** Real React-to-HTTP-to-Prisma workflow and both-direction foreign-endpoint snapshots pass. Final suite: 22 backend unit, 28 database and 18 frontend tests; strict checks and builds pass. Live Firebase and visual QA remain deferred as documented.
+
+- **P4-T01 completed 2026-11-27** Three adapter/configuration tests, strict types and lint pass. Enabled configuration is redacted on error; provider setup and live keys remain owner work.

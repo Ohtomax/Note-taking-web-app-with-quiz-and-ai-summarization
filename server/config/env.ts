@@ -57,8 +57,23 @@ const environmentSchema = z
     }),
     FIREBASE_SERVICE_ACCOUNT: optionalValue,
     AI_API_KEY: optionalValue,
+    AI_ENABLED: z
+      .enum(['true', 'false'])
+      .default('false')
+      .transform((value) => value === 'true'),
+    AI_MODEL: z
+      .string()
+      .regex(/^[a-zA-Z0-9/_.-]+$/)
+      .max(100)
+      .default('openai/gpt-oss-120b'),
   })
   .superRefine((config, context) => {
+    if (config.AI_ENABLED && !config.AI_API_KEY)
+      context.addIssue({
+        code: 'custom',
+        path: ['AI_API_KEY'],
+        message: 'Required when AI is enabled',
+      });
     if (config.FIREBASE_SERVICE_ACCOUNT) {
       try {
         serviceAccountSchema.parse(JSON.parse(config.FIREBASE_SERVICE_ACCOUNT));
