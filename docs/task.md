@@ -740,7 +740,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
 
 ### Task checklist
 
-- [ ] **P5-T01 · Choose source material** (MVP)
+- [x] **P5-T01 · Choose source material** (MVP)
   - **Work and purpose** Build a shared picker for a passage, one note, selected notes in one project, or the whole project. Show what will be sent to the external AI provider before generation.
   - **Files** `client/src/features/notes/SourcePicker.tsx` · **Depends on** None
   - **Output** A source picker available from both the note editor and project detail view.

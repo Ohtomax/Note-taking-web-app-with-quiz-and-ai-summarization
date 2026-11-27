@@ -6,6 +6,7 @@ import { useNoteSave } from './hooks/useNoteSave';
 import { AsyncState } from '@/components/ui/AsyncState';
 import { extractPlainText } from '@/types/note-content';
 import type { Note } from '@/types/workspace';
+import { StudySources } from './StudySources';
 
 function NoteForm({ note, readOnly }: { note: Note; readOnly: boolean }) {
   const save = useNoteSave(note, readOnly);
@@ -32,6 +33,11 @@ function NoteForm({ note, readOnly }: { note: Note; readOnly: boolean }) {
         content={save.draft.content}
         disabled={readOnly}
         onChange={(content) => save.change({ ...save.draft, content })}
+      />
+      <StudySources
+        projectId={note.projectId}
+        note={note}
+        dirty={save.status !== 'saved'}
       />
       <div className="mt-5 flex flex-wrap items-center gap-4">
         <button

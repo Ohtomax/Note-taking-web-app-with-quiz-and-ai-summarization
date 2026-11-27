@@ -8,6 +8,7 @@ import { Modal } from '@/components/ui/Modal';
 import { Pagination } from '@/components/ui/Pagination';
 import { initialQuery } from './project-display';
 import type { NoteItem, ListQuery } from '@/types/workspace';
+import { StudySources } from '@/features/notes/StudySources';
 
 function MoveNoteDialog({ note, onClose }: { note: NoteItem; onClose: () => void }) {
   const [query, setQuery] = useState(initialQuery);
@@ -91,6 +92,7 @@ function ProjectWorkspace({ projectId }: { projectId: string }) {
       />
       {data && (
         <>
+          {!data.archivedAt && <StudySources projectId={projectId} />}
           <div className="my-5 flex flex-wrap items-center justify-between gap-4">
             <div>
               <h1 className="text-3xl font-semibold">{data.title}</h1>

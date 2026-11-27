@@ -2,10 +2,11 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { notesApi } from '@/api/notes';
 import { useSession } from '@/store/session';
 import type { ListQuery } from '@/types/workspace';
-export function useNotes(projectId: string, query: ListQuery) {
+export function useNotes(projectId: string, query: ListQuery, enabled = true) {
   const uid = useSession((state) => state.user!.uid);
   return useQuery({
     queryKey: [uid, 'notes', projectId, query],
+    enabled,
     queryFn: ({ signal }) => notesApi.list(projectId, query, signal),
   });
 }
