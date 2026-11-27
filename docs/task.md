@@ -628,7 +628,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
   - **Accept when** A selection sends only the selected range, and successful or failed generation leaves source content and revision unchanged.
   - **Verify** Generate both scopes from the same note and compare the mock input and stored note before and after.
 
-- [ ] **P4-T13 · Generate combined summaries** (MVP)
+- [x] **P4-T13 · Generate combined summaries** (MVP)
   - **Work and purpose** Process multiple selected notes and full folders with the coverage manifest, then combine related topics while retaining citations to each contributing note.
   - **Files** `server/src/services/summary-generation.service.ts`, `server/tests/ai/folder-summaries.test.ts` · **Depends on** P4-T03, P4-T06, P4-T12
   - **Output** Multi-note and folder summaries with source references.

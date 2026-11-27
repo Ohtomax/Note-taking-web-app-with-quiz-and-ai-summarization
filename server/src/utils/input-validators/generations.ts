@@ -12,10 +12,7 @@ export const generationParamsSchema = z
 export const summaryGenerationSchema = z
   .object({
     operation: z.literal('SUMMARY'),
-    source: sourceRequestSchema.refine(
-      (value) => value.scope === 'NOTE' || value.scope === 'EXCERPT',
-      'This endpoint currently supports notes and excerpts.',
-    ),
+    source: sourceRequestSchema,
     settings: summarySettingsSchema,
   })
   .strict();
