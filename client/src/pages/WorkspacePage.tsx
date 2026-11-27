@@ -1,18 +1,33 @@
+import { useQuery } from '@tanstack/react-query';
+import { Link } from 'react-router-dom';
+import { apiRequest } from '@/api/client';
+import { useSession } from '@/store/session';
+import { AsyncState } from '@/components/ui/AsyncState';
+
 export default function WorkspacePage() {
+  const uid = useSession((state) => state.user!.uid);
+  const projects = useQuery({
+    queryKey: [uid, 'projects', 'count'],
+    queryFn: () => apiRequest<{ total: number }>('/projects?pageSize=1'),
+  });
   return (
-    <main className="flex min-h-screen items-center bg-slate-50 px-6 py-16 text-slate-900">
-      <section className="mx-auto w-full max-w-2xl rounded-2xl border border-slate-200 bg-white p-8 shadow-sm sm:p-12">
-        <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
-          Your study workspace
-        </h1>
-        <p className="mt-5 max-w-lg text-lg leading-relaxed text-slate-600">
-          Organize your notes, build study guides, and practice what you learn.
+    <section>
+      <div className="flex flex-wrap items-center justify-between gap-4">
+        <h1 className="text-3xl font-semibold tracking-tight">My projects</h1>
+        <Link className="rounded-lg bg-teal-800 px-4 py-2 text-white" to="/projects/new">
+          New project
+        </Link>
+      </div>
+      <AsyncState
+        loading={projects.isPending}
+        error={projects.error}
+        retry={() => void projects.refetch()}
+      />
+      {projects.data && (
+        <p className="mt-6 text-slate-600">
+          {projects.data.total} projects in your workspace
         </p>
-        <p className="mt-8 border-t border-slate-100 pt-6 text-sm text-slate-500">
-          The project foundation is ready. Note-taking and study features will arrive in
-          the next development phases.
-        </p>
-      </section>
-    </main>
+      )}
+    </section>
   );
 }

@@ -2,6 +2,7 @@ import { lazy, Suspense } from 'react';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { ProtectedRoute } from './ProtectedRoute';
 import { useSession } from '@/store/session';
+import { WorkspaceLayout } from '@/features/dashboard/WorkspaceLayout';
 
 const WorkspacePage = lazy(() => import('@/pages/WorkspacePage'));
 const AuthPage = lazy(() => import('@/features/auth/AuthPage'));
@@ -23,7 +24,17 @@ export function App() {
             element={!loading && user ? <Navigate to="/" replace /> : <AuthPage />}
           />
           <Route element={<ProtectedRoute />}>
-            <Route path="/*" element={<WorkspacePage />} />
+            <Route element={<WorkspaceLayout />}>
+              <Route path="/" element={<WorkspacePage />} />
+              <Route
+                path="/projects/new"
+                element={<p>Create a project from your library in the next task.</p>}
+              />
+              <Route
+                path="/settings"
+                element={<p>Profile settings will be available in P3-T23.</p>}
+              />
+            </Route>
           </Route>
           <Route path="*" element={<p className="p-8">Page not found.</p>} />
         </Routes>

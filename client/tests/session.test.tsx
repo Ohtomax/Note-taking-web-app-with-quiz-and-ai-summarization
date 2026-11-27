@@ -23,13 +23,11 @@ beforeEach(() => resolveSession(null));
 it('attaches the current Firebase token and clears drafts and queries on account changes', async () => {
   resolveSession(alice);
   queryClient.setQueryData(['alice', 'projects'], ['private']);
-  useDrafts
-    .getState()
-    .setDraft('alice:note', {
-      title: 'Private',
-      revision: 1,
-      content: { type: 'doc', content: [] },
-    });
+  useDrafts.getState().setDraft('alice:note', {
+    title: 'Private',
+    revision: 1,
+    content: { type: 'doc', content: [] },
+  });
   const request = vi
     .spyOn(apiClient, 'request')
     .mockResolvedValue({ data: { ok: true } });

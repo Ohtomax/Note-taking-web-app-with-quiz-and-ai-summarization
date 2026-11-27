@@ -152,3 +152,5 @@ The pending frontend changes are preserved in the original folder. No deployment
 - **P3-T16 implemented, live verification deferred 2026-11-27** Auth screens and SDK-flow tests pass; live Firebase setup remains deferred.
 
 - **P3-T17 completed 2026-11-27** Session tests reject old responses and clear private caches; Axios adds Firebase tokens.
+
+- **P3-T18 implemented, live verification deferred 2026-11-27** Dashboard navigation and keyboard-accessible controls pass component tests; visual QA deferred.
