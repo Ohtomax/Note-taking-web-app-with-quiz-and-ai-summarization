@@ -11,17 +11,19 @@ import { createApiLimiter } from '../../src/utils/rate-limiter/apiLimiter.ts';
 import { createTestClient } from './setup.ts';
 import { createNotesRepository } from '../../src/repositories/notes.repository.ts';
 import { createNotesService } from '../../src/services/notes.service.ts';
-import { createAIUsageRepository } from '../../src/repositories/ai-usage.repository.ts';
-import { createAIUsageService } from '../../src/services/ai-usage.service.ts';
+import { createStudyServices } from '../../config/ai.ts';
+import { createMockAIClient, type AIClient } from '../../src/ai/client.ts';
 
 export const withWorkspace = async (
   run: (fixture: Awaited<ReturnType<typeof createWorkspace>>) => Promise<void>,
+  client?: AIClient,
 ) => {
-  const fixture = await createWorkspace();
+  const fixture = await createWorkspace(client);
   try {
     await run(fixture);
   } finally {
     const { db, alice, bob } = fixture;
+    await db.aIUsage.deleteMany({ where: { userId: { in: [alice.id, bob.id] } } });
     const ownerFilter = { ownerId: { in: [alice.id, bob.id] } };
     const quizFilter = { project: ownerFilter };
     const versionFilter = { quiz: quizFilter };
@@ -45,7 +47,7 @@ export const withWorkspace = async (
   }
 };
 
-const createWorkspace = async () => {
+const createWorkspace = async (client?: AIClient) => {
   const db = createTestClient();
   const alice = await db.user.create({ data: { firebaseUid: randomUUID() } });
   const bob = await db.user.create({ data: { firebaseUid: randomUUID() } });
@@ -56,7 +58,14 @@ const createWorkspace = async () => {
     data: { ownerId: bob.id, title: 'Networking' },
   });
   const app = createApp(undefined, parseEnvironment({}), () => {}, {
-    aiUsageService: createAIUsageService(createAIUsageRepository(db)),
+    ...createStudyServices(
+      db,
+      client ??
+        createMockAIClient(() => {
+          throw new Error('No mock response provided');
+        }),
+    ),
+    aiLimiter: createApiLimiter(new MemoryStore(), 500),
     userService: createUserService(createUserRepository(db)),
     projectsService: createProjectsService(createProjectsRepository(db)),
     notesService: createNotesService(createNotesRepository(db)),

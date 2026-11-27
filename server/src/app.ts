@@ -17,8 +17,15 @@ import { createNotesRouter } from '@/routes/notes.routes.js';
 import { ServiceError } from '@/utils/error-handler/ServiceError.js';
 import type { AIUsageService } from '@/services/ai-usage.service.js';
 import { createAIUsageRouter } from '@/routes/ai-usage.routes.js';
+import type { SummaryGenerationService } from '@/services/summary-generation.service.js';
+import {
+  createSummaryGenerationRouter,
+  createGenerationStatusRouter,
+} from '@/routes/summaries.routes.js';
 
 export interface AppServices {
+  summaryGenerationService?: SummaryGenerationService;
+  aiLimiter?: RequestHandler;
   aiUsageService?: AIUsageService;
   notesService?: NotesService;
   projectsService?: ProjectsService;
@@ -57,6 +64,25 @@ export function createApp(
       }),
   );
   if (services) {
+    if (services.summaryGenerationService) {
+      app.use(
+        '/api/v1/projects/:projectId/generations',
+        services.aiLimiter ??
+          ((_req, _res, next) =>
+            next(
+              new ServiceError(
+                'AI_UNAVAILABLE',
+                'Generation admission is unavailable.',
+                503,
+              ),
+            )),
+        createSummaryGenerationRouter(services, services.summaryGenerationService),
+      );
+      app.use(
+        '/api/v1/generations',
+        createGenerationStatusRouter(services, services.summaryGenerationService),
+      );
+    }
     if (services.aiUsageService)
       app.use('/api/v1/ai-usage', createAIUsageRouter(services, services.aiUsageService));
     if (services.notesService)

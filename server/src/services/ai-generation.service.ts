@@ -4,7 +4,7 @@ import { AIProviderError } from '@/ai/client.js';
 import { createCallRunner } from '@/ai/call-policy.js';
 import { planSources, generationLimits } from '@/ai/chunking/plan.js';
 import { createAIService } from './ai.service.js';
-import type { AISourcesService } from './ai-sources.service.js';
+import type { AISourcesService, SourceManifest } from './ai-sources.service.js';
 import { hashContent } from './ai-sources.service.js';
 import type { SourceRequest } from '@/utils/input-validators/ai-sources.js';
 import type { AIGenerationRepository } from '@/repositories/ai-generation.repository.js';
@@ -39,7 +39,7 @@ export const createAIGenerationService = (dependencies: {
       operation: AIOperation,
       source: SourceRequest,
       settings: Record<string, unknown>,
-      schema: z.ZodType<T>,
+      schema: z.ZodType<T> | ((manifest: SourceManifest) => z.ZodType<T>),
     ) => {
       const manifest = await sources.resolve(userId, projectId, source);
       const inputHash = hashContent(
@@ -101,7 +101,7 @@ export const createAIGenerationService = (dependencies: {
           operation,
           settings,
           manifest,
-          schema,
+          typeof schema === 'function' ? schema(manifest) : schema,
           runner,
         );
         return await repository.complete(userId, record.id, {

@@ -15,8 +15,9 @@ import { createProjectsRepository } from '@/repositories/projects.repository.js'
 import { createProjectsService } from '@/services/projects.service.js';
 import { createNotesService } from '@/services/notes.service.js';
 import { createNotesRepository } from '@/repositories/notes.repository.js';
-import { createAIUsageRepository } from '@/repositories/ai-usage.repository.js';
-import { createAIUsageService } from '@/services/ai-usage.service.js';
+import { createStudyServices } from './ai.ts';
+import { createAIClient, parseAIConfig } from '@/ai/client.js';
+import { createAIGenerationLimiter } from '@/utils/rate-limiter/ai.js';
 
 export const createRuntime = async (environment: Environment) => {
   const firebase = createFirebaseVerifier(environment);
@@ -31,7 +32,17 @@ export const createRuntime = async (environment: Environment) => {
   let services: AppServices | undefined;
   if (database && firebase.app && redis?.status === 'ready') {
     services = {
-      aiUsageService: createAIUsageService(createAIUsageRepository(database)),
+      ...createStudyServices(
+        database,
+        createAIClient(
+          parseAIConfig({
+            enabled: environment.AI_ENABLED,
+            apiKey: environment.AI_API_KEY,
+            model: environment.AI_MODEL,
+          }),
+        ),
+      ),
+      aiLimiter: createAIGenerationLimiter(createRedisStore(redis, 'generation')),
       notesService: createNotesService(createNotesRepository(database)),
       projectsService: createProjectsService(createProjectsRepository(database)),
       userService: createUserService(createUserRepository(database)),

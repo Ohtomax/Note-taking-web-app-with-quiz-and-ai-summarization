@@ -621,7 +621,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
   - **Accept when** Unknown formats, missing required content and citations outside the manifest fail validation.
   - **Verify** Parse valid fixtures for each format and length, then try an invented source ID and an oversized result.
 
-- [ ] **P4-T12 · Generate single-note and excerpt summaries** (MVP)
+- [x] **P4-T12 · Generate single-note and excerpt summaries** (MVP)
   - **Work and purpose** Connect the summary prompt and validator to authorized whole notes and selected ranges, allowing important concepts to be extracted without changing source notes.
   - **Files** `server/src/services/summary-generation.service.ts`, `server/src/controllers/summaries.controller.ts`, `server/src/routes/summaries.routes.ts` · **Depends on** P4-T02, P4-T05, P4-T06, P4-T10, P4-T11
   - **Output** Single-note and selection generation endpoint.

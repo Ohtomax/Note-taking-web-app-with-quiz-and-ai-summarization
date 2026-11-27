@@ -192,3 +192,5 @@ Every frontend task has its own commit and push to main, including implemented t
 - **P4-T10 completed 2026-11-27** Concurrent identical requests and dropped-response retries perform one provider call and one usage charge. Changed input conflicts, new keys regenerate, and generation retrieval is owner-scoped.
 
 - **P4-T11 completed 2026-11-27** All twelve length/format combinations pass fixtures. Missing sections, unsupported formats, invented citations and oversized output are rejected.
+
+- **P4-T12 completed 2026-11-27** Authenticated HTTP-to-Prisma tests verify exact excerpt-only prompts, complete note immutability and zero foreign provider calls. Production wiring is fail-closed until owner configuration.
