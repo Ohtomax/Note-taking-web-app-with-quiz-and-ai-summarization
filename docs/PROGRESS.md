@@ -248,3 +248,5 @@ Every frontend task has its own commit and push to main, including implemented t
 - **P5-T13 completed 2026-11-27** Database fixtures verify persistent location/order, owner-scoped unfinished lists, seven-day expiry and terminal abandon/write/submit rules. UI confirmation and resume links pass component tests.
 
 - **P5-T14 completed 2026-11-27** Keyboard-driven component flows complete all four question types in both modes. Practice reveals committed feedback; exams retain hidden grading, save drafts, navigate persisted locations and confirm final submission.
+
+- **P5-T15 completed 2026-11-27** UI results show score, elapsed time, correct/incorrect/skipped counts and source-linked review. HTTP fixtures prove a later author edit cannot change the attempted wording, key, score or review; unfinished/foreign results are protected.

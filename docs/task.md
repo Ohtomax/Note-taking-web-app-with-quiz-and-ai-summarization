@@ -838,7 +838,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
   - **Accept when** Practice unlocks feedback after recording the answer. Exam allows review of unanswered questions and shows an explicit final submission action.
   - **Verify** Complete a mixed quiz by keyboard in both modes, navigate back and reload before the last question.
 
-- [ ] **P5-T15 · Display results and answer review** (MVP)
+- [x] **P5-T15 · Display results and answer review** (MVP)
   - **Work and purpose** Show recorded score, percentage, elapsed time, correct, incorrect and unanswered counts, and per-question submitted answers with allowed explanations and source references.
   - **Files** `client/src/features/quizzes/QuizResults.tsx`, `server/src/services/quiz-attempt.service.ts` · **Depends on** P5-T12, P5-T14
   - **Output** A completed-attempt results page with version-specific review.

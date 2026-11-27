@@ -117,3 +117,8 @@ export const openAttemptPageSchema = z.object({
   page: z.number().int(),
   pageSize: z.number().int(),
 });
+
+export const attemptResultResponseSchema = attemptResponseSchema.refine(
+  (response) => response.data.status === 'COMPLETED' && Boolean(response.data.result),
+  'Completed results are required',
+);

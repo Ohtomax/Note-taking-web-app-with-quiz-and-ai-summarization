@@ -111,6 +111,16 @@ export function playerAttempt(row: AttemptRow) {
   };
 }
 export const createQuizAttemptService = (repository: QuizAttemptRepository) => ({
+  results: async (ownerId: string, id: string) => {
+    const row = await repository.load(ownerId, id);
+    if (row.status !== 'COMPLETED')
+      throw new ServiceError(
+        'RESULTS_UNAVAILABLE',
+        'Finish this attempt before viewing results.',
+        409,
+      );
+    return playerAttempt(row);
+  },
   open: repository.open,
   locate: async (ownerId: string, id: string, index: number) => {
     await repository.load(ownerId, id);

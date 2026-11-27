@@ -294,6 +294,12 @@ export default function QuizPlayer() {
           ) : attempt.status === 'COMPLETED' ? (
             <div role="status">
               <h2 className="text-xl font-semibold">Attempt completed</h2>
+              <Link
+                className="mt-3 inline-block text-teal-800 underline"
+                to={'/attempts/' + attempt.id + '/results'}
+              >
+                View results and answer review
+              </Link>
               <p className="mt-3">
                 Score: {attempt.result?.percentage?.toFixed(2) ?? 'Unavailable'}%
               </p>

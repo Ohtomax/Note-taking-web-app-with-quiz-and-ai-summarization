@@ -23,11 +23,17 @@ import {
   openAttemptQuerySchema,
 } from '@/utils/input-validators/quiz-attempt.validator.js';
 import { confirmDeleteSchema } from '@/utils/input-validators/saved-artifacts.js';
+import { quizAttemptResults } from '@/controllers/quiz-attempt.controller.js';
 export function createAttemptRouter(
   services: PrivateServices,
   attempts: QuizAttemptService,
 ) {
   const router = createPrivateRouter(services);
+  router.get(
+    '/:attemptId/results',
+    validate('params', attemptParamsSchema),
+    quizAttemptResults(attempts),
+  );
   router.get(
     '/in-progress',
     validate('query', openAttemptQuerySchema),

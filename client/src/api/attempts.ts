@@ -1,8 +1,13 @@
 import { apiRequest, queryString } from './client';
 import { openAttemptPageSchema } from '@/types/attempts';
+import { attemptResultResponseSchema } from '@/types/attempts';
 import type { SaveAnswerInput } from '@/types/attempts';
 import { attemptResponseSchema, type StartAttemptInput } from '@/types/attempts';
 export const attemptsApi = {
+  results: async (id: string, signal?: AbortSignal) =>
+    attemptResultResponseSchema.parse(
+      await apiRequest<unknown>('/attempts/' + id + '/results', signal ? { signal } : {}),
+    ),
   open: async (quizId: string | undefined, page: number, signal?: AbortSignal) =>
     openAttemptPageSchema.parse(
       await apiRequest<unknown>(
