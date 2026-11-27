@@ -210,3 +210,5 @@ Every frontend task has its own commit and push to main, including implemented t
 - **P4-T19 completed 2026-11-27** Four authenticated HTTP generation scopes pass using the metered engine. Stale revisions and foreign source selections make zero provider calls.
 
 - **P4-T20 completed 2026-11-27** Mixed valid questions pass; malformed JSON, wrong count, repeated prompts, invented citations and explanation mismatches fail. Four invalid HTTP generations save no versions/questions.
+
+- **P4-T21 completed 2026-11-27** Mixed quiz saves all questions, options, keys and captured sources together. Forced nested-save failure leaves no partial rows; repeated acceptance is stable and foreign authoring is hidden.

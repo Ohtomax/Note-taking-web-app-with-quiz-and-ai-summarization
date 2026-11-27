@@ -15,6 +15,7 @@ import type { ProjectsService } from '@/services/projects.service.js';
 import type { NotesService } from '@/services/notes.service.js';
 import { createNotesRouter } from '@/routes/notes.routes.js';
 import { ServiceError } from '@/utils/error-handler/ServiceError.js';
+import { createProjectQuizRouter, createQuizRouter } from '@/routes/quizzes.routes.js';
 import {
   createSavedSummaryRouter,
   createSummaryDetailRouter,
@@ -28,6 +29,7 @@ import {
 } from '@/routes/summaries.routes.js';
 
 export interface AppServices {
+  quizzesService?: import('@/services/quizzes.service.js').QuizzesService;
   quizGenerationService?: import('@/services/quiz-generation.service.js').QuizGenerationService;
   summariesService?: import('@/services/summaries.service.js').SummariesService;
   summaryGenerationService?: SummaryGenerationService;
@@ -70,6 +72,13 @@ export function createApp(
       }),
   );
   if (services) {
+    if (services.quizzesService) {
+      app.use(
+        '/api/v1/projects/:projectId/quizzes',
+        createProjectQuizRouter(services, services.quizzesService),
+      );
+      app.use('/api/v1/quizzes', createQuizRouter(services, services.quizzesService));
+    }
     if (services.summariesService) {
       app.use(
         '/api/v1/summaries/:summaryId/regenerate',

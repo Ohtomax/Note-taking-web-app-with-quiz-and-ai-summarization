@@ -11,6 +11,8 @@ import { createSummaryGenerationService } from '@/services/summary-generation.se
 import { createSummariesRepository } from '@/repositories/summaries.repository.js';
 import { createSummariesService } from '@/services/summaries.service.js';
 import { createQuizGenerationService } from '@/services/quiz-generation.service.js';
+import { createQuizzesRepository } from '@/repositories/quizzes.repository.js';
+import { createQuizzesService } from '@/services/quizzes.service.js';
 export function createStudyServices(db: PrismaClient, client: AIClient) {
   const aiUsageService = createAIUsageService(createAIUsageRepository(db));
   const generationService = createAIGenerationService({
@@ -21,6 +23,7 @@ export function createStudyServices(db: PrismaClient, client: AIClient) {
     usage: aiUsageService,
   });
   return {
+    quizzesService: createQuizzesService(createQuizzesRepository(db)),
     quizGenerationService: createQuizGenerationService(generationService),
     summariesService: createSummariesService(
       createSummariesRepository(db),

@@ -684,7 +684,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
   - **Accept when** Malformed or incomplete quizzes produce no saved questions or versions, and mixed quizzes follow their requested settings.
   - **Verify** Inject malformed JSON, repeated prompts, invented citations and a wrong number of questions and inspect persisted data.
 
-- [ ] **P4-T21 · Persist an immutable quiz version** (MVP)
+- [x] **P4-T21 · Persist an immutable quiz version** (MVP)
   - **Work and purpose** Store each accepted draft and its sources, questions, options and answer key atomically under a version ID so an attempt can always resolve the exact material it used.
   - **Files** `server/src/services/quizzes.service.ts`, `server/src/repositories/quizzes.repository.ts`, `server/tests/quizzes/versioning.test.ts` · **Depends on** P4-T19, P4-T20
   - **Output** Save and management-detail endpoints bound to immutable quiz versions.
