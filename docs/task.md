@@ -565,7 +565,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
   - **Accept when** Empty folders return a clear result, edits during collection are detected, and every eligible note appears exactly once.
   - **Verify** Compare the manifest against a multi-page fixture containing archived notes, then submit a mixed-owner selection.
 
-- [ ] **P4-T04 · Build bounded, source-grounded prompts** (MVP)
+- [x] **P4-T04 · Build bounded, source-grounded prompts** (MVP)
   - **Work and purpose** Place source IDs, revisions and note text in a data section separate from trusted generation instructions. Restrict citations to the provided material and omit unrelated user data.
   - **Files** `server/src/ai/prompts`, `server/tests/ai/prompts.test.ts` · **Depends on** P4-T01, P4-T02, P4-T03
   - **Output** Versioned summary and quiz prompt templates.

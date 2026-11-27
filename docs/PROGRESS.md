@@ -176,3 +176,5 @@ Every frontend task has its own commit and push to main, including implemented t
 - **P4-T02 completed 2026-11-27** Real PostgreSQL fixtures verify code-point offsets, current revisions and rejection of invalid or foreign sources before provider access.
 
 - **P4-T03 completed 2026-11-27** 125-note database fixture verifies stable paging, exclusions, empty projects and mixed-owner rejection. Parent locks keep collection consistent with note writers.
+
+- **P4-T04 completed 2026-11-27** Both prompt types pass all four scope fixtures with instruction-like source text. Trusted instructions and serialized source data remain separate, with explicit citation allowlists.
