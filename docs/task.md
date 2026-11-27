@@ -510,7 +510,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
   - **Accept when** Late acknowledgments cannot erase newer typing, retries preserve the draft and switching notes never sends one note’s content to another.
   - **Verify** Simulate delayed saves, offline edits, rapid navigation and competing tabs, then inspect local and server content.
 
-- [ ] **P3-T23 · Edit the signed-in profile** (MVP)
+- [x] **P3-T23 · Edit the signed-in profile** (MVP)
   - **Work and purpose** Add a settings form backed by the current-user profile API. Show editable display fields, validate them and refresh the signed-in account’s cached profile after saving.
   - **Files** `client/src/features/settings/ProfileForm.tsx`, `client/src/api/profile.ts` · **Depends on** P3-T17, P3-T18
   - **Output** An accessible profile settings screen with saved and error states.

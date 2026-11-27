@@ -162,3 +162,5 @@ The pending frontend changes are preserved in the original folder. No deployment
 - **P3-T21 completed 2026-11-27** Rich-text formatting, safe HTML normalization and explicit note saves pass tests.
 
 - **P3-T22 completed 2026-11-27** Serialized autosave preserves newer edits, retains drafts on offline/conflict errors, compares server versions, and aborts on navigation/account change. Five editor/autosave tests plus typecheck, lint and production build pass.
+
+- **P3-T23 completed 2026-11-27** Profile settings validate display names, submit only permitted fields, refresh cached profiles and isolate account changes. Reload, invalid input and second-account tests pass; typecheck, lint and production build pass.

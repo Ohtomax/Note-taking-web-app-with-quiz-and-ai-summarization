@@ -8,6 +8,7 @@ const ProjectLibrary = lazy(() => import('@/features/projects/ProjectLibrary'));
 const AuthPage = lazy(() => import('@/features/auth/AuthPage'));
 const ProjectDetail = lazy(() => import('@/features/projects/ProjectDetail'));
 const NotePage = lazy(() => import('@/features/notes/NotePage'));
+const ProfileForm = lazy(() => import('@/features/settings/ProfileForm'));
 
 export function App() {
   const { user, loading } = useSession();
@@ -34,10 +35,7 @@ export function App() {
                 path="/projects/new"
                 element={<Navigate to="/?create=true" replace />}
               />
-              <Route
-                path="/settings"
-                element={<p>Profile settings will be available in P3-T23.</p>}
-              />
+              <Route path="/settings" element={<ProfileForm />} />
             </Route>
           </Route>
           <Route path="*" element={<p className="p-8">Page not found.</p>} />
