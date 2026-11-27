@@ -586,7 +586,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
   - **Accept when** Material in the last chunk can influence the result and a failed chunk prevents a completed artifact.
   - **Verify** Place distinct concepts in the first and last chunks, inspect mock calls and interrupt a middle chunk.
 
-- [ ] **P4-T07 · Bound provider retries and duration** (MVP)
+- [x] **P4-T07 · Bound provider retries and duration** (MVP)
   - **Work and purpose** Set per-call timeouts and an overall deadline, classify transient failures, honor retry delays and account for actual calls so failed generations have predictable cost and duration.
   - **Files** `server/src/ai`, `server/src/services/ai.service.ts`, `server/tests/ai/retries.test.ts` · **Depends on** P4-T01, P4-T05
   - **Output** Provider call policy with bounded retry and recovery behavior.

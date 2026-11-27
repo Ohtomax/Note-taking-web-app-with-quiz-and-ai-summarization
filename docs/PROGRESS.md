@@ -182,3 +182,5 @@ Every frontend task has its own commit and push to main, including implemented t
 - **P4-T05 completed 2026-11-27** Boundary and Unicode coverage tests pass for long notes and many small notes. UTF-8 bytes conservatively estimate tokens; prompt/output headroom and bounded stage/retry reserves are explicit.
 
 - **P4-T06 completed 2026-11-27** First/last concept fixture survives bounded reduction. A middle chunk failure or invented source key prevents a completed result; every map prompt is preflighted before billing.
+
+- **P4-T07 completed 2026-11-27** Fake-clock fixtures verify retry-after delays, invalid-input no-retry and timeout uncertainty. Provider calls are individually observable and SDK retries remain disabled.
