@@ -996,7 +996,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
   - **Accept when** Admitted work stays within quota and concurrency bounds, repeated submissions reuse the same operation, and failed work releases reservations according to policy.
   - **Verify** Submit concurrent fixture requests with a controlled mock clock and inspect provider call counts, usage rows, and final quota.
 
-- [ ] **P6-T06 · Recheck quiz scoring and history integrity** (MVP)
+- [x] **P6-T06 · Recheck quiz scoring and history integrity** (MVP)
   - **Work and purpose** Run a fixed answer key through practice and exam modes for every question type. Cover duplicate submissions, interrupted attempts, quiz edits, and retakes of a saved version.
   - **Files** `server/tests/unit/quiz-scoring.test.ts`, `server/tests/integration/quiz-history.test.ts` · **Depends on** P6-T01
   - **Output** Scoring, answer disclosure, and version-history regression cases.

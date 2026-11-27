@@ -288,3 +288,5 @@ Phase 5 implementation status: 26 of 27 MVP task checkboxes are complete. P5-T26
 - **P6-T04 completed 2026-11-28** Summary and quiz HTTP cases pass for instruction-like source text, mixed-owner rejection before provider calls, exact source-data envelopes, fabricated citations, persistence guards and unchanged notes. Existing malformed and boundary fixtures remain active.
 
 - **P6-T05 completed 2026-11-28** Three API/DB checks pass: one remaining request under concurrency, stable replays, UTC lease recovery, fake-clock retry settlement and conservative timeout accounting. Provider and ledger counts reconcile; strict test types/lint pass.
+
+- **P6-T06 completed 2026-11-28** The all-type practice/exam key, interrupted reload, duplicate-finalization, post-edit historical review and replayed shuffled retake scenario passes with zero AI calls. Existing pure scorer and race/disclosure cases pass.
