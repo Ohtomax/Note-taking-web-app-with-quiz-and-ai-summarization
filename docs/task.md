@@ -989,7 +989,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
   - **Accept when** Foreign input causes zero provider calls, notes stay in the data portion of the request, and invalid output never becomes a saved artifact.
   - **Verify** Inspect mock request envelopes and compare saved artifact and source records for valid and rejected cases.
 
-- [ ] **P6-T05 · Verify AI quotas under concurrent requests** (MVP)
+- [x] **P6-T05 · Verify AI quotas under concurrent requests** (MVP)
   - **Work and purpose** Exercise simultaneous requests at the remaining quota boundary, duplicate submissions, timeouts, and retryable provider failures. Reconcile usage with the approved charging policy.
   - **Files** `server/tests/integration/ai-usage.test.ts`, `docs/AI_INTEGRATION.md` · **Depends on** P6-T01
   - **Output** Regression tests for quota reservations, concurrency, retries, and accounting.
