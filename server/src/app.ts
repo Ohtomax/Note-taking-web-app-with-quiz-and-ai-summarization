@@ -74,6 +74,18 @@ export function createApp(
   if (services) {
     if (services.quizzesService) {
       app.use(
+        '/api/v1/quizzes/:quizId/regenerate',
+        services.aiLimiter ??
+          ((_req, _res, next) =>
+            next(
+              new ServiceError(
+                'AI_UNAVAILABLE',
+                'Generation admission is unavailable.',
+                503,
+              ),
+            )),
+      );
+      app.use(
         '/api/v1/projects/:projectId/quizzes',
         createProjectQuizRouter(services, services.quizzesService),
       );

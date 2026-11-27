@@ -691,7 +691,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
   - **Accept when** A save commits the entire version or nothing, and the author’s management view requires ownership.
   - **Verify** Force a mid-save failure and compare row counts, then save and retrieve the full version as its owner.
 
-- [ ] **P4-T22 · Edit quiz content through new versions** (MVP)
+- [x] **P4-T22 · Edit quiz content through new versions** (MVP)
   - **Work and purpose** Validate changes to questions, options and keys through the same schemas and publish a new immutable version while keeping old versions addressable by existing attempts.
   - **Files** `server/src/services/quizzes.service.ts`, `server/src/repositories/quizzes.repository.ts`, `server/tests/quizzes/versioning.test.ts` · **Depends on** P4-T20, P4-T21
   - **Output** Version-aware quiz edit and explicit regeneration operations.

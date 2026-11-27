@@ -10,6 +10,7 @@ import { quizResultSchema, type QuizDraft } from '@/ai/schemas/quiz.js';
 import type { SourceSnapshot } from '@/services/ai-sources.service.js';
 import { ServiceError } from '@/utils/error-handler/ServiceError.js';
 import { PROMPT_VERSION } from '@/ai/prompts/study.js';
+import type { PublishQuizInput } from '@/utils/input-validators/saved-quizzes.js';
 export const versionSelect = {
   id: true,
   quizId: true,
@@ -97,6 +98,119 @@ export function versionData(
   };
 }
 export const createQuizzesRepository = (db: PrismaClient) => ({
+  find: async (ownerId: string, id: string) => {
+    const quiz = await db.quiz.findFirst({
+      where: { id, deletedAt: null, project: { ownerId, deletedAt: null } },
+      select: {
+        id: true,
+        projectId: true,
+        title: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    });
+    if (!quiz) throw new ServiceError('RESOURCE_NOT_FOUND', 'Resource not found', 404);
+    return quiz;
+  },
+  publish: (ownerId: string, quizId: string, input: PublishQuizInput) =>
+    db.$transaction(async (tx) => {
+      const quiz = await tx.quiz.findFirst({
+        where: { id: quizId, deletedAt: null, project: { ownerId, deletedAt: null } },
+        select: { projectId: true },
+      });
+      if (!quiz) throw new ServiceError('RESOURCE_NOT_FOUND', 'Resource not found', 404);
+      await lockProject(tx, ownerId, quiz.projectId);
+      if (
+        !(await tx.quiz.findFirst({
+          where: { id: quizId, deletedAt: null },
+          select: { id: true },
+        }))
+      )
+        throw new ServiceError('RESOURCE_NOT_FOUND', 'Resource not found', 404);
+      const latest = await tx.quizVersion.findFirstOrThrow({
+        where: { quizId },
+        orderBy: { version: 'desc' },
+        select: versionSelect,
+      });
+      let stored: ReturnType<typeof storedGenerationSchema.parse> | undefined;
+      if ('generationId' in input) {
+        const generation = await tx.aIUsage.findFirst({
+          where: {
+            id: input.generationId,
+            userId: ownerId,
+            operation: 'QUIZ',
+            status: 'SUCCEEDED',
+          },
+        });
+        if (!generation)
+          throw new ServiceError(
+            'RESOURCE_NOT_FOUND',
+            'Completed generation not found',
+            404,
+          );
+        stored = storedGenerationSchema.parse(generation.result);
+        if (stored.projectId !== quiz.projectId || stored.operation !== 'QUIZ')
+          throw new ServiceError('RESOURCE_NOT_FOUND', 'Resource not found', 404);
+        if (generation.resultId) {
+          if (generation.resultId !== quizId || !stored.acceptedVersionId)
+            throw new ServiceError(
+              'GENERATION_ACCEPTED',
+              'This generation was already accepted.',
+              409,
+            );
+          return tx.quizVersion.findUniqueOrThrow({
+            where: { id: stored.acceptedVersionId },
+            select: versionSelect,
+          });
+        }
+      }
+      if (input.expectedVersion !== latest.version)
+        throw new ServiceError(
+          'VERSION_CONFLICT',
+          'Reload the latest quiz version before publishing.',
+          409,
+        );
+      const settings =
+        'settings' in input ? input.settings : quizSettingsSchema.parse(stored!.settings);
+      const sources = stored
+        ? stored.manifest.sources
+        : latest.sources.map((source) => ({ ...source, noteId: source.noteId ?? '' }));
+      const content = quizResultSchema(
+        settings,
+        sources.map((source) => source.sourceKey),
+      ).parse('content' in input ? input.content : stored!.output);
+      const available = await tx.note.findMany({
+        where: {
+          id: { in: sources.map((source) => source.noteId).filter(Boolean) },
+          project: { ownerId },
+        },
+        select: { id: true },
+      });
+      const safeSources = sources.map((source) => ({
+        ...source,
+        noteId: available.some((note) => note.id === source.noteId) ? source.noteId : '',
+      }));
+      const data = versionData(settings, content, safeSources, latest.version + 1);
+      if (!stored) data.promptVersion = 'manual-v1';
+      const version = await tx.quizVersion.create({
+        data: { quizId, ...data },
+        select: versionSelect,
+      });
+      await tx.quiz.update({ where: { id: quizId }, data: { title: settings.title } });
+      if ('generationId' in input)
+        await tx.aIUsage.update({
+          where: { id: input.generationId },
+          data: {
+            resultId: quizId,
+            result: jsonValue({ ...stored, acceptedVersionId: version.id }),
+          },
+        });
+      await tx.project.update({
+        where: { id: quiz.projectId },
+        data: { revision: { increment: 1 } },
+      });
+      return version;
+    }),
   save: (ownerId: string, projectId: string, generationId: string) =>
     db.$transaction(async (tx) => {
       await lockProject(tx, ownerId, projectId);

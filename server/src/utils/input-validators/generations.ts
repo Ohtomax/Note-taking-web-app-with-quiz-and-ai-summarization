@@ -23,6 +23,7 @@ export const generationRequestSchema = z.union([
   quizGenerationSchema,
 ]);
 export const storedGenerationSchema = z.object({
+  acceptedVersionId: z.string().uuid().optional(),
   projectId: z.string().uuid(),
   operation: z.enum(['SUMMARY', 'QUIZ']),
   settings: z.record(z.unknown()),
