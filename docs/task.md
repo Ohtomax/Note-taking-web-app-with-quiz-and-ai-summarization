@@ -1121,6 +1121,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
   - **Verify** Open a project deep link in a fresh browser, sign in with a test account, refresh, and inspect the request origin and owner-scoped response.
 
 - [ ] **P6-T22 · Run a production study-session smoke test** (MVP)
+  - **Status 2026-11-28** Skipped with production deployment and provider credentials. Passing local mock-provider sessions do not establish live Firebase/Groq or hosted release behavior; no paid generation or production test account was used.
   - **Work and purpose** Use a designated test account and synthetic notes to check provider wiring, saved summaries, quizzes, retakes, and analytics on production. Bound live generation to the release's approved usage allowance.
   - **Files** `docs/TESTING.md`, `docs/DEPLOYMENT.md` · **Depends on** P6-T02, P6-T03, P6-T06, P6-T20, P6-T21
   - **Output** A dated smoke-test record with release IDs and observed results.

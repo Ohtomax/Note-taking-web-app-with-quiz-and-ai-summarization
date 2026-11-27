@@ -320,3 +320,5 @@ Phase 5 implementation status: 26 of 27 MVP task checkboxes are complete. P5-T26
 - **P6-T20 deferred/partial 2026-11-28** Skipped under the owner rule. No Render service, runtime secret or image deployment was created or modified; no healthy production API is claimed.
 
 - **P6-T21 deferred/partial 2026-11-28** Skipped under the owner rule. No Vercel deployment command, project setting or public Firebase/API-origin configuration was applied. Existing external Git-triggered automations were not inspected.
+
+- **P6-T22 deferred/partial 2026-11-28** Skipped with production deployment and provider credentials. Passing local mock-provider sessions do not establish live Firebase/Groq or hosted release behavior; no paid generation or production test account was used.
