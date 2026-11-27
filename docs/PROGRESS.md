@@ -304,3 +304,5 @@ Phase 5 implementation status: 26 of 27 MVP task checkboxes are complete. P5-T26
 - **P6-T12 deferred/partial 2026-11-28** Effect 3.22.5, jsondiffpatch 0.7.7 and client gRPC 1.13.6 overrides reduce high findings from 15 to 7. Exact candidate locks pass clean install, all 150 tests, types/lint/format/build. Zod/SDK-major compatibility work and unapproved release disposition remain open; task unchecked.
 
 - **P6-T13 deferred/partial 2026-11-28** Skipped under the owner rule to defer deployment-associated work. No Dockerfile/image build or TLS runtime deployment validation was performed.
+
+- **P6-T14 deferred/partial 2026-11-28** Optional and deferred. The authorized local test workflow already uses an isolated PostgreSQL runner; Docker/Compose environment coordination is deployment-associated work and was not introduced.

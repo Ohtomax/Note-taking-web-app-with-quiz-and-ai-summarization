@@ -1057,6 +1057,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
   - **Verify** Build from a clean checkout, inspect image contents and user identity, record image size, and exercise an authenticated database read.
 
 - [ ] **P6-T14 · Add a local Compose workflow if needed** (Optional)
+  - **Status 2026-11-28** Optional and deferred. The authorized local test workflow already uses an isolated PostgreSQL runner; Docker/Compose environment coordination is deployment-associated work and was not introduced.
   - **Work and purpose** Add Compose when the approved local workflow requires coordinating multiple services. Use disposable test storage and an example configuration developers can populate locally.
   - **Files** `compose.yaml`, `docs/DEPLOYMENT.md` · **Depends on** P6-T13
   - **Output** A documented local startup and shutdown procedure for the selected services.
