@@ -52,3 +52,49 @@ The credential-free suite passes 17 tests. The isolated PostgreSQL suite passes 
 ## Phase 3 completed backend checks
 
 The combined server suite passes 22 credential-free tests and 27 isolated PostgreSQL tests. Per-task HTTP/database cases are in server/tests/database/workspace-phase3.test.ts. Shared fixture setup is in workspace.fixture.ts. Each case is named with its P3 task ID and was run against that task's incremental snapshot before commit. P3-T07 uses note-content.test.ts for round-trip and hostile-content validation. Test fixtures verify ownership, pagination, stale revisions, archive/restore, historical retention, duplication and rejected/accepted moves. Frontend behavior and Firebase console flows remain unverified and their checklist items stay open.
+
+## Phase 3 workspace verification on 2026-11-27
+
+The final suite passes 22 backend unit/HTTP tests, 28 disposable PostgreSQL tests and 18 frontend tests across nine files. Both packages pass strict typechecking, lint, formatting and production builds. The React integration test runs the normal application routes, shared Axios transport, Express middleware/controllers/services/repositories and Prisma against a fresh local database. It creates a project and note, saves and reopens it, changes identities and confirms that foreign requests cannot modify the original note. It injects test identities at the token-verifier boundary; it does not bypass production authentication.
+
+The separate P3-T24 API matrix calls every foreign project and note route in both directions, including forged parent IDs. It compares both accounts' stored project/note records after every rejected operation. Existing tests also exercise create/update, stable lists, deletion impact, archive/restore, duplicate independence, moves, historical retention and concurrent revisions. The client suite covers SDK calls, session cancellation, cache/draft isolation, project/note actions, rich text normalization, serialized autosave, offline recovery, explicit conflict choices and profile editing. Accepting a server conflict version also refreshes the note cache used on reopening.
+
+### Reproduce the credential-free suite
+
+Install both lockfiles with npm ci in server/ and client/. Run npm test in server/ for unit checks and npm test in client/ for component checks. The client HTTP integration test is explicitly skipped unless STUDY_TEST_DATABASE_URL is supplied.
+
+For database and full UI-to-API tests, initialize a disposable local PostgreSQL cluster (never a hosted or ordinary database). These PowerShell commands use synthetic data, a random guarded database name and a separate port. PostgreSQL command-line tools must be on PATH. Run from the repository root:
+
+```powershell
+$fixtureRoot = Join-Path $env:TEMP ('study-phase3-' + [guid]::NewGuid().ToString('N'))
+$fixtureDb = 'study_test_' + [guid]::NewGuid().ToString('N')
+$fixtureUrl = 'postgresql://study_fixture@127.0.0.1:15439/' + $fixtureDb
+initdb -D "$fixtureRoot/data" -U study_fixture --auth=trust --no-locale --encoding=UTF8
+pg_ctl -D "$fixtureRoot/data" -o '-h 127.0.0.1 -p 15439' -l "$fixtureRoot/server.log" start
+try {
+  createdb -h 127.0.0.1 -p 15439 -U study_fixture $fixtureDb
+  $env:STUDY_TEST_DATABASE_URL = $fixtureUrl
+  # prisma.config.ts prefers DIRECT_URL, so override both for this local fixture.
+  $env:DATABASE_URL = $fixtureUrl
+  $env:DIRECT_URL = $fixtureUrl
+  Push-Location server
+  try {
+    npm run prisma:generate
+    npx prisma migrate deploy
+    npm run test:db
+  } finally { Pop-Location }
+  Push-Location client
+  try { npm test } finally { Pop-Location }
+} finally {
+  pg_ctl -D "$fixtureRoot/data" -m fast stop
+  Remove-Item Env:STUDY_TEST_DATABASE_URL, Env:DATABASE_URL, Env:DIRECT_URL -ErrorAction SilentlyContinue
+}
+```
+
+The database guard rejects remote hosts and names outside study_test_<32 hexadecimal characters>. Fixture records are removed in finally blocks. The UI fixture listens on a random loopback port and closes after the test. The PostgreSQL directory remains available for local diagnostics; no hosted credentials are needed.
+
+### Deferred checks and audit
+
+P3-T16 stays unchecked until real Firebase registration, recovery, session reload and sign-out are exercised with owner-provided configuration. P3-T18 stays unchecked until mobile/tablet/desktop visual and keyboard checks are performed. The browser tool failed initialization with a missing kernel-assets path, so jsdom results are not presented as visual browser results. The local Vite server returned HTTP 200; this checks startup only. No deployment was performed.
+
+P3-T24 is complete for the real local API/database and injected-identity acceptance boundary. Firebase token issuance and hosted Redis/Supabase verification remain separate deferred checks. The Vite build reports a roughly 534 kB main chunk warning. npm audit reports five high findings in the frontend tree (Firebase/Firestore/grpc and Zod 3) and four in the backend tree (Prisma configuration/effect and Zod 3), with no critical findings. These counts include transitive packages. Forced major changes or the suggested Firebase downgrade were not applied; Prisma 7 and Zod 3 match the project rules. Resolve or explicitly accept these advisories before production release.

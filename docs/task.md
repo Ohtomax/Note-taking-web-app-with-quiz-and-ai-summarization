@@ -517,7 +517,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
   - **Accept when** A permitted edit survives reload and changing accounts displays the new account’s profile.
   - **Verify** Change a display name, reload, submit an invalid value, then switch to a second account and inspect its profile.
 
-- [ ] **P3-T24 · Verify the private study workspace** (MVP)
+- [x] **P3-T24 · Verify the private study workspace** (MVP)
   - **Work and purpose** Run project and note workflows through the real API with two identities and exercise account changes in the UI to verify the complete ownership boundary.
   - **Files** `server/tests/projects`, `server/tests/notes`, `client/src/features/notes`, `docs/TESTING.md` · **Depends on** P3-T06, P3-T15, P3-T17, P3-T20, P3-T22, P3-T23
   - **Output** Repeatable workspace integration results.
@@ -527,7 +527,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
 ### Phase verification
 
 - [ ] Exercise registration, sign-in, credential recovery and sign-out in the Firebase test environment.
-- [ ] Use two accounts to check isolation through project lists, note reads, moves, deletes and account switches.
+- [x] Use two accounts to check isolation through project lists, note reads, moves, deletes and account switches.
 - [ ] Check rich-text round trips, keyboard interaction, autosave conflicts, network failures and narrow layouts.
 
 **Complete when** The MVP tasks pass their checks, both accounts can complete the workspace flow, and concurrent or failed saves preserve recoverable content.

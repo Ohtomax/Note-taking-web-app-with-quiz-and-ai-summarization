@@ -196,6 +196,7 @@ export function useNoteSave(note: Note, readOnly: boolean) {
     setError('');
     setStatus('saved');
     setServerVersion(null);
+    cache.setQueryData([uid, 'note', note.projectId, note.id], { data: serverVersion });
   };
   const reapplyDraft = () => {
     if (!serverVersion) return;

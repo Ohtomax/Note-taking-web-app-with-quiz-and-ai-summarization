@@ -21,10 +21,12 @@ const note: Note = {
   contentSchemaVersion: 1,
   content: { type: 'doc', content: [{ type: 'paragraph' }] },
 };
+let saveCache: QueryClient;
 const wrapper = ({ children }: { children: ReactNode }) => (
-  <QueryClientProvider client={new QueryClient()}>{children}</QueryClientProvider>
+  <QueryClientProvider client={saveCache}>{children}</QueryClientProvider>
 );
 beforeEach(() => {
+  saveCache = new QueryClient();
   vi.useFakeTimers();
   resolveSession({ uid: 'alice', email: null, getIdToken: async () => 'token' });
 });
@@ -119,4 +121,19 @@ it('aborts a note request on navigation and cannot restore a signed-out user dra
     acknowledge?.({ data: { ...note, revision: 2 } });
   });
   expect(useDrafts.getState().drafts).toEqual({});
+});
+
+it('accepting the server version updates the cache used when reopening the note', () => {
+  useDrafts
+    .getState()
+    .setDraft('alice:' + note.id, { title: 'Draft', content: note.content, revision: 1 });
+  const newer = { ...note, title: 'Other tab', revision: 5 };
+  const { result } = renderHook(() => useNoteSave(newer, false), { wrapper });
+  expect(result.current.status).toBe('conflict');
+  act(() => result.current.useServerVersion());
+  expect(result.current.draft.title).toBe('Other tab');
+  expect(useDrafts.getState().drafts).toEqual({});
+  expect(saveCache.getQueryData(['alice', 'note', note.projectId, note.id])).toEqual({
+    data: newer,
+  });
 });

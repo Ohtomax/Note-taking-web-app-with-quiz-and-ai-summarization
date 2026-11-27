@@ -139,15 +139,19 @@ All Phase 2 implementation tasks were processed under the owner's authorization 
 
 P3-T01 through P3-T15 are complete and each has its own tested commit and push to main. Verification used an isolated worktree and a disposable PostgreSQL 18 cluster containing synthetic records. The final server regression run passed 22 unit/HTTP tests and 27 database tests, along with strict typechecking, lint, formatting and compiled builds. The previous 100 ms limiter test used a wall clock that could expire during a slow request. A separate P2-T06 regression commit replaced its wait with the test clock.
 
-P3-T16 through P3-T24 remain unchecked. The authentication and frontend drafts exist in the original working folder and are outside the completed backend commits. Live Firebase registration/recovery checks remain deferred. The current frontend also has two strict optional-prop type errors in ProjectLibrary and ProjectDetail. The workspace route still renders the scaffold, so the library, detail and dashboard drafts are not verified through navigation. The rich-text editor, autosave recovery and profile form are unfinished, and the full workspace integration task remains pending.
+At the backend review checkpoint, P3-T16 through P3-T24 were still pending. The frontend implementation and verification below supersede that checkpoint. The library, project detail, note editor, autosave and profile screens now use the routed application and pass strict checks.
 
 The pending frontend changes are preserved in the original folder. No deployment or collection of hosted secrets was performed. The three earlier Phase 2 live-service checks remain deferred.
 
-### Earlier draft notes, superseded by the successful backend verification above
+### Earlier backend draft notes, superseded by the successful verification above
 
 - **P3-T01 implemented, HTTP verification deferred** Added owner-derived project creation with strict metadata validation. Typechecking and validator regression passed. Existing HTTP tests cannot connect to loopback (EACCES) in this runtime; API and database acceptance will remain unclaimed until executable.
 
 - **P3-T02 implemented, database verification deferred** Added bounded owner-scoped project search with deterministic sorting and active-note counts. Runtime blocks loopback database checks. Git metadata is read-only, so per-task commits are blocked.
+
+## Phase 3 frontend task pushes on 2026-11-27
+
+Every frontend task has its own commit and push to main, including implemented tasks whose external or visual acceptance checks remain deferred. Firebase credentials, hosted database/Redis configuration and deployment were skipped as requested. The reviewed frontend replaces the earlier drafts, with their originals backed up outside the repository.
 
 - **P3-T16 implemented, live verification deferred 2026-11-27** Auth screens and SDK-flow tests pass; live Firebase setup remains deferred.
 
@@ -164,3 +168,5 @@ The pending frontend changes are preserved in the original folder. No deployment
 - **P3-T22 completed 2026-11-27** Serialized autosave preserves newer edits, retains drafts on offline/conflict errors, compares server versions, and aborts on navigation/account change. Five editor/autosave tests plus typecheck, lint and production build pass.
 
 - **P3-T23 completed 2026-11-27** Profile settings validate display names, submit only permitted fields, refresh cached profiles and isolate account changes. Reload, invalid input and second-account tests pass; typecheck, lint and production build pass.
+
+- **P3-T24 completed 2026-11-27** Real React-to-HTTP-to-Prisma workflow and both-direction foreign-endpoint snapshots pass. Final suite: 22 backend unit, 28 database and 18 frontend tests; strict checks and builds pass. Live Firebase and visual QA remain deferred as documented.

@@ -65,5 +65,5 @@ const createWorkspace = async () => {
     },
   });
   const api = request(app);
-  return { db, alice, bob, project, foreign, api };
+  return { db, alice, bob, project, foreign, api, app };
 };
