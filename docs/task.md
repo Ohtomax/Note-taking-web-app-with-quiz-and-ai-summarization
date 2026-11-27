@@ -866,7 +866,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
   - **Accept when** Comparisons identify each quiz version, and incomplete attempts have a status instead of a final score.
   - **Verify** Compare attempts across a quiz edit, open an unfinished attempt and check empty project history.
 
-- [ ] **P5-T19 · Define metric denominators** (MVP)
+- [x] **P5-T19 · Define metric denominators** (MVP)
   - **Work and purpose** Document counts and time boundaries for global, project and quiz metrics. Use completed attempts for scored aggregates. Define attempt score as correct divided by all assigned questions, accuracy as correct divided by answered questions, and improvement as latest minus first score in percentage points.
   - **Files** `docs/ANALYTICS.md`, `server/tests/fixtures/analytics.ts` · **Depends on** P5-T09, P5-T12
   - **Output** Metric definitions and a hand-calculated fixture with skips, retakes and empty data.
