@@ -405,7 +405,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
   - **Accept when** All required formatting survives serialization and unsupported markup or attributes cannot execute when rendered.
   - **Verify** Round-trip each node and mark and submit malformed, oversized and unsafe attribute fixtures.
 
-- [ ] **P3-T08 · Create and read notes** (MVP)
+- [x] **P3-T08 · Create and read notes** (MVP)
   - **Work and purpose** Create a note in a writable owned project and retrieve it by checking both project and note identity so nested URLs stay private.
   - **Files** `server/src/routes/notes.routes.ts`, `server/src/controllers/notes.controller.ts`, `server/src/services/notes.service.ts`, `server/src/repositories/notes.repository.ts` · **Depends on** P3-T03, P3-T05, P3-T07
   - **Output** Note creation and detail endpoints returning revision and timestamps.

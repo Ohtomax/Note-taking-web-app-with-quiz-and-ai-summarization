@@ -12,9 +12,12 @@ import type { UserService } from '@/services/user.service.js';
 import { createUserRouter } from '@/routes/user.routes.js';
 import { createProjectsRouter } from '@/routes/projects.routes.js';
 import type { ProjectsService } from '@/services/projects.service.js';
+import type { NotesService } from '@/services/notes.service.js';
+import { createNotesRouter } from '@/routes/notes.routes.js';
 import { ServiceError } from '@/utils/error-handler/ServiceError.js';
 
 export interface AppServices {
+  notesService?: NotesService;
   projectsService?: ProjectsService;
   userService: UserService;
   verifyToken: TokenVerifier;
@@ -51,6 +54,15 @@ export function createApp(
       }),
   );
   if (services) {
+    if (services.notesService)
+      app.use(
+        '/api/v1/projects/:projectId/notes',
+        createNotesRouter(
+          services.notesService,
+          services.userService,
+          services.verifyToken,
+        ),
+      );
     app.use('/api/v1/me', createUserRouter(services.userService, services.verifyToken));
     if (services.projectsService)
       app.use(

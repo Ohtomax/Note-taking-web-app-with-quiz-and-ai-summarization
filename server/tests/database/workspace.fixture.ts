@@ -9,6 +9,8 @@ import { createProjectsRepository } from '../../src/repositories/projects.reposi
 import { createProjectsService } from '../../src/services/projects.service.ts';
 import { createApiLimiter } from '../../src/utils/rate-limiter/apiLimiter.ts';
 import { createTestClient } from './setup.ts';
+import { createNotesRepository } from '../../src/repositories/notes.repository.ts';
+import { createNotesService } from '../../src/services/notes.service.ts';
 
 export const withWorkspace = async (
   run: (fixture: Awaited<ReturnType<typeof createWorkspace>>) => Promise<void>,
@@ -54,7 +56,7 @@ const createWorkspace = async () => {
   const app = createApp(undefined, parseEnvironment({}), () => {}, {
     userService: createUserService(createUserRepository(db)),
     projectsService: createProjectsService(createProjectsRepository(db)),
-
+    notesService: createNotesService(createNotesRepository(db)),
     rateLimiter: createApiLimiter(new MemoryStore(), 500),
     verifyToken: async (token) => {
       if (token === 'alice') return { uid: alice.firebaseUid };

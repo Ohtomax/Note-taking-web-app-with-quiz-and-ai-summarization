@@ -232,3 +232,39 @@ test('P3-T06 project deletion rejects stale impact and preserves historical atte
     );
   });
 });
+
+test('P3-T08 note creation and read require matching owned parent', async () => {
+  await withWorkspace(async ({ project, foreign, api }) => {
+    const created = await api
+      .post('/api/v1/projects/' + project.id + '/notes')
+      .set('Authorization', 'Bearer alice')
+      .send({ title: 'OSI' });
+    assert.equal(created.status, 201);
+    const id = created.body.data.id;
+    assert.equal(created.body.data.revision, 1);
+    assert.equal(
+      (
+        await api
+          .get('/api/v1/projects/' + project.id + '/notes/' + id)
+          .set('Authorization', 'Bearer alice')
+      ).status,
+      200,
+    );
+    assert.equal(
+      (
+        await api
+          .get('/api/v1/projects/' + project.id + '/notes/' + id)
+          .set('Authorization', 'Bearer bob')
+      ).status,
+      404,
+    );
+    assert.equal(
+      (
+        await api
+          .get('/api/v1/projects/' + foreign.id + '/notes/' + id)
+          .set('Authorization', 'Bearer alice')
+      ).status,
+      404,
+    );
+  });
+});
