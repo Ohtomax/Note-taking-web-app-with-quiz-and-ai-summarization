@@ -115,3 +115,53 @@ test('P3-T04 partial metadata updates preserve ownership and reject invalid colo
     );
   });
 });
+
+test('P3-T05 project archive and restore converge and preserve contents', async () => {
+  await withWorkspace(async ({ db, project, api }) => {
+    const note = await db.note.create({ data: { projectId: project.id, title: 'Keep' } });
+    const archived = await api
+      .post('/api/v1/projects/' + project.id + '/archive')
+      .set('Authorization', 'Bearer alice')
+      .send({ expectedRevision: 1 });
+    assert.equal(archived.status, 200);
+    assert.equal(
+      (
+        await api
+          .post('/api/v1/projects/' + project.id + '/archive')
+          .set('Authorization', 'Bearer alice')
+          .send({ expectedRevision: 1 })
+      ).status,
+      200,
+    );
+    assert.equal(
+      (await api.get('/api/v1/projects').set('Authorization', 'Bearer alice')).body.total,
+      0,
+    );
+    assert.equal(
+      (
+        await api
+          .patch('/api/v1/projects/' + project.id)
+          .set('Authorization', 'Bearer alice')
+          .send({ expectedRevision: 2, title: 'Blocked' })
+      ).status,
+      409,
+    );
+    assert.equal(
+      (
+        await api
+          .post('/api/v1/projects/' + project.id + '/restore')
+          .set('Authorization', 'Bearer alice')
+          .send({ expectedRevision: 2 })
+      ).status,
+      200,
+    );
+    assert.equal(
+      (await api.get('/api/v1/projects').set('Authorization', 'Bearer alice')).body.total,
+      1,
+    );
+    assert.equal(
+      (await db.note.findUniqueOrThrow({ where: { id: note.id } })).title,
+      'Keep',
+    );
+  });
+});

@@ -33,6 +33,10 @@ export const projectListSchema = z
 
 export type ProjectListInput = z.infer<typeof projectListSchema>;
 
+export const revisionSchema = z
+  .object({ expectedRevision: z.number().int().positive() })
+  .strict();
+
 export const updateProjectSchema = z
   .object({
     title: metadata.title.optional(),

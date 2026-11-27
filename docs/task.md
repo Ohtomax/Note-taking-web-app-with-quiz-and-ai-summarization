@@ -384,7 +384,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
   - **Accept when** Only approved fields change and edits advance the modification timestamp.
   - **Verify** Edit one field, then send an invalid color and an ownership field and confirm the original owner.
 
-- [ ] **P3-T05 · Archive and restore projects** (MVP)
+- [x] **P3-T05 · Archive and restore projects** (MVP)
   - **Work and purpose** Implement reversible state changes and enforce the approved archive rules on project access and mutation so learners can set subjects aside.
   - **Files** `server/src/services/projects.service.ts`, `server/src/repositories/projects.repository.ts` · **Depends on** P3-T02, P3-T03
   - **Output** Archive and restore operations.

@@ -5,6 +5,12 @@ import { ServiceError } from '@/utils/error-handler/ServiceError.js';
 import type { UpdateProjectInput } from '@/utils/input-validators/projects.js';
 
 export const createProjectsService = (repository: ProjectsRepository) => ({
+  setArchived: (
+    ownerId: string,
+    projectId: string,
+    expectedRevision: number,
+    archived: boolean,
+  ) => repository.setArchived(ownerId, projectId, expectedRevision, archived),
   update: (ownerId: string, projectId: string, input: UpdateProjectInput) =>
     repository.update(ownerId, projectId, input),
   find: async (ownerId: string, projectId: string) => {

@@ -4,6 +4,23 @@ import type { ProjectsService } from '@/services/projects.service.js';
 import { UserHandleError } from '@/utils/error-handler/userErrorHandler.js';
 import type { ProjectListInput } from '@/utils/input-validators/projects.js';
 
+export const archiveProject =
+  (service: ProjectsService, archived: boolean) =>
+  async (req: AuthRequest, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      res.status(200).json({
+        data: await service.setArchived(
+          req.account!.id,
+          req.params.projectId!,
+          req.body.expectedRevision,
+          archived,
+        ),
+      });
+    } catch (error) {
+      UserHandleError(error, next);
+    }
+  };
+
 export const updateProject =
   (service: ProjectsService) =>
   async (req: AuthRequest, res: Response, next: NextFunction): Promise<void> => {
