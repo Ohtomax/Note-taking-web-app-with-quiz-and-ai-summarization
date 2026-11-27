@@ -4,6 +4,24 @@ import type { NotesService } from '@/services/notes.service.js';
 import { UserHandleError } from '@/utils/error-handler/userErrorHandler.js';
 import type { NoteListInput } from '@/utils/input-validators/notes.js';
 
+export const pinNote =
+  (service: NotesService) =>
+  async (req: AuthRequest, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      res.status(200).json({
+        data: await service.setPinned(
+          req.account!.id,
+          req.params.projectId!,
+          req.params.noteId!,
+          req.body.expectedRevision,
+          req.body.pinned,
+        ),
+      });
+    } catch (error) {
+      UserHandleError(error, next);
+    }
+  };
+
 export const listNotes =
   (service: NotesService) =>
   async (req: AuthRequest, res: Response, next: NextFunction): Promise<void> => {

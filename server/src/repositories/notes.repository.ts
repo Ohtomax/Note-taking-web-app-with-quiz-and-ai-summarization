@@ -6,7 +6,43 @@ import type { UpdateNoteInput } from '@/utils/input-validators/notes.js';
 import type { NoteListInput } from '@/utils/input-validators/notes.js';
 import { extractPlainText } from '@/utils/input-validators/note-content.js';
 
+async function findWritableNote(
+  tx: Prisma.TransactionClient,
+  projectId: string,
+  noteId: string,
+) {
+  const note = await tx.note.findFirst({
+    where: { id: noteId, projectId, deletedAt: null },
+  });
+  if (!note) throw new ServiceError('RESOURCE_NOT_FOUND', 'Resource not found', 404);
+  return note;
+}
+
 export const createNotesRepository = (db: PrismaClient) => ({
+  setPinned: (
+    ownerId: string,
+    projectId: string,
+    noteId: string,
+    expectedRevision: number,
+    pinned: boolean,
+  ) =>
+    db.$transaction(async (tx) => {
+      await lockProject(tx, ownerId, projectId);
+      const note = await findWritableNote(tx, projectId, noteId);
+      if (note.pinned === pinned) return note;
+      if (note.archivedAt)
+        throw new ServiceError('NOTE_ARCHIVED', 'Restore the note before editing', 409);
+      checkRevision(note.revision, expectedRevision);
+      const updated = await tx.note.update({
+        where: { id: noteId },
+        data: { pinned, revision: { increment: 1 } },
+      });
+      await tx.project.update({
+        where: { id: projectId },
+        data: { revision: { increment: 1 } },
+      });
+      return updated;
+    }),
   list: (ownerId: string, projectId: string, query: NoteListInput) =>
     db.$transaction(async (tx) => {
       const project = await tx.project.findFirst({

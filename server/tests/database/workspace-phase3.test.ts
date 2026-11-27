@@ -328,3 +328,46 @@ test('P3-T10 note lists search extracted content with stable paging and owner sc
     assert.notEqual(first.body.data[0].id, second.body.data[0].id);
   });
 });
+
+test('P3-T11 pin and unpin persist and reject foreign writers', async () => {
+  await withWorkspace(async ({ db, project, api }) => {
+    const note = await db.note.create({ data: { projectId: project.id, title: 'Pin' } });
+    const url = '/api/v1/projects/' + project.id + '/notes/' + note.id + '/pin';
+    for (const token of ['alice', 'alice'])
+      assert.equal(
+        (
+          await api
+            .post(url)
+            .set('Authorization', 'Bearer ' + token)
+            .send({ expectedRevision: 1, pinned: true })
+        ).status,
+        200,
+      );
+    assert.equal(
+      (await db.note.findUniqueOrThrow({ where: { id: note.id } })).pinned,
+      true,
+    );
+    assert.equal(
+      (
+        await api
+          .post(url)
+          .set('Authorization', 'Bearer bob')
+          .send({ expectedRevision: 2, pinned: false })
+      ).status,
+      404,
+    );
+    assert.equal(
+      (
+        await api
+          .post(url)
+          .set('Authorization', 'Bearer alice')
+          .send({ expectedRevision: 2, pinned: false })
+      ).status,
+      200,
+    );
+    assert.equal(
+      (await db.note.findUniqueOrThrow({ where: { id: note.id } })).pinned,
+      false,
+    );
+  });
+});

@@ -5,6 +5,13 @@ import type { UpdateNoteInput } from '@/utils/input-validators/notes.js';
 import type { NoteListInput } from '@/utils/input-validators/notes.js';
 
 export const createNotesService = (repository: NotesRepository) => ({
+  setPinned: (
+    ownerId: string,
+    projectId: string,
+    noteId: string,
+    expectedRevision: number,
+    pinned: boolean,
+  ) => repository.setPinned(ownerId, projectId, noteId, expectedRevision, pinned),
   list: (ownerId: string, projectId: string, query: NoteListInput) =>
     repository.list(ownerId, projectId, query),
   update: (ownerId: string, projectId: string, noteId: string, input: UpdateNoteInput) =>

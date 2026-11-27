@@ -7,6 +7,7 @@ import { validate } from '@/middlewares/validate.js';
 import { createNoteSchema, noteParamsSchema } from '@/utils/input-validators/notes.js';
 import { updateNoteSchema } from '@/utils/input-validators/notes.js';
 import { noteListSchema } from '@/utils/input-validators/notes.js';
+import { pinNoteSchema } from '@/utils/input-validators/notes.js';
 import { projectParamsSchema } from '@/utils/input-validators/projects.js';
 import type { UserService } from '@/services/user.service.js';
 import type { NotesService } from '@/services/notes.service.js';
@@ -19,6 +20,12 @@ export const createNotesRouter = (
 ) => {
   const router = Router({ mergeParams: true });
   router.use(createVerifyToken(verify), synchronizeUser(users), verifyUser);
+  router.post(
+    '/:noteId/pin',
+    validate('params', noteParamsSchema),
+    validate('body', pinNoteSchema),
+    notesController.pinNote(service),
+  );
   router.get(
     '/',
     validate('params', projectParamsSchema),

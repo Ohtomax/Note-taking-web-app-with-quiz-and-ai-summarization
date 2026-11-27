@@ -426,7 +426,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
   - **Accept when** Search matches formatted text, sort ties are stable and results stay inside the requested owned project.
   - **Verify** Use tied titles and dates, a multi-page fixture and the same search phrase in a second account.
 
-- [ ] **P3-T11 · Pin and unpin notes** (MVP)
+- [x] **P3-T11 · Pin and unpin notes** (MVP)
   - **Work and purpose** Persist the pin state in an owned project so frequently used study material is easy to find.
   - **Files** `server/src/services/notes.service.ts`, `server/src/repositories/notes.repository.ts` · **Depends on** P3-T08, P3-T10
   - **Output** Pin and unpin operations and list metadata.
