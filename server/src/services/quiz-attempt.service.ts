@@ -5,7 +5,8 @@ import type {
 } from '@/repositories/quiz-attempt.repository.js';
 import type { StartAttemptInput } from '@/utils/input-validators/quiz-attempt.validator.js';
 import type { AnswerInput } from '@/utils/input-validators/quiz-attempt.validator.js';
-import { scoreAnswer } from './quiz-scoring.service.js';
+import { scoreAnswer, scoreAttempt, type AnswerChoice } from './quiz-scoring.service.js';
+import { normalizeAnswer } from './answer-normalization.js';
 import { ServiceError } from '@/utils/error-handler/ServiceError.js';
 export function attemptSummary(row: AttemptRow) {
   return {
@@ -73,6 +74,15 @@ export function playerAttempt(row: AttemptRow) {
         : {}),
     };
   });
+  const answeredCount =
+    row.answeredCount ??
+    row.answers.filter(
+      (answer) =>
+        (Array.isArray(answer.selectedOptionIds) &&
+          answer.selectedOptionIds.length > 0) ||
+        Boolean(answer.text && normalizeAnswer(answer.text)),
+    ).length;
+  const correctCount = row.correctCount ?? 0;
   return {
     ...attemptSummary(row),
     questionOrder: order,
@@ -80,9 +90,44 @@ export function playerAttempt(row: AttemptRow) {
     questions,
     answers,
     sources: row.version.sources,
+    ...(row.status === 'COMPLETED'
+      ? {
+          result: {
+            correctCount,
+            answeredCount,
+            totalQuestions: row.totalQuestions,
+            incorrectCount: Math.max(0, answeredCount - correctCount),
+            unansweredCount: Math.max(0, row.totalQuestions - answeredCount),
+            percentage: row.totalQuestions
+              ? (100 * correctCount) / row.totalQuestions
+              : null,
+            elapsedMs: row.finishedAt
+              ? Math.max(0, row.finishedAt.getTime() - row.startedAt.getTime())
+              : null,
+          },
+        }
+      : {}),
   };
 }
 export const createQuizAttemptService = (repository: QuizAttemptRepository) => ({
+  submit: async (ownerId: string, id: string) =>
+    playerAttempt(
+      await repository.finalize(ownerId, id, (row) => {
+        const answers = new Map<string, AnswerChoice>();
+        for (const answer of row.answers) {
+          const question = row.version.questions.find(
+            (item) => item.id === answer.questionId,
+          )!;
+          answers.set(
+            answer.questionId,
+            question.type === 'IDENTIFICATION'
+              ? { text: answer.text ?? '' }
+              : { optionIds: z.array(z.string()).parse(answer.selectedOptionIds) },
+          );
+        }
+        return scoreAttempt(row.version.questions, answers);
+      }),
+    ),
   answer: async (ownerId: string, id: string, questionId: string, input: AnswerInput) => {
     const attempt = await repository.load(ownerId, id),
       question = attempt.version.questions.find((item) => item.id === questionId);

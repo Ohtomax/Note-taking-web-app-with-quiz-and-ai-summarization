@@ -55,3 +55,13 @@ export const saveAttemptAnswer =
       next(error);
     }
   };
+
+export const submitQuizAttempt =
+  (service: QuizAttemptService) =>
+  async (req: AuthRequest, res: Response, next: NextFunction) => {
+    try {
+      res.json({ data: await service.submit(req.account!.id, req.params.attemptId!) });
+    } catch (error) {
+      next(error);
+    }
+  };

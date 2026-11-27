@@ -3,7 +3,7 @@ import { Prisma, type PrismaClient } from '@/generated/prisma/client.js';
 import type { StartAttemptInput } from '@/utils/input-validators/quiz-attempt.validator.js';
 import { serializable } from './serializable.js';
 import { ServiceError } from '@/utils/error-handler/ServiceError.js';
-import type { AnswerOutcome } from '@/services/quiz-scoring.service.js';
+import type { AnswerOutcome, scoreAttempt } from '@/services/quiz-scoring.service.js';
 export const attemptSelect = {
   id: true,
   versionId: true,
@@ -98,6 +98,48 @@ function shuffled<T>(items: T[], enabled: boolean): T[] {
   return result;
 }
 export const createQuizAttemptRepository = (db: PrismaClient) => ({
+  finalize: (
+    ownerId: string,
+    id: string,
+    grade: (row: AttemptRow) => ReturnType<typeof scoreAttempt>,
+  ) =>
+    serializable(db, async (tx) => {
+      const attempt = await lockAttempt(tx, ownerId, id);
+      if (attempt.status === 'COMPLETED') return attempt;
+      if (attempt.status !== 'IN_PROGRESS')
+        throw new ServiceError(
+          'ATTEMPT_CLOSED',
+          'This attempt cannot be submitted.',
+          409,
+        );
+      const result = grade(attempt);
+      if (result.totalQuestions !== attempt.totalQuestions)
+        throw new ServiceError(
+          'ATTEMPT_INVALID',
+          'The assigned question set is inconsistent.',
+          409,
+        );
+      for (const outcome of result.outcomes) {
+        const answer = attempt.answers.find(
+          (item) => item.questionId === outcome.questionId,
+        );
+        if (answer)
+          await tx.quizAttemptAnswer.update({
+            where: { id: answer.id },
+            data: { isCorrect: outcome.answered ? outcome.isCorrect : null },
+          });
+      }
+      return tx.quizAttempt.update({
+        where: { id },
+        data: {
+          status: 'COMPLETED',
+          finishedAt: new Date(),
+          correctCount: result.correctCount,
+          answeredCount: result.answeredCount,
+        },
+        select: attemptSelect,
+      });
+    }),
   exam: (
     ownerId: string,
     id: string,

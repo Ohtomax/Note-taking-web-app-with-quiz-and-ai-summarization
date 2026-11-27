@@ -1,6 +1,17 @@
 import { z } from 'zod';
 import { questionTypeSchema } from './quiz-settings';
 import { sourceMetadataSchema } from './study';
+export const attemptResultSchema = z
+  .object({
+    correctCount: z.number().int(),
+    answeredCount: z.number().int(),
+    totalQuestions: z.number().int(),
+    incorrectCount: z.number().int(),
+    unansweredCount: z.number().int(),
+    percentage: z.number().nullable(),
+    elapsedMs: z.number().nullable(),
+  })
+  .strict();
 export const playerQuestionSchema = z
   .object({
     id: z.string().uuid(),
@@ -31,6 +42,7 @@ export const playerAnswerSchema = z
   .strict();
 export const attemptSchema = z
   .object({
+    result: attemptResultSchema.optional(),
     id: z.string().uuid(),
     quizId: z.string().uuid(),
     projectId: z.string().uuid(),
@@ -51,6 +63,11 @@ export const attemptSchema = z
   })
   .strict()
   .superRefine((value, context) => {
+    if ((value.status === 'COMPLETED') !== Boolean(value.result))
+      context.addIssue({
+        code: 'custom',
+        message: 'Attempt result does not match its terminal state',
+      });
     for (const question of value.questions)
       if (
         question.feedback &&

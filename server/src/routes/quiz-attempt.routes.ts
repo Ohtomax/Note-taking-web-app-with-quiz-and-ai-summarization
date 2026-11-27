@@ -11,11 +11,19 @@ import {
   answerInputSchema,
 } from '@/utils/input-validators/quiz-attempt.validator.js';
 import { saveAttemptAnswer } from '@/controllers/quiz-attempt.controller.js';
+import { submitQuizAttempt } from '@/controllers/quiz-attempt.controller.js';
+import { emptyActionSchema } from '@/utils/input-validators/quiz-attempt.validator.js';
 export function createAttemptRouter(
   services: PrivateServices,
   attempts: QuizAttemptService,
 ) {
   const router = createPrivateRouter(services);
+  router.post(
+    '/:attemptId/submit',
+    validate('params', attemptParamsSchema),
+    validate('body', emptyActionSchema),
+    submitQuizAttempt(attempts),
+  );
   router.put(
     '/:attemptId/answers/:questionId',
     validate('params', answerParamsSchema),

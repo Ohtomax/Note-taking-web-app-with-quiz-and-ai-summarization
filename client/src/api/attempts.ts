@@ -2,6 +2,13 @@ import { apiRequest } from './client';
 import type { SaveAnswerInput } from '@/types/attempts';
 import { attemptResponseSchema, type StartAttemptInput } from '@/types/attempts';
 export const attemptsApi = {
+  submit: async (id: string) =>
+    attemptResponseSchema.parse(
+      await apiRequest<unknown>('/attempts/' + id + '/submit', {
+        method: 'POST',
+        body: '{}',
+      }),
+    ),
   saveAnswer: async (id: string, questionId: string, input: SaveAnswerInput) =>
     attemptResponseSchema.parse(
       await apiRequest<unknown>('/attempts/' + id + '/answers/' + questionId, {

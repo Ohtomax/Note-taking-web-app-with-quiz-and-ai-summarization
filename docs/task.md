@@ -817,7 +817,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
   - **Accept when** A late write cannot overwrite a newer edit, and each draft response withholds grading data.
   - **Verify** Change an exam answer in two tabs, submit a stale revision and inspect the response and stored choice.
 
-- [ ] **P5-T12 · Finalize an attempt exactly once** (MVP)
+- [x] **P5-T12 · Finalize an attempt exactly once** (MVP)
   - **Work and purpose** Score the persisted answers and record terminal state and server finish time in one transaction. Serialize finalization with answer writes, and disclose exam results only after commit.
   - **Files** `server/src/services/quiz-attempt.service.ts`, `server/src/repositories/quiz-attempt.repository.ts` · **Depends on** P5-T09, P5-T10, P5-T11
   - **Output** An idempotent final submission endpoint with immutable results.

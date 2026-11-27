@@ -25,3 +25,5 @@ export const answerInputSchema = z
     'Supply either choices or identification text',
   );
 export type AnswerInput = z.infer<typeof answerInputSchema>;
+
+export const emptyActionSchema = z.object({}).strict();

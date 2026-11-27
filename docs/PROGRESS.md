@@ -242,3 +242,5 @@ Every frontend task has its own commit and push to main, including implemented t
 - **P5-T10 completed 2026-11-27** Concurrent different answers yield one committed row and one conflict. Identical retries return original feedback, unanswered questions reveal nothing and foreign attempts/questions remain inaccessible.
 
 - **P5-T11 completed 2026-11-27** Two-tab fixtures reject stale writes, preserve the newer choice across reload and permit explicit clearing. Draft rows remain ungraded and every exam response excludes keys, explanations and correctness.
+
+- **P5-T12 completed 2026-11-27** Real draft/finalization races record one committed score and timestamp. Repeat submission is stable, foreign submit is hidden and later writes cannot change results; player contracts allow grading only after completion.
