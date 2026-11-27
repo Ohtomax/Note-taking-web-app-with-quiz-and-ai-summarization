@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { saveGenerationSchema } from './saved-artifacts.js';
 export const summarySettingsSchema = z
   .object({
     length: z.enum(['SHORT', 'MEDIUM', 'DETAILED']),
@@ -24,6 +25,9 @@ export const summaryContentSchema = z
   })
   .strict();
 export type SummaryContent = z.infer<typeof summaryContentSchema>;
+export const saveSummarySchema = saveGenerationSchema
+  .extend({ content: summaryContentSchema.optional() })
+  .strict();
 export type UpdateSummaryInput = z.infer<typeof updateSummarySchema>;
 export const updateSummarySchema = z
   .object({

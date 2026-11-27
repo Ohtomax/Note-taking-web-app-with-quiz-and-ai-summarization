@@ -747,7 +747,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
   - **Accept when** Changing projects clears the selection, and an empty or outdated passage prompts reselection.
   - **Verify** Switch projects after selecting notes and edit a passage before submitting it.
 
-- [ ] **P5-T02 · Generate and preview a summary** (MVP)
+- [x] **P5-T02 · Generate and preview a summary** (MVP)
   - **Work and purpose** Offer short, medium and detailed summaries in paragraph, bullet, key-concept or study-guide form. Keep the preview separate from the editor and show generation, failure and retry states.
   - **Files** `client/src/features/summaries/SummaryGenerator.tsx` · **Depends on** P5-T01
   - **Output** An editable, copyable preview with source references, save and regenerate actions.

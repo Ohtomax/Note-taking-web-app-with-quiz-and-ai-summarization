@@ -30,6 +30,7 @@ export const apiRequest = async <T>(
   if (!user) throw new ApiError(401, 'UNAUTHORIZED', 'Sign in to continue.');
   const signal = sessionController.signal;
   const token = await user.getIdToken();
+  const idempotencyKey = new Headers(options.headers).get('Idempotency-Key');
   if (useSession.getState().version !== version)
     throw new DOMException('Session changed', 'AbortError');
   try {
@@ -38,7 +39,11 @@ export const apiRequest = async <T>(
       method: options.method ?? 'GET',
       ...(options.body ? { data: options.body } : {}),
       signal: options.signal ? AbortSignal.any([signal, options.signal]) : signal,
-      headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token },
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + token,
+        ...(idempotencyKey ? { 'Idempotency-Key': idempotencyKey } : {}),
+      },
     });
     if (useSession.getState().version !== version)
       throw new DOMException('Session changed', 'AbortError');

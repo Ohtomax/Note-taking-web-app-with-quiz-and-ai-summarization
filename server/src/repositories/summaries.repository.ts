@@ -5,6 +5,7 @@ import { storedGenerationSchema } from '@/utils/input-validators/generations.js'
 import {
   summarySettingsSchema,
   type UpdateSummaryInput,
+  type SummaryContent,
 } from '@/utils/input-validators/summaries.js';
 import { summaryResultSchema } from '@/ai/schemas/summary.js';
 import { ServiceError } from '@/utils/error-handler/ServiceError.js';
@@ -103,7 +104,12 @@ export const createSummariesRepository = (db: PrismaClient) => ({
         data: { revision: { increment: 1 } },
       });
     }),
-  save: (ownerId: string, projectId: string, generationId: string) =>
+  save: (
+    ownerId: string,
+    projectId: string,
+    generationId: string,
+    editedContent?: SummaryContent,
+  ) =>
     db.$transaction(async (tx) => {
       await lockProject(tx, ownerId, projectId);
       const usage = await tx.aIUsage.findFirst({
@@ -140,7 +146,7 @@ export const createSummariesRepository = (db: PrismaClient) => ({
       const content = summaryResultSchema(
         settings,
         stored.manifest.sources.map((s) => s.sourceKey),
-      ).parse(stored.output);
+      ).parse(editedContent ?? stored.output);
       const available = await tx.note.findMany({
         where: {
           id: { in: stored.manifest.sources.map((s) => s.noteId) },

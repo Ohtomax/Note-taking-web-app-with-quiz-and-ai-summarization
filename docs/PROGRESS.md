@@ -222,3 +222,5 @@ Every frontend task has its own commit and push to main, including implemented t
 - **P4-T25 deferred 2026-11-27** Maximum local HTTP fixture passes in 353 ms with 14 mock calls; disconnection reuses the original result with no duplicate charge. Live provider/hosting timing remains deferred; bounded synchronous execution retained provisionally.
 
 - **P5-T01 completed 2026-11-27** Unicode code-point passage offsets, stale revision reselection and project-change resets pass component tests. Provider disclosure and saved-only source rules are visible; strict type/lint checks pass.
+
+- **P5-T02 completed 2026-11-27** Component tests cover quota/network errors, retained settings, same-key retry and preview editing. Real HTTP/SQL saves edited text within captured-source bounds without changing notes or adding AI calls.

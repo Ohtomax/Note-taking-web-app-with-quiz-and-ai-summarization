@@ -17,10 +17,12 @@ export const saveSummary =
           req.account!.id,
           req.params.projectId!,
           req.body.generationId as string,
+          req.body.content as
+            import('@/utils/input-validators/summaries.js').SummaryContent | undefined,
         ),
       });
     } catch (error) {
-      next(error);
+      AIHandleError(error, next);
     }
   };
 export const findSummary =
