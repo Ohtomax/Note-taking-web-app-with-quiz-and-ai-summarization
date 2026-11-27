@@ -232,3 +232,5 @@ Every frontend task has its own commit and push to main, including implemented t
 - **P5-T05 completed 2026-11-27** Question-specific key errors and edited answer submission pass UI tests. HTTP/SQL tests save edited previews and publish new keys without altering sources, earlier versions or adding AI calls.
 
 - **P5-T06 completed 2026-11-27** Library tests verify independent duplication, rename, deletion confirmation and retained-history feedback. Regeneration displays captured sources, uses a metered request and accepts edited previews into an idempotent successor version.
+
+- **P5-T07 completed 2026-11-27** Concurrent real HTTP starts share one attempt; a new key creates a new attempt, changed settings conflict and foreign versions are hidden. Start responses expose no grading keys.

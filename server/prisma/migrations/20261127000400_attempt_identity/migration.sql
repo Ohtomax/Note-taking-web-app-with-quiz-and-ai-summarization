@@ -1,0 +1,1 @@
+ALTER TABLE "QuizAttempt" ADD COLUMN "inputHash" VARCHAR(64) NOT NULL DEFAULT '';

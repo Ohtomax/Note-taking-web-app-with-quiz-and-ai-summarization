@@ -1,0 +1,184 @@
+import { createHash, randomInt } from 'node:crypto';
+import { Prisma, type PrismaClient } from '@/generated/prisma/client.js';
+import type { StartAttemptInput } from '@/utils/input-validators/quiz-attempt.validator.js';
+import { serializable } from './serializable.js';
+import { ServiceError } from '@/utils/error-handler/ServiceError.js';
+export const attemptSelect = {
+  id: true,
+  versionId: true,
+  requestKey: true,
+  inputHash: true,
+  mode: true,
+  status: true,
+  questionOrder: true,
+  optionOrder: true,
+  startedAt: true,
+  finishedAt: true,
+  correctCount: true,
+  answeredCount: true,
+  totalQuestions: true,
+  answers: {
+    orderBy: { questionId: 'asc' },
+    select: {
+      id: true,
+      questionId: true,
+      versionId: true,
+      selectedOptionIds: true,
+      text: true,
+      isCorrect: true,
+      revision: true,
+      submittedAt: true,
+    },
+  },
+  version: {
+    select: {
+      id: true,
+      version: true,
+      difficulty: true,
+      includeExplanations: true,
+      quiz: { select: { id: true, title: true, projectId: true } },
+      questions: {
+        orderBy: { position: 'asc' },
+        select: {
+          id: true,
+          position: true,
+          type: true,
+          prompt: true,
+          explanation: true,
+          acceptedAnswers: true,
+          sourceKeys: true,
+          options: {
+            orderBy: { position: 'asc' },
+            select: { id: true, position: true, text: true, isCorrect: true },
+          },
+        },
+      },
+      sources: {
+        select: {
+          sourceKey: true,
+          noteId: true,
+          noteTitle: true,
+          revision: true,
+          rangeStart: true,
+          rangeEnd: true,
+          contentHash: true,
+        },
+      },
+    },
+  },
+} as const;
+export type AttemptRow = Prisma.QuizAttemptGetPayload<{ select: typeof attemptSelect }>;
+function shuffled<T>(items: T[], enabled: boolean): T[] {
+  const result = [...items];
+  if (enabled)
+    for (let i = result.length - 1; i > 0; i--) {
+      const j = randomInt(i + 1);
+      [result[i], result[j]] = [result[j]!, result[i]!];
+    }
+  return result;
+}
+export const createQuizAttemptRepository = (db: PrismaClient) => ({
+  start: async (
+    ownerId: string,
+    quizId: string,
+    key: string,
+    input: StartAttemptInput,
+  ) => {
+    const inputHash = createHash('sha256')
+      .update(JSON.stringify({ quizId, ...input }))
+      .digest('hex');
+    const existing = async () =>
+      db.quizAttempt.findFirst({
+        where: {
+          versionId: input.versionId,
+          requestKey: key,
+          version: { quiz: { id: quizId, project: { ownerId } } },
+        },
+        select: attemptSelect,
+      });
+    const check = (row: AttemptRow) => {
+      if (row.inputHash !== inputHash)
+        throw new ServiceError(
+          'IDEMPOTENCY_CONFLICT',
+          'Use a new start key for different attempt settings.',
+          409,
+        );
+      return row;
+    };
+    const previous = await existing();
+    if (previous) return check(previous);
+    try {
+      return await serializable(db, async (tx) => {
+        const version = await tx.quizVersion.findFirst({
+          where: {
+            id: input.versionId,
+            quizId,
+            quiz: { deletedAt: null, project: { ownerId, deletedAt: null } },
+          },
+          select: {
+            id: true,
+            questions: {
+              orderBy: { position: 'asc' },
+              select: {
+                id: true,
+                options: { orderBy: { position: 'asc' }, select: { id: true } },
+              },
+            },
+          },
+        });
+        if (!version)
+          throw new ServiceError('RESOURCE_NOT_FOUND', 'Resource not found', 404);
+        if (!version.questions.length)
+          throw new ServiceError(
+            'QUIZ_EMPTY',
+            'This version has no playable questions.',
+            422,
+          );
+        const row = await tx.quizAttempt.upsert({
+          where: { versionId_requestKey: { versionId: version.id, requestKey: key } },
+          update: {},
+          create: {
+            versionId: version.id,
+            requestKey: key,
+            inputHash,
+            mode: input.mode,
+            totalQuestions: version.questions.length,
+            questionOrder: shuffled(
+              version.questions.map((q) => q.id),
+              input.shuffleQuestions,
+            ),
+            optionOrder: Object.fromEntries(
+              version.questions.map((q) => [
+                q.id,
+                shuffled(
+                  q.options.map((o) => o.id),
+                  input.shuffleOptions,
+                ),
+              ]),
+            ),
+          },
+          select: attemptSelect,
+        });
+        return check(row);
+      });
+    } catch (error) {
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === 'P2002'
+      ) {
+        const duplicate = await existing();
+        if (duplicate) return check(duplicate);
+      }
+      throw error;
+    }
+  },
+  load: async (ownerId: string, id: string) => {
+    const attempt = await db.quizAttempt.findFirst({
+      where: { id, version: { quiz: { project: { ownerId } } } },
+      select: attemptSelect,
+    });
+    if (!attempt) throw new ServiceError('RESOURCE_NOT_FOUND', 'Resource not found', 404);
+    return attempt;
+  },
+});
+export type QuizAttemptRepository = ReturnType<typeof createQuizAttemptRepository>;

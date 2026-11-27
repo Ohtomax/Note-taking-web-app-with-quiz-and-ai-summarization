@@ -782,7 +782,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
   - **Accept when** Duplicating a quiz leaves the original intact, and deletion follows the approved history-retention policy.
   - **Verify** Duplicate, rename and delete a quiz with a historical attempt fixture, then open the retained review.
 
-- [ ] **P5-T07 · Start a version-bound attempt** (MVP)
+- [x] **P5-T07 · Start a version-bound attempt** (MVP)
   - **Work and purpose** Create an owner-scoped attempt for a playable quiz version. Store its mode, server start time and initial question and option order. Deduplicate retries of a single start action.
   - **Files** `server/src/services/quiz-attempt.service.ts`, `server/src/repositories/quiz-attempt.repository.ts`, `server/src/routes/quiz-attempt.routes.ts` · **Depends on** None
   - **Output** An attempt creation endpoint and persistent initial state.
