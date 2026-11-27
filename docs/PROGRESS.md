@@ -214,3 +214,5 @@ Every frontend task has its own commit and push to main, including implemented t
 - **P4-T21 completed 2026-11-27** Mixed quiz saves all questions, options, keys and captured sources together. Forced nested-save failure leaves no partial rows; repeated acceptance is stable and foreign authoring is hidden.
 
 - **P4-T22 completed 2026-11-27** An attempt retains version-one TCP key while a free edit publishes UDP in version two. Stale publishing conflicts; metered regeneration requires explicit version-three acceptance and replays safely.
+
+- **P4-T23 completed 2026-11-27** Library HTTP tests verify pagination/history, rename, independent duplicate IDs, every foreign management rejection and retained attempt/version records after confirmed soft deletion.

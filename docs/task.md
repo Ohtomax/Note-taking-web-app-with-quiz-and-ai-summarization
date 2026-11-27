@@ -698,7 +698,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
   - **Accept when** Edits create a new version without a provider call, regeneration uses metered generation, and the previous version retains its original key.
   - **Verify** Record an attempt fixture for version one, edit its key and compare the attempt’s answer review against both versions.
 
-- [ ] **P4-T23 · Manage the saved quiz library** (MVP)
+- [x] **P4-T23 · Manage the saved quiz library** (MVP)
   - **Work and purpose** Provide owner-scoped history, detail, rename, duplicate and confirmed deletion. Preserve attempt-linked versions according to the approved retention policy.
   - **Files** `server/src/routes/quizzes.routes.ts`, `server/src/services/quizzes.service.ts`, `server/src/repositories/quizzes.repository.ts` · **Depends on** P4-T21, P4-T22
   - **Output** Paginated quiz library and lifecycle endpoints.

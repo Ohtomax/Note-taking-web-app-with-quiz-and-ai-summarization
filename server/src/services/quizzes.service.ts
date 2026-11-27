@@ -6,6 +6,11 @@ export const createQuizzesService = (
   generation: QuizGenerationService,
 ) => ({
   save: repository.save,
+  list: repository.list,
+  versions: repository.versions,
+  rename: repository.rename,
+  remove: repository.remove,
+  duplicate: repository.duplicate,
   authoring: repository.authoring,
   find: repository.find,
   publish: repository.publish,

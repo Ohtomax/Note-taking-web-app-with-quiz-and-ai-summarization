@@ -98,6 +98,201 @@ export function versionData(
   };
 }
 export const createQuizzesRepository = (db: PrismaClient) => ({
+  list: (
+    ownerId: string,
+    projectId: string,
+    page: number,
+    pageSize: number,
+    search: string,
+  ) =>
+    db.$transaction(async (tx) => {
+      if (
+        !(await tx.project.findFirst({
+          where: { id: projectId, ownerId, deletedAt: null },
+          select: { id: true },
+        }))
+      )
+        throw new ServiceError('RESOURCE_NOT_FOUND', 'Resource not found', 404);
+      const where = {
+        projectId,
+        deletedAt: null,
+        title: { contains: search, mode: 'insensitive' as const },
+      };
+      const [data, total] = await Promise.all([
+        tx.quiz.findMany({
+          where,
+          select: {
+            id: true,
+            title: true,
+            projectId: true,
+            createdAt: true,
+            updatedAt: true,
+            versions: {
+              orderBy: { version: 'desc' },
+              take: 1,
+              select: {
+                id: true,
+                version: true,
+                difficulty: true,
+                generatedAt: true,
+                _count: { select: { questions: true } },
+              },
+            },
+          },
+          orderBy: [{ updatedAt: 'desc' }, { id: 'desc' }],
+          skip: (page - 1) * pageSize,
+          take: pageSize,
+        }),
+        tx.quiz.count({ where }),
+      ]);
+      return { data, total, page, pageSize };
+    }),
+  versions: async (ownerId: string, quizId: string, page: number, pageSize: number) => {
+    if (
+      !(await db.quiz.findFirst({
+        where: { id: quizId, deletedAt: null, project: { ownerId, deletedAt: null } },
+        select: { id: true },
+      }))
+    )
+      throw new ServiceError('RESOURCE_NOT_FOUND', 'Resource not found', 404);
+    const where = { quizId };
+    const [data, total] = await db.$transaction([
+      db.quizVersion.findMany({
+        where,
+        orderBy: { version: 'desc' },
+        select: {
+          id: true,
+          quizId: true,
+          version: true,
+          difficulty: true,
+          defaultMode: true,
+          includeExplanations: true,
+          generatedAt: true,
+          _count: { select: { questions: true } },
+        },
+        skip: (page - 1) * pageSize,
+        take: pageSize,
+      }),
+      db.quizVersion.count({ where }),
+    ]);
+    return { data, total, page, pageSize };
+  },
+  rename: (ownerId: string, quizId: string, title: string) =>
+    db.$transaction(async (tx) => {
+      const quiz = await tx.quiz.findFirst({
+        where: { id: quizId, deletedAt: null, project: { ownerId, deletedAt: null } },
+        select: { projectId: true },
+      });
+      if (!quiz) throw new ServiceError('RESOURCE_NOT_FOUND', 'Resource not found', 404);
+      await lockProject(tx, ownerId, quiz.projectId);
+      const updated = await tx.quiz.updateMany({
+        where: { id: quizId, deletedAt: null },
+        data: { title },
+      });
+      if (!updated.count)
+        throw new ServiceError('RESOURCE_NOT_FOUND', 'Resource not found', 404);
+      await tx.project.update({
+        where: { id: quiz.projectId },
+        data: { revision: { increment: 1 } },
+      });
+      return tx.quiz.findUniqueOrThrow({
+        where: { id: quizId },
+        select: { id: true, projectId: true, title: true, updatedAt: true },
+      });
+    }),
+  remove: (ownerId: string, quizId: string) =>
+    db.$transaction(async (tx) => {
+      const quiz = await tx.quiz.findFirst({
+        where: { id: quizId, deletedAt: null, project: { ownerId, deletedAt: null } },
+        select: { projectId: true },
+      });
+      if (!quiz) throw new ServiceError('RESOURCE_NOT_FOUND', 'Resource not found', 404);
+      await lockProject(tx, ownerId, quiz.projectId);
+      await tx.quiz.updateMany({
+        where: { id: quizId, deletedAt: null },
+        data: { deletedAt: new Date() },
+      });
+      await tx.project.update({
+        where: { id: quiz.projectId },
+        data: { revision: { increment: 1 } },
+      });
+    }),
+  duplicate: (ownerId: string, quizId: string, expectedVersion: number) =>
+    db.$transaction(async (tx) => {
+      const quiz = await tx.quiz.findFirst({
+        where: { id: quizId, deletedAt: null, project: { ownerId, deletedAt: null } },
+        select: { projectId: true, title: true },
+      });
+      if (!quiz) throw new ServiceError('RESOURCE_NOT_FOUND', 'Resource not found', 404);
+      await lockProject(tx, ownerId, quiz.projectId);
+      const latest = await tx.quizVersion.findFirst({
+        where: { quizId, quiz: { deletedAt: null } },
+        orderBy: { version: 'desc' },
+        select: versionSelect,
+      });
+      if (!latest)
+        throw new ServiceError('RESOURCE_NOT_FOUND', 'Resource not found', 404);
+      if (latest.version !== expectedVersion)
+        throw new ServiceError(
+          'VERSION_CONFLICT',
+          'Reload the latest quiz version before duplicating.',
+          409,
+        );
+      const title = quiz.title.slice(0, 193) + ' (copy)';
+      const settings = quizSettingsSchema.parse({
+        title,
+        questionCount: latest.questions.length,
+        questionTypes: [...new Set(latest.questions.map((question) => question.type))],
+        difficulty: latest.difficulty,
+        defaultMode: latest.defaultMode,
+        includeExplanations: latest.includeExplanations,
+      });
+      const raw = {
+        title,
+        questions: latest.questions.map((question) => ({
+          type: question.type,
+          prompt: question.prompt,
+          explanation: question.explanation,
+          sourceKeys: question.sourceKeys,
+          ...(question.type === 'IDENTIFICATION'
+            ? { acceptedAnswers: question.acceptedAnswers }
+            : {
+                options: question.options.map((option) => ({
+                  id: option.id,
+                  text: option.text,
+                })),
+                correctOptionIds: question.options
+                  .filter((option) => option.isCorrect)
+                  .map((option) => option.id),
+              }),
+        })),
+      };
+      const content = quizResultSchema(
+        settings,
+        latest.sources.map((source) => source.sourceKey),
+      ).parse(raw);
+      const data = versionData(
+        settings,
+        content,
+        latest.sources.map((source) => ({ ...source, noteId: source.noteId ?? '' })),
+        1,
+      );
+      data.promptVersion = 'duplicate-v1';
+      const copy = await tx.quiz.create({
+        data: { projectId: quiz.projectId, title, versions: { create: data } },
+        select: {
+          id: true,
+          title: true,
+          projectId: true,
+          versions: { select: versionSelect },
+        },
+      });
+      await tx.project.update({
+        where: { id: quiz.projectId },
+        data: { revision: { increment: 1 } },
+      });
+      return copy;
+    }),
   find: async (ownerId: string, id: string) => {
     const quiz = await db.quiz.findFirst({
       where: { id, deletedAt: null, project: { ownerId, deletedAt: null } },
