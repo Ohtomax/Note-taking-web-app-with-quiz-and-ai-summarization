@@ -150,3 +150,5 @@ The pending frontend changes are preserved in the original folder. No deployment
 - **P3-T02 implemented, database verification deferred** Added bounded owner-scoped project search with deterministic sorting and active-note counts. Runtime blocks loopback database checks. Git metadata is read-only, so per-task commits are blocked.
 
 - **P3-T16 implemented, live verification deferred 2026-11-27** Auth screens and SDK-flow tests pass; live Firebase setup remains deferred.
+
+- **P3-T17 completed 2026-11-27** Session tests reject old responses and clear private caches; Axios adds Firebase tokens.

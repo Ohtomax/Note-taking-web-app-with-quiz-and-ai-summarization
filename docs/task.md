@@ -468,7 +468,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
   - **Accept when** A learner can register, sign in again after recovery, reload their session and sign out.
   - **Verify** Run the flows with the Firebase test environment and check invalid and expired reset links.
 
-- [ ] **P3-T17 · Bind requests and caches to the current user** (MVP)
+- [x] **P3-T17 · Bind requests and caches to the current user** (MVP)
   - **Work and purpose** Gate protected routes until Firebase resolves, attach the current token to protected requests and clear account-scoped queries and drafts on identity changes.
   - **Files** `client/src/api`, `client/src/features/auth`, `client/src/routes`, `client/src/store` · **Depends on** P3-T16
   - **Output** Protected routing and session-aware TanStack Query integration.
