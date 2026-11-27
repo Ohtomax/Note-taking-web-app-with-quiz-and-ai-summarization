@@ -572,7 +572,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
   - **Accept when** Each prompt retains source boundaries, requests grounded output and exposes no credentials, tools or other user material.
   - **Verify** Inspect mock requests for each scope with confusing formatting and instruction-like prose in a note.
 
-- [ ] **P4-T05 · Plan tokens and chunk coverage** (MVP)
+- [x] **P4-T05 · Plan tokens and chunk coverage** (MVP)
   - **Work and purpose** Estimate input and reserved output against the chosen model’s context limit, then split long notes into ordered ranges with stable source references.
   - **Files** `server/src/ai/chunking`, `server/tests/ai/chunking.test.ts` · **Depends on** P4-T02, P4-T03, P4-T04
   - **Output** Token-budgeted chunk planner and coverage manifest.

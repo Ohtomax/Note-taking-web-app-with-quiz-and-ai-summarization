@@ -178,3 +178,5 @@ Every frontend task has its own commit and push to main, including implemented t
 - **P4-T03 completed 2026-11-27** 125-note database fixture verifies stable paging, exclusions, empty projects and mixed-owner rejection. Parent locks keep collection consistent with note writers.
 
 - **P4-T04 completed 2026-11-27** Both prompt types pass all four scope fixtures with instruction-like source text. Trusted instructions and serialized source data remain separate, with explicit citation allowlists.
+
+- **P4-T05 completed 2026-11-27** Boundary and Unicode coverage tests pass for long notes and many small notes. UTF-8 bytes conservatively estimate tokens; prompt/output headroom and bounded stage/retry reserves are explicit.
