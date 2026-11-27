@@ -15,8 +15,11 @@ import type { ProjectsService } from '@/services/projects.service.js';
 import type { NotesService } from '@/services/notes.service.js';
 import { createNotesRouter } from '@/routes/notes.routes.js';
 import { ServiceError } from '@/utils/error-handler/ServiceError.js';
+import type { AIUsageService } from '@/services/ai-usage.service.js';
+import { createAIUsageRouter } from '@/routes/ai-usage.routes.js';
 
 export interface AppServices {
+  aiUsageService?: AIUsageService;
   notesService?: NotesService;
   projectsService?: ProjectsService;
   userService: UserService;
@@ -54,6 +57,8 @@ export function createApp(
       }),
   );
   if (services) {
+    if (services.aiUsageService)
+      app.use('/api/v1/ai-usage', createAIUsageRouter(services, services.aiUsageService));
     if (services.notesService)
       app.use(
         '/api/v1/projects/:projectId/notes',

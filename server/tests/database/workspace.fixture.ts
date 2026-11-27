@@ -11,6 +11,8 @@ import { createApiLimiter } from '../../src/utils/rate-limiter/apiLimiter.ts';
 import { createTestClient } from './setup.ts';
 import { createNotesRepository } from '../../src/repositories/notes.repository.ts';
 import { createNotesService } from '../../src/services/notes.service.ts';
+import { createAIUsageRepository } from '../../src/repositories/ai-usage.repository.ts';
+import { createAIUsageService } from '../../src/services/ai-usage.service.ts';
 
 export const withWorkspace = async (
   run: (fixture: Awaited<ReturnType<typeof createWorkspace>>) => Promise<void>,
@@ -54,6 +56,7 @@ const createWorkspace = async () => {
     data: { ownerId: bob.id, title: 'Networking' },
   });
   const app = createApp(undefined, parseEnvironment({}), () => {}, {
+    aiUsageService: createAIUsageService(createAIUsageRepository(db)),
     userService: createUserService(createUserRepository(db)),
     projectsService: createProjectsService(createProjectsRepository(db)),
     notesService: createNotesService(createNotesRepository(db)),

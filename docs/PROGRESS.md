@@ -184,3 +184,5 @@ Every frontend task has its own commit and push to main, including implemented t
 - **P4-T06 completed 2026-11-27** First/last concept fixture survives bounded reduction. A middle chunk failure or invented source key prevents a completed result; every map prompt is preflighted before billing.
 
 - **P4-T07 completed 2026-11-27** Fake-clock fixtures verify retry-after delays, invalid-input no-retry and timeout uncertainty. Provider calls are individually observable and SDK retries remain disabled.
+
+- **P4-T08 completed 2026-11-27** Disposable-database and authenticated HTTP tests verify attributable calls, versioned cost estimates, null unknown usage and two-account isolation. No source text is logged.

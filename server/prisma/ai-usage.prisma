@@ -12,6 +12,8 @@ enum AIStatus {
 }
 
 model AIUsage {
+  calls          AICall[]
+  completedAt    DateTime?   @db.Timestamptz(6)
   id             String      @id @default(uuid()) @db.Uuid
   userId         String      @db.Uuid
   user           User        @relation(fields: [userId], references: [id], onDelete: Restrict)

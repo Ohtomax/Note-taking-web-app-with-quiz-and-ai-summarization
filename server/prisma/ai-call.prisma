@@ -1,0 +1,13 @@
+
+model AICall {
+ id String @id @default(uuid()) @db.Uuid
+ usageId String @db.Uuid
+ usage AIUsage @relation(fields:[usageId],references:[id],onDelete:Cascade)
+ number Int
+ status AIStatus @default(RUNNING)
+ inputTokens Int?
+ outputTokens Int?
+ createdAt DateTime @default(now()) @db.Timestamptz(6)
+ completedAt DateTime? @db.Timestamptz(6)
+ @@unique([usageId,number])
+}

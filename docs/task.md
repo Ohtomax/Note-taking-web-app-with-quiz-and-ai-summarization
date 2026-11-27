@@ -593,7 +593,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
   - **Accept when** Timeouts end the request, stable validation errors cause no retry, and exhausted retries return a recoverable generation state.
   - **Verify** Use a fake clock to simulate throttling, temporary service failure, a timeout and a malformed request.
 
-- [ ] **P4-T08 · Record AI usage** (MVP)
+- [x] **P4-T08 · Record AI usage** (MVP)
   - **Work and purpose** Persist generation identity, user, provider/model, timestamps, status and available token counts. Use the configured price schedule for estimates and distinguish unknown costs from zero.
   - **Files** `server/src/services/ai-usage.service.ts`, `server/src/repositories/ai-usage.repository.ts`, `server/tests/ai/usage.test.ts` · **Depends on** P4-T01, P4-T07
   - **Output** Attributable usage records and an owner-scoped usage query.
