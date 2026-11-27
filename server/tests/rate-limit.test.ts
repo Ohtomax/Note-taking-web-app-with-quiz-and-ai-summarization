@@ -6,7 +6,8 @@ import request from 'supertest';
 import { createApiLimiter } from '../src/utils/rate-limiter/apiLimiter.ts';
 import { ApiHandleError } from '../src/utils/error-handler/apiErrorHandler.ts';
 
-test('rate limits reject excess traffic, expose retry and reset after expiry', async () => {
+test('rate limits reject excess traffic, expose retry and reset after expiry', async (context) => {
+  context.mock.timers.enable({ apis: ['Date'], now: Date.now() });
   const app = express();
   app.use(createApiLimiter(new MemoryStore(), 1, 100));
   app.get('/', (_req, res) => res.json({ data: true }));
@@ -14,7 +15,7 @@ test('rate limits reject excess traffic, expose retry and reset after expiry', a
   const limited = await request(app).get('/');
   assert.equal(limited.status, 429);
   assert.ok(limited.headers['retry-after']);
-  await new Promise((resolve) => setTimeout(resolve, 150));
+  context.mock.timers.tick(150);
   assert.equal((await request(app).get('/')).status, 200);
 });
 
