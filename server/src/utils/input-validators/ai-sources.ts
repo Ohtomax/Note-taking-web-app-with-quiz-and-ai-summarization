@@ -10,5 +10,16 @@ export const sourceRequestSchema = z.discriminatedUnion('scope', [
       end: z.number().int().positive(),
     })
     .strict(),
+  z
+    .object({
+      scope: z.literal('NOTES'),
+      noteIds: z
+        .array(z.string().uuid())
+        .min(1)
+        .max(200)
+        .refine((ids) => new Set(ids).size === ids.length, 'Duplicate note IDs'),
+    })
+    .strict(),
+  z.object({ scope: z.literal('PROJECT') }).strict(),
 ]);
 export type SourceRequest = z.infer<typeof sourceRequestSchema>;

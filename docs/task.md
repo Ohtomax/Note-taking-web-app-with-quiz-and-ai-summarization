@@ -558,7 +558,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
   - **Accept when** Stale revisions, invalid ranges and foreign resources fail before any provider call.
   - **Verify** Test a valid excerpt with Unicode text, changed content, out-of-range offsets and a second account’s note.
 
-- [ ] **P4-T03 · Resolve multiple notes and full folders** (MVP)
+- [x] **P4-T03 · Resolve multiple notes and full folders** (MVP)
   - **Work and purpose** Verify each selected ID against one owned project, and enumerate all eligible folder notes in stable pages with revisions so a mixed-ownership batch fails as a whole.
   - **Files** `server/src/services/ai-sources.service.ts`, `server/src/repositories/notes.repository.ts`, `server/tests/ai/sources.test.ts` · **Depends on** P4-T02
   - **Output** A source manifest for selected notes and whole folders.

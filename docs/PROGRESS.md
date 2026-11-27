@@ -174,3 +174,5 @@ Every frontend task has its own commit and push to main, including implemented t
 - **P4-T01 completed 2026-11-27** Three adapter/configuration tests, strict types and lint pass. Enabled configuration is redacted on error; provider setup and live keys remain owner work.
 
 - **P4-T02 completed 2026-11-27** Real PostgreSQL fixtures verify code-point offsets, current revisions and rejection of invalid or foreign sources before provider access.
+
+- **P4-T03 completed 2026-11-27** 125-note database fixture verifies stable paging, exclusions, empty projects and mixed-owner rejection. Parent locks keep collection consistent with note writers.
