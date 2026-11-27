@@ -32,7 +32,7 @@ Two completed attempts score 1/1 and 1/3 with every question answered. Correct =
 
 Another fixture scores 2/2 and 1/4 with one skipped. Assigned = 6, answered = 5, correct = 3, incorrect = 2, skipped = 1. Accuracy = 60%, mean score = 62.5%. An in-progress attempt does not affect either scored aggregate.
 
-Dashboard recent notes order by owner-scoped lastOpenedAt, independent of editedAt. Recent projects order by createdAt. Recent summaries/quizzes use generatedAt and attempts use startedAt. Counts and recents use bounded queries and explicitly distinguish archived and deleted history.
+Dashboard recent notes order by owner-scoped lastOpenedAt, independent of editedAt. Recent projects order by createdAt. Recent summaries use generatedAt, newest quiz identities use createdAt, and recent attempts use startedAt. The dashboard bounds each recent list to six rows; its attempt/performance window defaults to 30 UTC days. Counts and recents use bounded queries and explicitly distinguish archived and deleted history.
 
 ## Phase 5 accepted metric boundaries
 

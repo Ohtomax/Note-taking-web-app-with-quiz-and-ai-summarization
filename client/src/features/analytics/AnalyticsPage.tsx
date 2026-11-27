@@ -74,6 +74,7 @@ export function PerformanceOverview({ data }: { data: Analytics }) {
           <div className="mt-4 h-64" aria-hidden="true">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart
+                accessibilityLayer={false}
                 data={data.trend.map((row) => ({ ...row, date: row.day.slice(5, 10) }))}
               >
                 <XAxis dataKey="date" />
@@ -118,7 +119,7 @@ export function PerformanceOverview({ data }: { data: Analytics }) {
           <h2 className="font-semibold">Score comparison</h2>
           <div className="mt-4 h-64" aria-hidden="true">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={comparison}>
+              <BarChart accessibilityLayer={false} data={comparison}>
                 <XAxis dataKey="name" />
                 <YAxis domain={[0, 100]} unit="%" />
                 <Tooltip />
@@ -140,7 +141,7 @@ export function PerformanceOverview({ data }: { data: Analytics }) {
           {t.answered ? (
             <div className="h-56" aria-hidden="true">
               <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
+                <PieChart accessibilityLayer={false}>
                   <Pie
                     data={distribution}
                     dataKey="value"

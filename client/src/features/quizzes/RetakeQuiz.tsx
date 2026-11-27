@@ -29,7 +29,8 @@ export function RetakeQuiz({ attempt }: { attempt: PlayerAttempt }) {
       if (useSession.getState().user?.uid !== uid) return;
       cache.setQueryData([uid, 'player-attempt', response.data.id], response);
       void cache.invalidateQueries({ queryKey: [uid, 'history'] });
-      void cache.invalidateQueries({ queryKey: [uid, 'open-attempts'] });
+      for (const domain of ['open-attempts', 'history', 'dashboard', 'analytics'])
+        void cache.invalidateQueries({ queryKey: [uid, domain] });
       void navigate('/attempts/' + response.data.id);
     },
   });

@@ -1,4 +1,12 @@
-import { expect, it, vi } from 'vitest';
+import './fixtures/usage';
+import { beforeEach, expect, it, vi } from 'vitest';
+import { dashboardApi } from '@/api/dashboard';
+beforeEach(() => {
+  vi.spyOn(dashboardApi, 'open').mockImplementation(async (_projectId, noteId) => ({
+    id: noteId,
+    lastOpenedAt: '2026-11-28T00:00:00.000Z',
+  }));
+});
 import { Editor } from '@tiptap/core';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';

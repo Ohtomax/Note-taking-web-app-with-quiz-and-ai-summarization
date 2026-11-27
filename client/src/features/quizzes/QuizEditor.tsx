@@ -206,7 +206,7 @@ export default function QuizEditorPage() {
       ),
     onSuccess: async (response) => {
       await Promise.all(
-        ['quiz', 'quizzes'].map((domain) =>
+        ['quiz', 'quizzes', 'quiz-versions', 'dashboard', 'analytics'].map((domain) =>
           cache.invalidateQueries({ queryKey: [uid, domain] }),
         ),
       );

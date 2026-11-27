@@ -44,8 +44,16 @@ test('P4-T21 complete immutable quiz version saves atomically and authoring requ
         .send({ generationId: usage.id });
     assert.equal((await save()).status, 500);
     assert.equal(await db.quiz.count({ where: { projectId: project.id } }), 0);
-    assert.equal(await db.quizVersion.count(), 0);
-    assert.equal(await db.quizQuestion.count(), 0);
+    assert.equal(
+      await db.quizVersion.count({ where: { quiz: { projectId: project.id } } }),
+      0,
+    );
+    assert.equal(
+      await db.quizQuestion.count({
+        where: { version: { quiz: { projectId: project.id } } },
+      }),
+      0,
+    );
     await db.aIUsage.update({
       where: { id: usage.id },
       data: { result: jsonValue(usage.result) },

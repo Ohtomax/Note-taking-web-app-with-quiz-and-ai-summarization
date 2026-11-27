@@ -27,7 +27,8 @@ function SummaryPreview({ generation }: { generation: Generation }) {
         summaryContentSchema.parse(content),
       ),
     onSuccess: () => {
-      void cache.invalidateQueries({ queryKey: [uid, 'summaries'] });
+      for (const domain of ['summaries', 'dashboard', 'analytics'])
+        void cache.invalidateQueries({ queryKey: [uid, domain] });
       void cache.invalidateQueries({ queryKey: [uid, 'dashboard'] });
     },
   });

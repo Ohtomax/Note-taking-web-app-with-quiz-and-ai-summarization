@@ -40,7 +40,8 @@ export function GeneratedQuizEditor({
             input.content,
           ),
     onSuccess: () => {
-      void cache.invalidateQueries({ queryKey: [uid, 'quizzes'] });
+      for (const domain of ['quizzes', 'quiz', 'quiz-versions', 'analytics'])
+        void cache.invalidateQueries({ queryKey: [uid, domain] });
       void cache.invalidateQueries({ queryKey: [uid, 'dashboard'] });
     },
   });

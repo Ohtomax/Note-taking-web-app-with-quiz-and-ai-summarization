@@ -922,7 +922,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
   - **Accept when** Feedback remains discernible without color, and dialog closure and question transitions place focus appropriately.
   - **Verify** Finish an exam by keyboard, review its result with a screen reader, and check narrow and wide viewports in both themes.
 
-- [ ] **P5-T27 · Verify the full study session** (MVP)
+- [x] **P5-T27 · Verify the full study session** (MVP)
   - **Work and purpose** Cover generation, attempted answers, final submission, retakes, history, analytics and account changes through the normal UI and API using seeded data and a mock AI provider.
   - **Files** `server/tests/integration/`, `client/tests/`, `docs/TESTING.md` · **Depends on** P5-T03, P5-T06, P5-T16, P5-T18, P5-T23, P5-T25, P5-T26
   - **Output** A repeatable full-stack study-session test with recorded expectations.
@@ -938,10 +938,10 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
 
 ### Phase verification
 
-- [ ] Submit a practice answer and inspect the immediate response. Start an exam, reload it, and verify that its player responses disclose the key only after final submission.
-- [ ] Race duplicate submissions, refresh a shuffled retake, and verify that each completed attempt keeps its recorded answers, order, score and completion time.
-- [ ] Edit the original quiz, review an earlier result, and confirm that its questions and grading still match the attempted version.
-- [ ] Compare the documented hand-calculated fixture against global, project and quiz reports. Check empty states, zero denominators, and account switching.
+- [x] Submit a practice answer and inspect the immediate response. Start an exam, reload it, and verify that its player responses disclose the key only after final submission.
+- [x] Race duplicate submissions, refresh a shuffled retake, and verify that each completed attempt keeps its recorded answers, order, score and completion time.
+- [x] Edit the original quiz, review an earlier result, and confirm that its questions and grading still match the attempted version.
+- [x] Compare the documented hand-calculated fixture against global, project and quiz reports. Check empty states, zero denominators, and account switching.
 - [ ] Complete both modes at phone and desktop widths and verify keyboard focus, labels and feedback in both themes.
 
 **Complete when** All MVP tasks pass their verification steps, the optional topic report has a recorded disposition, and a full study session reproduces the documented results using the mock AI provider.

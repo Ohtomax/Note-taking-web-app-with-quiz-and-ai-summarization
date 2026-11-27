@@ -1,3 +1,4 @@
+import './fixtures/usage';
 import { expect, it, vi } from 'vitest';
 import { fireEvent, render, screen, within, waitFor } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';

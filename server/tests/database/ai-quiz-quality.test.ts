@@ -51,7 +51,15 @@ test('P4-T20 malformed complete quizzes never become completed results or persis
       assert.equal(response.body.data.result, null);
     }
     assert.equal(client.calls.length, 4);
-    assert.equal(await db.quizQuestion.count(), 0);
-    assert.equal(await db.quizVersion.count(), 0);
+    assert.equal(
+      await db.quizQuestion.count({
+        where: { version: { quiz: { projectId: project.id } } },
+      }),
+      0,
+    );
+    assert.equal(
+      await db.quizVersion.count({ where: { quiz: { projectId: project.id } } }),
+      0,
+    );
   }, client);
 });

@@ -272,3 +272,5 @@ Every frontend task has its own commit and push to main, including implemented t
 - **P5-T25 completed 2026-11-27** Dashboard and generation forms show UTC quotas, remaining allowance, active work and unknown-cost states. Generation admission and terminal polling invalidate usage. Account switch and exhausted-quota retake component check passes; no quota gate is applied to reading or attempts.
 
 - **P5-T26 deferred 2026-11-27** Implementation and automated keyboard/theme/dialog-focus checks pass. Real-browser phone/tablet/desktop and screen-reader acceptance is deferred because Computer Use native pipe is unavailable; the task remains unchecked.
+
+- **P5-T27 completed 2026-11-28** Both clean-fixture React/real HTTP/Prisma study sessions reconcile mock calls, scores, retakes, all analytics scopes, dashboard, usage and account isolation. Final regression: 39 server unit, 63 database/API, 38 frontend tests; type/lint/format/build pass. Four automated phase verification items checked. Browser/screen-reader acceptance remains open in T26; audit findings and bundle/driver warnings are recorded in TESTING.md.

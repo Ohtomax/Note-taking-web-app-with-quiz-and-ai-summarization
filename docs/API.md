@@ -30,6 +30,9 @@ Success returns { data, message? }, lists add { page, pageSize, total }. Error r
 | POST | /quizzes/:quizId/duplicate | Copy into a new quiz identity with independent version |
 | POST | /quizzes/:quizId/attempts | Idempotency-Key, versionId, mode, shuffleQuestions, shuffleOptions |
 | GET | /attempts/:attemptId | Player projection with mode-specific answer disclosure |
+| GET | /attempts/in-progress | Owned unexpired open attempts, optional quizId and bounded pagination |
+| PATCH | /attempts/:attemptId/location | Zero-based questionIndex; preserves answer revision and order |
+| GET | /attempts/:attemptId/comparison | First/selected/latest immutable-version results, best score and completed sample count |
 | PUT | /attempts/:attemptId/answers/:questionId | expectedAnswerRevision and optionIds or identification text |
 | POST | /attempts/:attemptId/submit | Idempotent finalization and results |
 | POST | /attempts/:attemptId/abandon | In-progress to abandoned only |
