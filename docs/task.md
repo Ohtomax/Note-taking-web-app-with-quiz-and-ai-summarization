@@ -1011,6 +1011,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
   - **Verify** Compare endpoint values to the fixture calculations and confirm another user's records do not change counts, scores, or durations.
 
 - [ ] **P6-T08 · Exercise the learner journey in a browser** (MVP)
+  - **Status 2026-11-28** Deferred: Computer Use returns native pipe unavailable. The two clean React/HTTP/Prisma study journeys pass, but real desktop/phone browser, keyboard, refresh and sign-out acceptance is not claimed.
   - **Work and purpose** Connect authentication, note editing, mocked summary and quiz generation, attempt completion, history, and account switching in one browser scenario.
   - **Files** `tests/e2e/study-workflow.spec.ts`, `docs/TESTING.md` · **Depends on** P6-T01
   - **Output** End-to-end coverage for desktop and narrow-screen use.

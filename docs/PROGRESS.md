@@ -292,3 +292,5 @@ Phase 5 implementation status: 26 of 27 MVP task checkboxes are complete. P5-T26
 - **P6-T06 completed 2026-11-28** The all-type practice/exam key, interrupted reload, duplicate-finalization, post-edit historical review and replayed shuffled retake scenario passes with zero AI calls. Existing pure scorer and race/disclosure cases pass.
 
 - **P6-T07 completed 2026-11-28** The 1/1 plus 1/3 fully answered fixture reconciles 66.67% mean versus 50% accuracy in all three scopes, distinct version difficulty, time bounds, empty windows and foreign/unfinished exclusions. API/DB test and strict checks pass.
+
+- **P6-T08 deferred/partial 2026-11-28** Computer Use native pipe is unavailable. Desktop/phone browser, focus, refresh and sign-out acceptance stays unchecked; TESTING.md records the concrete manual scenario and distinguishes passing jsdom/real-HTTP sessions from browser evidence.
