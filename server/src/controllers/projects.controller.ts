@@ -2,6 +2,21 @@ import type { Response, NextFunction } from 'express';
 import type { AuthRequest } from '@/types/auth.type.js';
 import type { ProjectsService } from '@/services/projects.service.js';
 import { UserHandleError } from '@/utils/error-handler/userErrorHandler.js';
+import type { ProjectListInput } from '@/utils/input-validators/projects.js';
+
+export const listProjects =
+  (service: ProjectsService) =>
+  async (req: AuthRequest, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      res
+        .status(200)
+        .json(
+          await service.list(req.account!.id, req.query as unknown as ProjectListInput),
+        );
+    } catch (error) {
+      UserHandleError(error, next);
+    }
+  };
 
 export const createProject =
   (service: ProjectsService) =>

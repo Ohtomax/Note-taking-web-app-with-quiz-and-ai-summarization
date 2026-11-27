@@ -363,7 +363,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
   - **Accept when** A valid request creates one owned folder and an invalid request writes nothing.
   - **Verify** Create a folder as one account, then send an empty name and an unexpected owner field.
 
-- [ ] **P3-T02 · List and search projects** (MVP)
+- [x] **P3-T02 · List and search projects** (MVP)
   - **Work and purpose** Page and order the caller’s folders in the database, filter by archive state and search the title to support navigation.
   - **Files** `server/src/repositories/projects.repository.ts`, `server/src/utils/input-validators/projects.ts` · **Depends on** P3-T01
   - **Output** Project list endpoint with note counts and timestamps.

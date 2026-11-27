@@ -23,3 +23,41 @@ test('P3-T01 project creation derives its owner and rejects invalid fields witho
     assert.equal(await db.project.count({ where: { ownerId: alice.id } }), before + 1);
   });
 });
+
+test('P3-T02 projects search and pagination isolate owners and count active notes', async () => {
+  await withWorkspace(async ({ db, alice, project, foreign, api }) => {
+    await db.note.createMany({
+      data: [
+        { title: 'Active', projectId: project.id },
+        { title: 'Archived', projectId: project.id, archivedAt: new Date() },
+        { title: 'Deleted', projectId: project.id, deletedAt: new Date() },
+        { title: 'Foreign', projectId: foreign.id },
+      ],
+    });
+    const stamp = new Date('2026-01-01T00:00:00Z');
+    await db.project.createMany({
+      data: [
+        { ownerId: alice.id, title: 'Networking 2', updatedAt: stamp },
+        { ownerId: alice.id, title: 'Networking 3', updatedAt: stamp },
+        { ownerId: alice.id, title: 'Networking old', archivedAt: stamp },
+      ],
+    });
+    const first = await api
+      .get('/api/v1/projects?search=network&pageSize=2&sort=title&order=asc')
+      .set('Authorization', 'Bearer alice');
+    const second = await api
+      .get('/api/v1/projects?search=network&pageSize=2&page=2&sort=title&order=asc')
+      .set('Authorization', 'Bearer alice');
+    assert.equal(first.status, 200);
+    assert.equal(first.body.total, 3);
+    assert.equal(
+      new Set([...first.body.data, ...second.body.data].map((p: { id: string }) => p.id))
+        .size,
+      3,
+    );
+    assert.equal(
+      first.body.data.find((p: { id: string }) => p.id === project.id).noteCount,
+      1,
+    );
+  });
+});
