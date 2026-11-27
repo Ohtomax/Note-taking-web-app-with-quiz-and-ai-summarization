@@ -433,7 +433,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
   - **Accept when** The flag survives reload and repeat requests converge on the requested state.
   - **Verify** Pin twice, reload the list, unpin and verify a foreign account cannot change the flag.
 
-- [ ] **P3-T12 · Archive and restore notes** (MVP)
+- [x] **P3-T12 · Archive and restore notes** (MVP)
   - **Work and purpose** Separate active and archived notes while preserving each note’s identity, revision and links so archived material can be recovered.
   - **Files** `server/src/services/notes.service.ts`, `server/src/repositories/notes.repository.ts` · **Depends on** P3-T08, P3-T10
   - **Output** Reversible note archive operations.

@@ -371,3 +371,36 @@ test('P3-T11 pin and unpin persist and reject foreign writers', async () => {
     );
   });
 });
+
+test('P3-T12 note archive and restore preserve identity and contents', async () => {
+  await withWorkspace(async ({ db, project, api }) => {
+    const note = await db.note.create({
+      data: { projectId: project.id, title: 'Keep', plainText: 'Content' },
+    });
+    const url = '/api/v1/projects/' + project.id + '/notes';
+    assert.equal(
+      (
+        await api
+          .post(url + '/' + note.id + '/archive')
+          .set('Authorization', 'Bearer alice')
+          .send({ expectedRevision: 1 })
+      ).status,
+      200,
+    );
+    assert.equal((await api.get(url).set('Authorization', 'Bearer alice')).body.total, 0);
+    assert.equal(
+      (
+        await api
+          .post(url + '/' + note.id + '/restore')
+          .set('Authorization', 'Bearer alice')
+          .send({ expectedRevision: 2 })
+      ).status,
+      200,
+    );
+    assert.equal((await api.get(url).set('Authorization', 'Bearer alice')).body.total, 1);
+    assert.equal(
+      (await db.note.findUniqueOrThrow({ where: { id: note.id } })).plainText,
+      'Content',
+    );
+  });
+});

@@ -5,6 +5,13 @@ import type { UpdateNoteInput } from '@/utils/input-validators/notes.js';
 import type { NoteListInput } from '@/utils/input-validators/notes.js';
 
 export const createNotesService = (repository: NotesRepository) => ({
+  setArchived: (
+    ownerId: string,
+    projectId: string,
+    noteId: string,
+    expectedRevision: number,
+    archived: boolean,
+  ) => repository.setArchived(ownerId, projectId, noteId, expectedRevision, archived),
   setPinned: (
     ownerId: string,
     projectId: string,
