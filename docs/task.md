@@ -412,7 +412,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
   - **Accept when** A new note belongs to the requested folder and mismatched or foreign parent IDs reveal no content.
   - **Verify** Create and reopen a note, then retry using another owned folder and a foreign folder.
 
-- [ ] **P3-T09 · Protect edits with revisions** (MVP)
+- [x] **P3-T09 · Protect edits with revisions** (MVP)
   - **Work and purpose** Require the last-read revision for title or content changes and atomically compare and advance it to prevent stale edits replacing newer work.
   - **Files** `server/src/repositories/notes.repository.ts`, `server/src/services/notes.service.ts`, `server/src/utils/input-validators/notes.ts` · **Depends on** P3-T08
   - **Output** Version-aware note update endpoint.

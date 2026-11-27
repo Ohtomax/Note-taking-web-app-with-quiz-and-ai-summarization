@@ -3,6 +3,23 @@ import type { AuthRequest } from '@/types/auth.type.js';
 import type { NotesService } from '@/services/notes.service.js';
 import { UserHandleError } from '@/utils/error-handler/userErrorHandler.js';
 
+export const updateNote =
+  (service: NotesService) =>
+  async (req: AuthRequest, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      res.status(200).json({
+        data: await service.update(
+          req.account!.id,
+          req.params.projectId!,
+          req.params.noteId!,
+          req.body,
+        ),
+      });
+    } catch (error) {
+      UserHandleError(error, next);
+    }
+  };
+
 export const createNote =
   (service: NotesService) =>
   async (req: AuthRequest, res: Response, next: NextFunction): Promise<void> => {

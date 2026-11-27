@@ -16,3 +16,14 @@ export const createNoteSchema = z
   .strict();
 
 export type CreateNoteInput = z.infer<typeof createNoteSchema>;
+
+export const updateNoteSchema = z
+  .object({
+    expectedRevision: z.number().int().positive(),
+    title: z.string().trim().min(1).max(200).optional(),
+    content: noteContentSchema.optional(),
+  })
+  .strict()
+  .refine((value) => Object.keys(value).length > 1);
+
+export type UpdateNoteInput = z.infer<typeof updateNoteSchema>;

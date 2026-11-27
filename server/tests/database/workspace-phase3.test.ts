@@ -268,3 +268,28 @@ test('P3-T08 note creation and read require matching owned parent', async () => 
     );
   });
 });
+
+test('P3-T09 concurrent note revisions allow one winner and preserve newer content', async () => {
+  await withWorkspace(async ({ project, api }) => {
+    const created = await api
+      .post('/api/v1/projects/' + project.id + '/notes')
+      .set('Authorization', 'Bearer alice')
+      .send({ title: 'Original' });
+    const url = '/api/v1/projects/' + project.id + '/notes/' + created.body.data.id;
+    const writes = await Promise.all(
+      ['First', 'Second'].map((title) =>
+        api
+          .patch(url)
+          .set('Authorization', 'Bearer alice')
+          .send({ expectedRevision: 1, title }),
+      ),
+    );
+    assert.deepEqual(writes.map((r) => r.status).sort(), [200, 409]);
+    const saved = await api.get(url).set('Authorization', 'Bearer alice');
+    assert.equal(saved.body.data.revision, 2);
+    assert.equal(
+      saved.body.data.title,
+      writes.find((r) => r.status === 200)!.body.data.title,
+    );
+  });
+});

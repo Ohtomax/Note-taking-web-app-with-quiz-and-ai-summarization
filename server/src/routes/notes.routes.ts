@@ -5,6 +5,7 @@ import { synchronizeUser } from '@/middlewares/synchronizeUser.js';
 import { verifyUser } from '@/middlewares/verifyRole.js';
 import { validate } from '@/middlewares/validate.js';
 import { createNoteSchema, noteParamsSchema } from '@/utils/input-validators/notes.js';
+import { updateNoteSchema } from '@/utils/input-validators/notes.js';
 import { projectParamsSchema } from '@/utils/input-validators/projects.js';
 import type { UserService } from '@/services/user.service.js';
 import type { NotesService } from '@/services/notes.service.js';
@@ -17,6 +18,12 @@ export const createNotesRouter = (
 ) => {
   const router = Router({ mergeParams: true });
   router.use(createVerifyToken(verify), synchronizeUser(users), verifyUser);
+  router.patch(
+    '/:noteId',
+    validate('params', noteParamsSchema),
+    validate('body', updateNoteSchema),
+    notesController.updateNote(service),
+  );
   router.post(
     '/',
     validate('params', projectParamsSchema),
