@@ -186,3 +186,5 @@ Every frontend task has its own commit and push to main, including implemented t
 - **P4-T07 completed 2026-11-27** Fake-clock fixtures verify retry-after delays, invalid-input no-retry and timeout uncertainty. Provider calls are individually observable and SDK retries remain disabled.
 
 - **P4-T08 completed 2026-11-27** Disposable-database and authenticated HTTP tests verify attributable calls, versioned cost estimates, null unknown usage and two-account isolation. No source text is logged.
+
+- **P4-T09 completed 2026-11-27** Real PostgreSQL races admit one request, reject over-quota work and release unused expired leases. Unknown running work retains its allowance; per-generation Redis limiter is ready for route wiring.

@@ -86,14 +86,25 @@ export const createAIUsageRepository = (db: PrismaClient) => ({
     status: 'SUCCEEDED' | 'FAILED' | 'UNCERTAIN',
     resultId?: string,
   ) =>
-    db.aIUsage.updateMany({
-      where: { id, userId },
-      data: {
-        status,
-        resultId: resultId ?? null,
-        completedAt: new Date(),
-        leaseExpiresAt: null,
-      },
+    db.$transaction(async (tx) => {
+      const usage = await tx.aIUsage.findFirst({ where: { id, userId } });
+      if (!usage) throw new ServiceError('RESOURCE_NOT_FOUND', 'Resource not found', 404);
+      const calls = await tx.aICall.count({ where: { usageId: id } });
+      const accountedTokens = !calls
+        ? 0
+        : usage.inputTokens !== null && usage.outputTokens !== null
+          ? usage.inputTokens + usage.outputTokens
+          : usage.reservedTokens;
+      return tx.aIUsage.updateMany({
+        where: { id, userId },
+        data: {
+          accountedTokens,
+          status,
+          resultId: resultId ?? null,
+          completedAt: new Date(),
+          leaseExpiresAt: null,
+        },
+      });
     }),
   list: async (userId: string, page: number, pageSize: number) => {
     const where = { userId };

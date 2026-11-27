@@ -12,6 +12,7 @@ enum AIStatus {
 }
 
 model AIUsage {
+  accountedTokens Int @default(0)
   calls          AICall[]
   completedAt    DateTime?   @db.Timestamptz(6)
   id             String      @id @default(uuid()) @db.Uuid

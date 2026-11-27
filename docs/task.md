@@ -600,7 +600,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
   - **Accept when** Failed and successful calls remain attributable, estimated values are labeled and note text stays out of logs.
   - **Verify** Replay fixed usage results, an unknown usage result and a failed call, then query with two users.
 
-- [ ] **P4-T09 · Enforce quotas and concurrency** (MVP)
+- [x] **P4-T09 · Enforce quotas and concurrency** (MVP)
   - **Work and purpose** Reserve the estimated allowance atomically, apply per-user request and concurrency limits, and settle or expire reservations so parallel requests cannot overspend a shared quota.
   - **Files** `server/src/services/ai-usage.service.ts`, `server/src/repositories/ai-usage.repository.ts`, `server/src/utils/rate-limiter/ai.ts` · **Depends on** P4-T05, P4-T07, P4-T08
   - **Output** Generation admission checks with clear limit responses.
