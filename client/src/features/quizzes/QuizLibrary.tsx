@@ -10,6 +10,7 @@ import { QuizGenerator } from './QuizGenerator';
 import { authoringDraft } from '@/types/quiz-library';
 import type { SourceChoice } from '@/types/study-sources';
 import { OpenAttempts } from './ResumeAttempt';
+import { StartAttempt } from './StartAttempt';
 export function QuizDetail() {
   const { quizId = '' } = useParams(),
     uid = useSession((state) => state.user!.uid);
@@ -133,6 +134,11 @@ export function QuizDetail() {
                 className="rounded-xl border border-slate-200 bg-white p-4"
               >
                 <h2 className="font-semibold">Version {item.version}</h2>
+                <StartAttempt
+                  quizId={quizId}
+                  versionId={item.id}
+                  version={item.version}
+                />
                 <p className="my-2 text-sm text-slate-600">
                   {item.difficulty} · {item._count.questions} questions ·{' '}
                   {new Date(item.generatedAt).toLocaleString()}

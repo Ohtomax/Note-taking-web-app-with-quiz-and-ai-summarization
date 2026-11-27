@@ -246,3 +246,5 @@ Every frontend task has its own commit and push to main, including implemented t
 - **P5-T12 completed 2026-11-27** Real draft/finalization races record one committed score and timestamp. Repeat submission is stable, foreign submit is hidden and later writes cannot change results; player contracts allow grading only after completion.
 
 - **P5-T13 completed 2026-11-27** Database fixtures verify persistent location/order, owner-scoped unfinished lists, seven-day expiry and terminal abandon/write/submit rules. UI confirmation and resume links pass component tests.
+
+- **P5-T14 completed 2026-11-27** Keyboard-driven component flows complete all four question types in both modes. Practice reveals committed feedback; exams retain hidden grading, save drafts, navigate persisted locations and confirm final submission.

@@ -831,7 +831,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
   - **Accept when** Reload restores progress in the same order. Abandoned attempts cannot reopen for editing or enter completed-score metrics.
   - **Verify** Resume after refresh, abandon an attempt and check subsequent read, write and submit behavior.
 
-- [ ] **P5-T14 · Build the interactive question player** (MVP)
+- [x] **P5-T14 · Build the interactive question player** (MVP)
   - **Work and purpose** Show one question at a time with keyboard-operable controls for each type, previous and next navigation, and a labeled progress bar. Use persisted answers as the source of truth.
   - **Files** `client/src/features/quizzes/QuizPlayer.tsx` · **Depends on** P5-T08, P5-T10, P5-T11, P5-T13
   - **Output** A responsive practice and exam player.
