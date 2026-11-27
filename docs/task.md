@@ -1033,7 +1033,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
   - **Accept when** Agreed budgets for loading and editing are met and deferred content has accessible loading and error states.
   - **Verify** Repeat cold-load and typing measurements under the same throttling settings and record asset sizes and interaction timings.
 
-- [ ] **P6-T11 · Measure long-folder generation** (MVP)
+- [x] **P6-T11 · Measure long-folder generation** (MVP)
   - **Work and purpose** Exercise a fixed synthetic folder near the supported size limit. Measure token estimates, chunk coverage, provider calls, and end-to-end duration under controlled simulated provider delays.
   - **Files** `server/tests/fixtures/ai/`, `server/tests/integration/ai-performance.test.ts`, `docs/AI_INTEGRATION.md` · **Depends on** P6-T04, P6-T05
   - **Output** A repeatable workload and documented generation limits.

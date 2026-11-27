@@ -298,3 +298,5 @@ Phase 5 implementation status: 26 of 27 MVP task checkboxes are complete. P5-T26
 - **P6-T09 completed 2026-11-28** 120 projects, 6000 notes and 12000 attempts: all local p95 budgets pass; median/p95/query counts and actual EXPLAIN summaries recorded. Owner totals, pagination and known scores reconcile. Existing plans do not justify an index/query rewrite; hosted/network SLOs remain unmeasured.
 
 - **P6-T10 deferred/partial 2026-11-28** Manifest-based raw/gzip JS and route dependency reporting runs successfully on a production build. Actual mobile cold-load/typing measurements require unavailable browser access and remain unchecked; no speculative chunk rewrite.
+
+- **P6-T11 completed 2026-11-28** 200 notes/100000 bytes, 14 planned and actual calls with controlled 5 ms stage delays: 367 ms local mock completion, all sources and endpoint concepts retained. Uncertain timeout/replay keeps allowance and accepted artifacts stable. Fake-clock deadline checks pass; live provider timing deferred.
