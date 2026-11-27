@@ -670,7 +670,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
   - **Accept when** Blank normalized answers fail and distinct accepted variants survive validation.
   - **Verify** Try case differences, extra spaces and punctuation-sensitive technical terms according to the documented rules.
 
-- [ ] **P4-T19 · Generate quizzes from every source scope** (MVP)
+- [x] **P4-T19 · Generate quizzes from every source scope** (MVP)
   - **Work and purpose** Connect the quiz prompt, admission policy and bounded chunk processing to whole notes, excerpts, selected notes and full folders. Preserve references for each proposed question.
   - **Files** `server/src/services/quiz-generation.service.ts`, `server/src/controllers/quizzes.controller.ts`, `server/src/routes/quizzes.routes.ts` · **Depends on** P4-T03, P4-T04, P4-T06, P4-T10, P4-T16, P4-T17, P4-T18
   - **Output** Generation endpoint with a structured draft for editing.

@@ -206,3 +206,5 @@ Every frontend task has its own commit and push to main, including implemented t
 - **P4-T17 completed 2026-11-27** Valid multiple-choice, true/false and multiple-select fixtures pass. Repeated IDs/text, invented keys and impossible answer sets are rejected.
 
 - **P4-T18 completed 2026-11-27** Fixtures verify NFKC, whitespace and lowercase normalization, duplicate collapse, blank rejection and punctuation-sensitive technical answers without fuzzy synonym matching.
+
+- **P4-T19 completed 2026-11-27** Four authenticated HTTP generation scopes pass using the metered engine. Stale revisions and foreign source selections make zero provider calls.

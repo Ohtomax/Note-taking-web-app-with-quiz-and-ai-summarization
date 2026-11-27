@@ -10,6 +10,7 @@ import { createAIGenerationService } from '@/services/ai-generation.service.js';
 import { createSummaryGenerationService } from '@/services/summary-generation.service.js';
 import { createSummariesRepository } from '@/repositories/summaries.repository.js';
 import { createSummariesService } from '@/services/summaries.service.js';
+import { createQuizGenerationService } from '@/services/quiz-generation.service.js';
 export function createStudyServices(db: PrismaClient, client: AIClient) {
   const aiUsageService = createAIUsageService(createAIUsageRepository(db));
   const generationService = createAIGenerationService({
@@ -20,6 +21,7 @@ export function createStudyServices(db: PrismaClient, client: AIClient) {
     usage: aiUsageService,
   });
   return {
+    quizGenerationService: createQuizGenerationService(generationService),
     summariesService: createSummariesService(
       createSummariesRepository(db),
       createSummaryGenerationService(generationService),

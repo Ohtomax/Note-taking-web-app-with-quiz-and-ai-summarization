@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { summarySettingsSchema } from './summaries.js';
 import { sourceRequestSchema } from './ai-sources.js';
+import { quizGenerationSchema } from './quizzes.js';
 export const idempotencyKeySchema = z
   .string()
   .min(16)
@@ -17,6 +18,10 @@ export const summaryGenerationSchema = z
   })
   .strict();
 export type SummaryGenerationInput = z.infer<typeof summaryGenerationSchema>;
+export const generationRequestSchema = z.union([
+  summaryGenerationSchema,
+  quizGenerationSchema,
+]);
 export const storedGenerationSchema = z.object({
   projectId: z.string().uuid(),
   operation: z.enum(['SUMMARY', 'QUIZ']),

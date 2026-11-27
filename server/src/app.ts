@@ -28,6 +28,7 @@ import {
 } from '@/routes/summaries.routes.js';
 
 export interface AppServices {
+  quizGenerationService?: import('@/services/quiz-generation.service.js').QuizGenerationService;
   summariesService?: import('@/services/summaries.service.js').SummariesService;
   summaryGenerationService?: SummaryGenerationService;
   aiLimiter?: RequestHandler;
@@ -103,7 +104,11 @@ export function createApp(
                 503,
               ),
             )),
-        createSummaryGenerationRouter(services, services.summaryGenerationService),
+        createSummaryGenerationRouter(
+          services,
+          services.summaryGenerationService,
+          services.quizGenerationService,
+        ),
       );
       app.use(
         '/api/v1/generations',
