@@ -90,6 +90,7 @@ it('normal note route saves title and structured content with the current revisi
       project.id,
       note.id,
       expect.objectContaining({ title: 'Edited', expectedRevision: 1 }),
+      expect.any(AbortSignal),
     ),
   );
 });

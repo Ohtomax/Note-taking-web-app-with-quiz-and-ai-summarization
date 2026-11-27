@@ -503,7 +503,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
   - **Accept when** A saved and reopened note retains every supported format and pasted content is normalized to allowed elements.
   - **Verify** Edit all supported styles, paste mixed markup, use keyboard controls and compare the reopened document.
 
-- [ ] **P3-T22 · Queue autosaves and recover conflicts** (MVP)
+- [x] **P3-T22 · Queue autosaves and recover conflicts** (MVP)
   - **Work and purpose** Debounce edits, serialize writes per note and retain the latest draft across in-flight saves. Offer recovery when a newer server revision or a connection failure interrupts a save.
   - **Files** `client/src/features/notes/editor`, `client/src/features/notes/hooks`, `client/src/store` · **Depends on** P3-T09, P3-T17, P3-T21
   - **Output** Autosave status and conflict recovery with draft retention.

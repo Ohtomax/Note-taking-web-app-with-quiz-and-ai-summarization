@@ -1,38 +1,14 @@
-import { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNote } from './useNotes';
 import { useProject } from '@/features/projects/useProjects';
 import { RichTextEditor } from './editor/RichTextEditor';
-import { notesApi } from '@/api/notes';
+import { useNoteSave } from './hooks/useNoteSave';
 import { AsyncState } from '@/components/ui/AsyncState';
+import { extractPlainText } from '@/types/note-content';
 import type { Note } from '@/types/workspace';
-import { useSession } from '@/store/session';
 
 function NoteForm({ note, readOnly }: { note: Note; readOnly: boolean }) {
-  const [title, setTitle] = useState(note.title);
-  const [content, setContent] = useState(note.content);
-  const [revision, setRevision] = useState(note.revision);
-  const cache = useQueryClient();
-  const uid = useSession((state) => state.user!.uid);
-  const save = useMutation({
-    mutationFn: () =>
-      notesApi.save(note.projectId, note.id, {
-        title,
-        content,
-        expectedRevision: revision,
-      }),
-    onSuccess: async (response) => {
-      setRevision(response.data.revision);
-      cache.setQueryData([uid, 'note', note.projectId, note.id], response);
-      await Promise.all(
-        ['notes', 'projects', 'project'].map((domain) =>
-          cache.invalidateQueries({ queryKey: [uid, domain] }),
-        ),
-      );
-    },
-  });
-  const disabled = readOnly || save.isPending;
+  const save = useNoteSave(note, readOnly);
   return (
     <section>
       <Link
@@ -45,37 +21,83 @@ function NoteForm({ note, readOnly }: { note: Note; readOnly: boolean }) {
         Note title
         <input
           className="rounded-lg border border-slate-300 p-3 text-xl font-semibold"
-          value={title}
+          value={save.draft.title}
           required
           maxLength={200}
-          disabled={disabled}
-          onChange={(event) => setTitle(event.target.value)}
+          disabled={readOnly}
+          onChange={(event) => save.change({ ...save.draft, title: event.target.value })}
         />
       </label>
-      <RichTextEditor content={content} disabled={disabled} onChange={setContent} />
+      <RichTextEditor
+        content={save.draft.content}
+        disabled={readOnly}
+        onChange={(content) => save.change({ ...save.draft, content })}
+      />
       <div className="mt-5 flex flex-wrap items-center gap-4">
         <button
           className="rounded bg-teal-800 px-4 py-2 text-white disabled:opacity-50"
-          disabled={disabled || !title.trim()}
-          onClick={() => save.mutate()}
+          disabled={
+            readOnly ||
+            save.status === 'saving' ||
+            save.status === 'conflict' ||
+            !save.draft.title.trim()
+          }
+          onClick={() => void (save.status === 'error' ? save.retry() : save.flush())}
         >
-          {save.isPending ? 'Saving…' : 'Save note'}
+          {save.status === 'error' ? 'Retry save' : 'Save note'}
         </button>
-        {save.isSuccess && (
-          <p role="status" className="text-sm text-teal-800">
-            Saved
-          </p>
-        )}
+        <p role="status" className="text-sm text-slate-600">
+          {save.status === 'saving'
+            ? 'Saving…'
+            : save.status === 'saved'
+              ? 'Saved'
+              : save.status === 'conflict'
+                ? 'A newer version needs review. Your draft is retained.'
+                : save.status === 'error'
+                  ? 'Save failed. Your draft is retained.'
+                  : 'Unsaved changes'}
+        </p>
         {readOnly && (
-          <p role="status" className="text-sm">
-            Restore the archived note and project to edit.
-          </p>
+          <p className="text-sm">Restore the archived note and project to edit.</p>
         )}
       </div>
       {save.error && (
         <p role="alert" className="mt-3 text-sm text-red-700">
-          {save.error.message}
+          {save.error}
         </p>
+      )}
+      {save.status === 'conflict' && (
+        <div className="mt-5 rounded-lg border border-amber-300 bg-amber-50 p-4">
+          <button
+            className="underline disabled:opacity-50"
+            disabled={save.loadingLatest}
+            onClick={() => void save.compareLatest()}
+          >
+            Compare latest version
+          </button>
+          {save.serverVersion && (
+            <>
+              <h2 className="mt-4 font-semibold">
+                Server version — {save.serverVersion.title}
+              </h2>
+              <pre className="my-3 max-h-48 overflow-auto whitespace-pre-wrap break-words text-sm">
+                {extractPlainText(save.serverVersion.content)}
+              </pre>
+              <p className="text-sm">
+                Your draft is still shown in the editor. Choosing the server version
+                replaces this local draft.
+              </p>
+              <div className="mt-4 flex flex-wrap gap-4">
+                <button className="underline" onClick={save.useServerVersion}>
+                  Use server version
+                </button>
+                <button className="underline" onClick={save.reapplyDraft}>
+                  Reapply my draft
+                </button>
+              </div>
+            </>
+          )}
+        </div>
       )}
       <p className="mt-4 text-xs text-slate-500">
         Created {new Date(note.createdAt).toLocaleString()} · Edited{' '}
@@ -101,7 +123,7 @@ export default function NotePage() {
       />
       {note.data && project.data && (
         <NoteForm
-          key={noteId}
+          key={projectId + ':' + noteId}
           note={note.data.data}
           readOnly={Boolean(note.data.data.archivedAt || project.data.data.archivedAt)}
         />

@@ -30,6 +30,11 @@ export function RichTextEditor({ content, disabled, onChange }: RichTextEditorPr
   useEffect(() => {
     editor?.setEditable(!disabled);
   }, [editor, disabled]);
+  useEffect(() => {
+    if (editor && JSON.stringify(editor.getJSON()) !== JSON.stringify(content)) {
+      editor.commands.setContent(content, { emitUpdate: false });
+    }
+  }, [editor, content]);
   if (!editor) return <p role="status">Loading editor…</p>;
   const controls = [
     {
