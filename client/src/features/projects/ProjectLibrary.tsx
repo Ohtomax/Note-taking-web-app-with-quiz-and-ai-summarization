@@ -63,7 +63,7 @@ export default function ProjectLibrary() {
         <label className="flex-1">
           <span className="sr-only">Search projects</span>
           <input
-            className="w-full rounded-lg border border-slate-300 bg-white p-3"
+            className="w-full rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 p-3"
             type="search"
             placeholder="Search projects"
             value={query.search}
@@ -75,7 +75,7 @@ export default function ProjectLibrary() {
         <label>
           <span className="sr-only">Sort projects</span>
           <select
-            className="rounded-lg border border-slate-300 bg-white p-3"
+            className="rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 p-3"
             value={query.sort}
             onChange={(event) =>
               setQuery({
@@ -91,7 +91,7 @@ export default function ProjectLibrary() {
           </select>
         </label>
         <button
-          className="rounded-lg border border-slate-300 px-3"
+          className="rounded-lg border border-slate-300 dark:border-slate-600 px-3"
           onClick={() =>
             setQuery({ ...query, order: query.order === 'asc' ? 'desc' : 'asc', page: 1 })
           }
@@ -101,14 +101,14 @@ export default function ProjectLibrary() {
       </div>
       <div role="group" aria-label="Project state" className="mb-5 flex gap-3">
         <button
-          className="rounded border border-slate-300 px-3 py-2 aria-pressed:bg-teal-100"
+          className="rounded border border-slate-300 dark:border-slate-600 px-3 py-2 aria-pressed:bg-teal-100"
           aria-pressed={!query.archived}
           onClick={() => setQuery({ ...query, archived: false, page: 1 })}
         >
           Active
         </button>
         <button
-          className="rounded border border-slate-300 px-3 py-2 aria-pressed:bg-teal-100"
+          className="rounded border border-slate-300 dark:border-slate-600 px-3 py-2 aria-pressed:bg-teal-100"
           aria-pressed={query.archived}
           onClick={() => setQuery({ ...query, archived: true, page: 1 })}
         >
@@ -126,14 +126,14 @@ export default function ProjectLibrary() {
         }
       />
       {(actionError || archive.error) && (
-        <p role="alert" className="my-4 text-red-700">
+        <p role="alert" className="my-4 text-red-700 dark:text-red-300">
           {actionError || archive.error?.message}
         </p>
       )}
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
         {projects.data?.data.map((project) => (
           <article
-            className="rounded-xl border border-slate-200 bg-white p-5"
+            className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-5"
             key={project.id}
           >
             <span
@@ -146,11 +146,13 @@ export default function ProjectLibrary() {
                 {project.title}
               </Link>
             </h2>
-            <p className="mt-2 whitespace-pre-wrap break-words text-sm text-slate-600">
+            <p className="mt-2 whitespace-pre-wrap break-words text-sm text-slate-600 dark:text-slate-300">
               {project.description}
             </p>
-            <p className="mt-4 text-sm text-slate-500">{project.noteCount ?? 0} notes</p>
-            <p className="mt-1 text-xs text-slate-500">
+            <p className="mt-4 text-sm text-slate-500 dark:text-slate-400">
+              {project.noteCount ?? 0} notes
+            </p>
+            <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
               Created {new Date(project.createdAt).toLocaleDateString()} · Edited{' '}
               {new Date(project.updatedAt).toLocaleDateString()}
             </p>
@@ -174,7 +176,7 @@ export default function ProjectLibrary() {
                 {project.archivedAt ? 'Restore' : 'Archive'}
               </button>
               <button
-                className="text-red-700 underline"
+                className="text-red-700 dark:text-red-300 underline"
                 onClick={() => {
                   remove.reset();
                   void previewDeletion(project);
@@ -215,13 +217,13 @@ export default function ProjectLibrary() {
             historical attempts will be retained.
           </p>
           {remove.error && (
-            <p role="alert" className="mt-3 text-red-700">
+            <p role="alert" className="mt-3 text-red-700 dark:text-red-300">
               {remove.error.message} Close this dialog and preview again.
             </p>
           )}
           <div className="mt-5 flex justify-end gap-3">
             <button
-              className="rounded border border-slate-300 px-4 py-2"
+              className="rounded border border-slate-300 dark:border-slate-600 px-4 py-2"
               disabled={remove.isPending}
               onClick={() => setPreview(null)}
             >

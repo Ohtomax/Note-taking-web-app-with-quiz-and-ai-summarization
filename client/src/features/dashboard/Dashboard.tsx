@@ -83,14 +83,14 @@ export default function Dashboard() {
   return (
     <section className="space-y-6">
       <header>
-        <p className="text-sm text-slate-600">Your study workspace</p>
+        <p className="text-sm text-slate-600 dark:text-slate-300">Your study workspace</p>
         <h1 className="mt-2 text-3xl font-semibold">
           Welcome back{user.email ? ', ' + user.email.split('@')[0] : ''}
         </h1>
       </header>
       <nav
         aria-label="Study shortcuts"
-        className="flex flex-wrap gap-4 text-teal-800 underline"
+        className="flex flex-wrap gap-4 text-teal-800 dark:text-teal-300 underline"
       >
         <Link to="/projects/new">Create project</Link>
         <button onClick={() => setCreating(true)}>Create note</button>
@@ -109,7 +109,10 @@ export default function Dashboard() {
             {Object.entries(data.performance.workspace)
               .filter(([key]) => !key.startsWith('archived'))
               .map(([key, value]) => (
-                <div className="rounded-xl border bg-white p-4" key={key}>
+                <div
+                  className="rounded-xl border bg-white dark:bg-slate-900 p-4"
+                  key={key}
+                >
                   <dt className="capitalize">{key}</dt>
                   <dd className="mt-2 text-2xl font-semibold">{value}</dd>
                 </div>
@@ -152,15 +155,23 @@ export default function Dashboard() {
                 ],
               ] as const
             ).map(([label, rows]) => (
-              <section className="rounded-xl border bg-white p-5" key={label}>
+              <section
+                className="rounded-xl border bg-white dark:bg-slate-900 p-5"
+                key={label}
+              >
                 <h2 className="font-semibold">{label}</h2>
                 {!rows.length && (
-                  <p className="mt-3 text-sm text-slate-600">Nothing here yet.</p>
+                  <p className="mt-3 text-sm text-slate-600 dark:text-slate-300">
+                    Nothing here yet.
+                  </p>
                 )}
                 <ul className="mt-3 space-y-3">
                   {rows.map((row) => (
                     <li key={row.id}>
-                      <Link className="break-words text-teal-800 underline" to={row.url}>
+                      <Link
+                        className="break-words text-teal-800 dark:text-teal-300 underline"
+                        to={row.url}
+                      >
                         {row.title}
                       </Link>
                     </li>
@@ -178,7 +189,7 @@ export default function Dashboard() {
               {data.performance.recent.map((a) => (
                 <li key={a.id}>
                   <Link
-                    className="text-teal-800 underline"
+                    className="text-teal-800 dark:text-teal-300 underline"
                     to={
                       '/attempts/' + a.id + (a.status === 'COMPLETED' ? '/results' : '')
                     }

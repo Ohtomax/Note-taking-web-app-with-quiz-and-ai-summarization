@@ -35,18 +35,18 @@ export function RetakeQuiz({ attempt }: { attempt: PlayerAttempt }) {
   });
   return (
     <section
-      className="my-6 grid gap-3 rounded-xl border border-slate-200 bg-white p-4"
+      className="my-6 grid gap-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-4"
       aria-label="Retake quiz"
     >
       <h2 className="font-semibold">Retake version {attempt.version}</h2>
-      <p className="text-sm text-slate-600">
+      <p className="text-sm text-slate-600 dark:text-slate-300">
         Retaking uses this saved question set and creates a separate attempt without an AI
         call.
       </p>
       <label className="grid max-w-xs gap-1 text-sm">
         Retake mode
         <select
-          className="rounded border border-slate-300 p-2"
+          className="rounded border border-slate-300 dark:border-slate-600 p-2"
           disabled={start.isPending}
           value={mode}
           onChange={(event) => setMode(event.target.value as PlayerAttempt['mode'])}
@@ -85,14 +85,14 @@ export function RetakeQuiz({ attempt }: { attempt: PlayerAttempt }) {
             : 'Retake this version'}
       </button>
       {start.error && (
-        <p role="alert" className="text-sm text-red-700">
+        <p role="alert" className="text-sm text-red-700 dark:text-red-300">
           {start.error.message} Retrying keeps the same start key.
         </p>
       )}
       <p className="text-sm">
         To create new questions from current notes,{' '}
         <Link
-          className="text-teal-800 underline"
+          className="text-teal-800 dark:text-teal-300 underline"
           to={'/quizzes/' + attempt.quizId + '?regenerate=true'}
         >
           regenerate from sources

@@ -34,7 +34,7 @@ export function ProjectForm({
         <label className="grid gap-1 text-sm">
           Project name
           <input
-            className="rounded border border-slate-300 p-2"
+            className="rounded border border-slate-300 dark:border-slate-600 p-2"
             name="title"
             required
             maxLength={200}
@@ -45,7 +45,7 @@ export function ProjectForm({
         <label className="grid gap-1 text-sm">
           Description
           <textarea
-            className="rounded border border-slate-300 p-2"
+            className="rounded border border-slate-300 dark:border-slate-600 p-2"
             name="description"
             rows={3}
             maxLength={5000}
@@ -56,7 +56,7 @@ export function ProjectForm({
           <label className="grid gap-1 text-sm">
             Color
             <select
-              className="rounded border border-slate-300 p-2"
+              className="rounded border border-slate-300 dark:border-slate-600 p-2"
               name="color"
               defaultValue={project?.color ?? 'slate'}
             >
@@ -68,7 +68,7 @@ export function ProjectForm({
           <label className="grid gap-1 text-sm">
             Icon
             <select
-              className="rounded border border-slate-300 p-2"
+              className="rounded border border-slate-300 dark:border-slate-600 p-2"
               name="icon"
               defaultValue={project?.icon ?? 'folder'}
             >
@@ -79,14 +79,14 @@ export function ProjectForm({
           </label>
         </div>
         {error && (
-          <p role="alert" className="text-sm text-red-700">
+          <p role="alert" className="text-sm text-red-700 dark:text-red-300">
             {error.message}
           </p>
         )}
         <div className="flex justify-end gap-3">
           <button
             type="button"
-            className="rounded border border-slate-300 px-4 py-2"
+            className="rounded border border-slate-300 dark:border-slate-600 px-4 py-2"
             disabled={busy}
             onClick={onClose}
           >

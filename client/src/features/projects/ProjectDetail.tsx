@@ -19,7 +19,7 @@ function MoveNoteDialog({ note, onClose }: { note: NoteItem; onClose: () => void
       <label className="grid gap-2 text-sm">
         Find a destination
         <input
-          className="rounded border border-slate-300 p-2"
+          className="rounded border border-slate-300 dark:border-slate-600 p-2"
           type="search"
           value={query.search}
           onChange={(event) =>
@@ -38,7 +38,7 @@ function MoveNoteDialog({ note, onClose }: { note: NoteItem; onClose: () => void
           .map((project) => (
             <li key={project.id}>
               <button
-                className="w-full rounded border border-slate-300 p-3 text-left hover:bg-slate-50"
+                className="w-full rounded border border-slate-300 dark:border-slate-600 p-3 text-left hover:bg-slate-50 dark:hover:bg-slate-800"
                 disabled={move.isPending}
                 onClick={() => move.mutate(project.id, { onSuccess: onClose })}
               >
@@ -56,7 +56,7 @@ function MoveNoteDialog({ note, onClose }: { note: NoteItem; onClose: () => void
         />
       )}
       {move.error && (
-        <p role="alert" className="text-red-700">
+        <p role="alert" className="text-red-700 dark:text-red-300">
           {move.error.message}
         </p>
       )}
@@ -82,7 +82,7 @@ function ProjectWorkspace({ projectId }: { projectId: string }) {
   const error = create.error || pin.error || archive.error || duplicate.error;
   return (
     <section>
-      <Link className="text-sm text-teal-800 underline" to="/">
+      <Link className="text-sm text-teal-800 dark:text-teal-300 underline" to="/">
         All projects
       </Link>
       <AsyncState
@@ -93,27 +93,27 @@ function ProjectWorkspace({ projectId }: { projectId: string }) {
       {data && (
         <>
           {!data.archivedAt && <StudySources projectId={projectId} />}
-          <nav aria-label="Project study materials" className="my-4 flex gap-4">
+          <nav aria-label="Project study materials" className="my-4 flex flex-wrap gap-4">
             <Link
-              className="text-teal-800 underline"
+              className="text-teal-800 dark:text-teal-300 underline"
               to={'/projects/' + projectId + '/history'}
             >
               Study history
             </Link>
             <Link
-              className="text-teal-800 underline"
+              className="text-teal-800 dark:text-teal-300 underline"
               to={'/projects/' + projectId + '/analytics'}
             >
               Analytics
             </Link>
             <Link
-              className="text-teal-800 underline"
+              className="text-teal-800 dark:text-teal-300 underline"
               to={'/projects/' + projectId + '/summaries'}
             >
               Saved summaries
             </Link>
             <Link
-              className="text-teal-800 underline"
+              className="text-teal-800 dark:text-teal-300 underline"
               to={'/projects/' + projectId + '/quizzes'}
             >
               Saved quizzes
@@ -122,7 +122,7 @@ function ProjectWorkspace({ projectId }: { projectId: string }) {
           <div className="my-5 flex flex-wrap items-center justify-between gap-4">
             <div>
               <h1 className="text-3xl font-semibold">{data.title}</h1>
-              <p className="mt-2 whitespace-pre-wrap text-slate-600">
+              <p className="mt-2 whitespace-pre-wrap text-slate-600 dark:text-slate-300">
                 {data.description}
               </p>
             </div>
@@ -148,7 +148,7 @@ function ProjectWorkspace({ projectId }: { projectId: string }) {
             <label className="min-w-48 flex-1">
               <span className="sr-only">Search notes</span>
               <input
-                className="w-full rounded border border-slate-300 bg-white p-3"
+                className="w-full rounded border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 p-3"
                 type="search"
                 placeholder="Search notes"
                 value={query.search}
@@ -160,7 +160,7 @@ function ProjectWorkspace({ projectId }: { projectId: string }) {
             <label>
               <span className="sr-only">Sort notes</span>
               <select
-                className="rounded border border-slate-300 p-3"
+                className="rounded border border-slate-300 dark:border-slate-600 p-3"
                 value={query.sort}
                 onChange={(event) =>
                   setQuery({
@@ -176,7 +176,7 @@ function ProjectWorkspace({ projectId }: { projectId: string }) {
               </select>
             </label>
             <button
-              className="rounded border border-slate-300 px-3"
+              className="rounded border border-slate-300 dark:border-slate-600 px-3"
               onClick={() =>
                 setQuery({
                   ...query,
@@ -190,14 +190,14 @@ function ProjectWorkspace({ projectId }: { projectId: string }) {
           </div>
           <div role="group" aria-label="Note state" className="my-4 flex gap-3">
             <button
-              className="rounded border border-slate-300 px-3 py-2 aria-pressed:bg-teal-100"
+              className="rounded border border-slate-300 dark:border-slate-600 px-3 py-2 aria-pressed:bg-teal-100"
               aria-pressed={!query.archived}
               onClick={() => setQuery({ ...query, archived: false, page: 1 })}
             >
               Active
             </button>
             <button
-              className="rounded border border-slate-300 px-3 py-2 aria-pressed:bg-teal-100"
+              className="rounded border border-slate-300 dark:border-slate-600 px-3 py-2 aria-pressed:bg-teal-100"
               aria-pressed={query.archived}
               onClick={() => setQuery({ ...query, archived: true, page: 1 })}
             >
@@ -211,14 +211,14 @@ function ProjectWorkspace({ projectId }: { projectId: string }) {
             empty={notes.data?.total === 0 ? 'No notes found.' : undefined}
           />
           {error && (
-            <p role="alert" className="text-red-700">
+            <p role="alert" className="text-red-700 dark:text-red-300">
               {error.message}
             </p>
           )}
           <div className="grid gap-3">
             {notes.data?.data.map((note) => (
               <article
-                className="rounded-lg border border-slate-200 bg-white p-5"
+                className="rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-5"
                 key={note.id}
               >
                 <h2 className="text-lg font-semibold">
@@ -229,7 +229,7 @@ function ProjectWorkspace({ projectId }: { projectId: string }) {
                     {note.title}
                   </Link>
                 </h2>
-                <p className="mt-2 text-xs text-slate-500">
+                <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">
                   Created {new Date(note.createdAt).toLocaleDateString()} · Edited{' '}
                   {new Date(note.updatedAt).toLocaleString()}
                   {note.pinned ? ' · Pinned' : ''}
@@ -269,7 +269,7 @@ function ProjectWorkspace({ projectId }: { projectId: string }) {
                       {note.archivedAt ? 'Restore' : 'Archive'}
                     </button>
                     <button
-                      className="text-red-700 underline"
+                      className="text-red-700 dark:text-red-300 underline"
                       disabled={busy}
                       onClick={() => {
                         remove.reset();
@@ -304,13 +304,13 @@ function ProjectWorkspace({ projectId }: { projectId: string }) {
             Saved source references and historical quiz attempts will be retained.
           </p>
           {remove.error && (
-            <p role="alert" className="mt-3 text-red-700">
+            <p role="alert" className="mt-3 text-red-700 dark:text-red-300">
               {remove.error.message}
             </p>
           )}
           <div className="mt-5 flex justify-end gap-3">
             <button
-              className="rounded border border-slate-300 px-4 py-2"
+              className="rounded border border-slate-300 dark:border-slate-600 px-4 py-2"
               disabled={remove.isPending}
               onClick={() => setDeleting(null)}
             >

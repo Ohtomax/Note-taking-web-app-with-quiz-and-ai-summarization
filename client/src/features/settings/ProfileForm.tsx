@@ -29,7 +29,7 @@ function EditProfile({ profile, uid }: { profile: Profile; uid: string }) {
       <label className="grid gap-2 text-sm">
         Display name
         <input
-          className="rounded-lg border border-slate-300 p-3"
+          className="rounded-lg border border-slate-300 dark:border-slate-600 p-3"
           value={displayName}
           maxLength={100}
           required
@@ -41,7 +41,9 @@ function EditProfile({ profile, uid }: { profile: Profile; uid: string }) {
           }}
         />
       </label>
-      <p className="text-sm text-slate-600">Email: {profile.email ?? 'Not provided'}</p>
+      <p className="text-sm text-slate-600 dark:text-slate-300">
+        Email: {profile.email ?? 'Not provided'}
+      </p>
       <button
         className="w-fit rounded bg-teal-800 px-4 py-2 text-white disabled:opacity-50"
         disabled={update.isPending}
@@ -49,12 +51,12 @@ function EditProfile({ profile, uid }: { profile: Profile; uid: string }) {
         {update.isPending ? 'Saving…' : 'Save profile'}
       </button>
       {(validation || update.error) && (
-        <p role="alert" className="text-sm text-red-700">
+        <p role="alert" className="text-sm text-red-700 dark:text-red-300">
           {validation || update.error?.message}
         </p>
       )}
       {update.isSuccess && (
-        <p role="status" className="text-sm text-teal-800">
+        <p role="status" className="text-sm text-teal-800 dark:text-teal-300">
           Profile saved.
         </p>
       )}

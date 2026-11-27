@@ -31,14 +31,14 @@ export function AIUsage({ compact = false }: { compact?: boolean }) {
   return (
     <section
       aria-label="AI usage"
-      className="my-4 rounded-xl border border-slate-200 bg-white p-4"
+      className="my-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-4"
     >
       <h2 className="font-semibold">AI allowance</h2>
       <p className="mt-2 text-sm">
         {remaining} of {q.requestLimit} requests remaining · {tokens.toLocaleString()} of{' '}
         {q.tokenLimit.toLocaleString()} accounted tokens remaining
       </p>
-      <p className="mt-2 text-sm text-slate-600">
+      <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">
         {q.requestsUsed} requests used today (UTC). Resets{' '}
         {new Date(q.resetsAt).toLocaleString()}. Active generations: {q.active} /{' '}
         {q.concurrencyLimit}.

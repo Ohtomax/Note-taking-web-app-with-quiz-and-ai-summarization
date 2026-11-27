@@ -43,18 +43,21 @@ function SummaryPreview({ generation }: { generation: Generation }) {
       <label className="grid gap-1 text-sm">
         Summary title
         <input
-          className="rounded border border-slate-300 p-2"
+          className="rounded border border-slate-300 dark:border-slate-600 p-2"
           maxLength={200}
           value={content.title}
           onChange={(event) => setContent({ ...content, title: event.target.value })}
         />
       </label>
       {content.sections.map((section, index) => (
-        <div key={index} className="grid gap-2 rounded border border-slate-200 p-3">
+        <div
+          key={index}
+          className="grid gap-2 rounded border border-slate-200 dark:border-slate-700 p-3"
+        >
           <label className="grid gap-1 text-sm">
             Section {index + 1} heading
             <input
-              className="rounded border border-slate-300 p-2"
+              className="rounded border border-slate-300 dark:border-slate-600 p-2"
               maxLength={200}
               value={section.heading ?? ''}
               onChange={(event) =>
@@ -70,7 +73,7 @@ function SummaryPreview({ generation }: { generation: Generation }) {
           <label className="grid gap-1 text-sm">
             Section {index + 1} text
             <textarea
-              className="min-h-28 rounded border border-slate-300 p-2"
+              className="min-h-28 rounded border border-slate-300 dark:border-slate-600 p-2"
               maxLength={16000}
               value={section.text}
               onChange={(event) =>
@@ -83,7 +86,7 @@ function SummaryPreview({ generation }: { generation: Generation }) {
               }
             />
           </label>
-          <p className="text-xs text-slate-600">
+          <p className="text-xs text-slate-600 dark:text-slate-300">
             Sources:{' '}
             {section.sourceKeys
               .map(
@@ -108,7 +111,7 @@ function SummaryPreview({ generation }: { generation: Generation }) {
           {save.isSuccess ? 'Summary saved' : 'Save summary'}
         </button>
         <button
-          className="rounded border border-slate-300 px-4 py-2"
+          className="rounded border border-slate-300 dark:border-slate-600 px-4 py-2"
           onClick={() =>
             void navigator.clipboard
               .writeText(
@@ -130,7 +133,7 @@ function SummaryPreview({ generation }: { generation: Generation }) {
       </div>
       {copyMessage && <p role="status">{copyMessage}</p>}
       {save.error && (
-        <p role="alert" className="text-red-700">
+        <p role="alert" className="text-red-700 dark:text-red-300">
           {save.error.message}
         </p>
       )}
@@ -155,7 +158,7 @@ export function SummaryGenerator({
       : null;
   return (
     <section
-      className="mt-4 rounded-xl border border-slate-200 bg-white p-4"
+      className="mt-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-4"
       aria-label="Generate summary"
     >
       <h2 className="font-semibold">Generate a summary</h2>
@@ -164,7 +167,7 @@ export function SummaryGenerator({
         <label className="grid gap-1 text-sm">
           Summary length
           <select
-            className="rounded border border-slate-300 p-2"
+            className="rounded border border-slate-300 dark:border-slate-600 p-2"
             value={settings.length}
             onChange={(event) =>
               setSettings({
@@ -181,7 +184,7 @@ export function SummaryGenerator({
         <label className="grid gap-1 text-sm">
           Summary format
           <select
-            className="rounded border border-slate-300 p-2"
+            className="rounded border border-slate-300 dark:border-slate-600 p-2"
             value={settings.format}
             onChange={(event) =>
               setSettings({
@@ -196,7 +199,7 @@ export function SummaryGenerator({
           </select>
         </label>
       </div>
-      <p className="mb-3 text-sm text-slate-600">
+      <p className="mb-3 text-sm text-slate-600 dark:text-slate-300">
         {choice?.description ?? 'Choose sources first.'} Generation uses your AI allowance
         and keeps your notes unchanged.
       </p>
@@ -214,7 +217,7 @@ export function SummaryGenerator({
       {generation.data &&
         ['SUCCEEDED', 'FAILED', 'UNCERTAIN'].includes(generation.data.status) && (
           <button
-            className="ml-3 rounded border border-slate-300 px-3 py-2 disabled:opacity-50"
+            className="ml-3 rounded border border-slate-300 dark:border-slate-600 px-3 py-2 disabled:opacity-50"
             disabled={!request || generation.pending}
             onClick={() => request && generation.generate(request, true)}
           >
@@ -227,13 +230,13 @@ export function SummaryGenerator({
         </p>
       )}
       {generation.error && (
-        <p role="alert" className="mt-3 text-red-700">
+        <p role="alert" className="mt-3 text-red-700 dark:text-red-300">
           {generation.error.message} Retry keeps the same request key to avoid duplicate
           usage.
         </p>
       )}
       {generation.data && ['FAILED', 'UNCERTAIN'].includes(generation.data.status) && (
-        <p role="alert" className="mt-3 text-amber-800">
+        <p role="alert" className="mt-3 text-amber-800 dark:text-amber-200">
           Generation {generation.data.status.toLowerCase()}. Your notes and settings are
           retained. A new version may use additional allowance.
         </p>

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { ThemeToggle } from '@/components/ui/ThemeToggle';
 import { Link, NavLink, Outlet, useLocation } from 'react-router-dom';
 import { logOut, authError } from '@/features/auth/auth.service';
 import { useWorkspace } from '@/store/workspace';
@@ -17,26 +18,30 @@ export function WorkspaceLayout() {
     }
   };
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100">
       <a
         className="sr-only focus:not-sr-only focus:fixed focus:z-50 focus:bg-white focus:p-3"
         href="#main-content"
       >
         Skip to content
       </a>
-      <header className="flex flex-wrap items-center gap-4 border-b border-slate-200 bg-white px-6 py-4">
+      <header className="flex flex-wrap items-center gap-4 border-b border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-6 py-4">
+        <ThemeToggle />
         <button
-          className="rounded-lg border border-slate-300 px-3 py-2"
+          className="rounded-lg border border-slate-300 dark:border-slate-600 px-3 py-2"
           aria-controls="workspace-sidebar"
           aria-expanded={sidebarOpen}
           onClick={toggleSidebar}
         >
           Menu
         </button>
-        <Link to="/" className="font-semibold text-teal-800">
+        <Link to="/" className="font-semibold text-teal-800 dark:text-teal-300">
           Studyspace
         </Link>
-        <nav aria-label="Breadcrumb" className="text-sm text-slate-600">
+        <nav
+          aria-label="Breadcrumb"
+          className="text-sm text-slate-600 dark:text-slate-300"
+        >
           <Link to="/">Workspace</Link>
           <span aria-hidden="true"> / </span>
           <span>
@@ -44,7 +49,19 @@ export function WorkspaceLayout() {
               ? 'Project'
               : location.pathname === '/settings'
                 ? 'Settings'
-                : 'My projects'}
+                : location.pathname === '/'
+                  ? 'My projects'
+                  : location.pathname.startsWith('/quizzes')
+                    ? 'Quiz'
+                    : location.pathname.startsWith('/attempts')
+                      ? 'Attempt'
+                      : location.pathname.startsWith('/summaries')
+                        ? 'Summary'
+                        : location.pathname === '/history'
+                          ? 'Study history'
+                          : location.pathname === '/analytics'
+                            ? 'Analytics'
+                            : 'Dashboard'}
           </span>
         </nav>
       </header>
@@ -52,32 +69,32 @@ export function WorkspaceLayout() {
         {sidebarOpen && (
           <aside
             id="workspace-sidebar"
-            className="fixed bottom-0 left-0 top-20 z-30 w-64 border-r border-slate-200 bg-white p-6 shadow-lg md:static md:min-h-[calc(100vh-5rem)] md:shrink-0 md:shadow-none"
+            className="fixed bottom-0 left-0 top-20 z-30 w-64 border-r border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-6 shadow-lg md:static md:min-h-[calc(100vh-5rem)] md:shrink-0 md:shadow-none"
           >
             <nav aria-label="Workspace" className="grid gap-2">
               <NavLink
-                className="rounded-lg px-3 py-2 hover:bg-slate-100"
+                className="rounded-lg px-3 py-2 hover:bg-slate-100 dark:hover:bg-slate-800"
                 to="/dashboard"
                 onClick={closeSidebar}
               >
                 Dashboard
               </NavLink>
               <NavLink
-                className="rounded-lg px-3 py-2 hover:bg-slate-100"
+                className="rounded-lg px-3 py-2 hover:bg-slate-100 dark:hover:bg-slate-800"
                 to="/analytics"
                 onClick={closeSidebar}
               >
                 Analytics
               </NavLink>
               <NavLink
-                className="rounded-lg px-3 py-2 hover:bg-slate-100"
+                className="rounded-lg px-3 py-2 hover:bg-slate-100 dark:hover:bg-slate-800"
                 to="/history"
                 onClick={closeSidebar}
               >
                 Study history
               </NavLink>
               <NavLink
-                className="rounded-lg px-3 py-2 hover:bg-slate-100"
+                className="rounded-lg px-3 py-2 hover:bg-slate-100 dark:hover:bg-slate-800"
                 to="/"
                 end
                 onClick={closeSidebar}
@@ -85,20 +102,22 @@ export function WorkspaceLayout() {
                 My projects
               </NavLink>
               <NavLink
-                className="rounded-lg px-3 py-2 hover:bg-slate-100"
+                className="rounded-lg px-3 py-2 hover:bg-slate-100 dark:hover:bg-slate-800"
                 to="/settings"
                 onClick={closeSidebar}
               >
                 Settings
               </NavLink>
             </nav>
-            <div className="mt-8 border-t border-slate-200 pt-5">
-              <p className="break-all text-sm text-slate-600">{user?.email}</p>
+            <div className="mt-8 border-t border-slate-200 dark:border-slate-700 pt-5">
+              <p className="break-all text-sm text-slate-600 dark:text-slate-300">
+                {user?.email}
+              </p>
               <button className="mt-3 text-sm underline" onClick={signOut}>
                 Sign out
               </button>
               {error && (
-                <p role="alert" className="mt-3 text-sm text-red-700">
+                <p role="alert" className="mt-3 text-sm text-red-700 dark:text-red-300">
                   {error}
                 </p>
               )}

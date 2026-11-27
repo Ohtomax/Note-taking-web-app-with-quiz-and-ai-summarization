@@ -43,7 +43,7 @@ export function QuizEditor({
       <label className="grid gap-1 text-sm">
         Quiz title
         <input
-          className="rounded border border-slate-300 p-2"
+          className="rounded border border-slate-300 dark:border-slate-600 p-2"
           value={draft.title}
           required
           maxLength={200}
@@ -57,7 +57,7 @@ export function QuizEditor({
         return (
           <fieldset
             key={index}
-            className="grid gap-3 rounded-xl border border-slate-200 bg-white p-4"
+            className="grid gap-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-4"
             disabled={busy}
           >
             <legend className="px-2 font-semibold">
@@ -66,7 +66,7 @@ export function QuizEditor({
             <label className="grid gap-1 text-sm">
               {prefix} prompt
               <textarea
-                className="min-h-20 rounded border border-slate-300 p-2"
+                className="min-h-20 rounded border border-slate-300 dark:border-slate-600 p-2"
                 required
                 maxLength={2000}
                 value={question.prompt}
@@ -79,7 +79,7 @@ export function QuizEditor({
               <label className="grid gap-1 text-sm">
                 {prefix} accepted answers (one per line)
                 <textarea
-                  className="min-h-24 rounded border border-slate-300 p-2"
+                  className="min-h-24 rounded border border-slate-300 dark:border-slate-600 p-2"
                   value={question.acceptedAnswers.join('\n')}
                   onChange={(event) =>
                     change(index, {
@@ -117,7 +117,7 @@ export function QuizEditor({
                     <label className="grid gap-1 text-sm">
                       {prefix} option {position + 1} text
                       <input
-                        className="rounded border border-slate-300 p-2"
+                        className="rounded border border-slate-300 dark:border-slate-600 p-2"
                         required
                         maxLength={1000}
                         value={option.text}
@@ -141,7 +141,7 @@ export function QuizEditor({
               <label className="grid gap-1 text-sm">
                 {prefix} explanation
                 <textarea
-                  className="min-h-20 rounded border border-slate-300 p-2"
+                  className="min-h-20 rounded border border-slate-300 dark:border-slate-600 p-2"
                   required
                   maxLength={4000}
                   value={question.explanation ?? ''}
@@ -151,11 +151,11 @@ export function QuizEditor({
                 />
               </label>
             )}
-            <p className="text-xs text-slate-500">
+            <p className="text-xs text-slate-500 dark:text-slate-400">
               Source references: {question.sourceKeys.join(', ')}
             </p>
             {!checked.success && (
-              <p role="alert" className="text-sm text-red-700">
+              <p role="alert" className="text-sm text-red-700 dark:text-red-300">
                 {prefix}: {checked.error.issues[0]!.message}
               </p>
             )}
@@ -163,12 +163,12 @@ export function QuizEditor({
         );
       })}
       {!validation.success && (
-        <p role="alert" className="text-sm text-red-700">
+        <p role="alert" className="text-sm text-red-700 dark:text-red-300">
           Fix the quiz before saving: {validation.error.issues[0]!.message}
         </p>
       )}
       {error && (
-        <p role="alert" className="text-red-700">
+        <p role="alert" className="text-red-700 dark:text-red-300">
           {error.message}
         </p>
       )}
@@ -216,7 +216,7 @@ export default function QuizEditorPage() {
   return (
     <section>
       <Link
-        className="text-sm text-teal-800 underline"
+        className="text-sm text-teal-800 dark:text-teal-300 underline"
         to={meta.data ? '/projects/' + meta.data.data.projectId : '/'}
       >
         Back to project
@@ -234,7 +234,7 @@ export default function QuizEditorPage() {
           <h1 className="my-5 text-2xl font-semibold">
             Edit {meta.data.data.title} · version {authoring.data.data.version}
           </h1>
-          <p className="text-sm text-slate-600">
+          <p className="text-sm text-slate-600 dark:text-slate-300">
             Publishing creates a new immutable version. Existing attempts retain their
             original questions and answers.
           </p>

@@ -21,7 +21,7 @@ export function RichTextEditor({ content, disabled, onChange }: RichTextEditorPr
         role: 'textbox',
         'aria-label': 'Note content',
         'aria-multiline': 'true',
-        class: 'min-h-72 rounded-b-lg bg-white p-5 outline-none',
+        class: 'min-h-72 rounded-b-lg bg-white dark:bg-slate-900 p-5 outline-none',
       },
     },
     onUpdate: ({ editor: current }) =>
@@ -99,18 +99,18 @@ export function RichTextEditor({ content, disabled, onChange }: RichTextEditorPr
     },
   ];
   return (
-    <div className="rounded-lg border border-slate-300 [&_h1]:text-3xl [&_h2]:text-2xl [&_h3]:text-xl [&_h1]:font-semibold [&_h2]:font-semibold [&_h3]:font-semibold [&_p]:my-3 [&_ul]:ml-5 [&_ul]:list-disc [&_ol]:ml-5 [&_ol]:list-decimal [&_pre]:overflow-auto [&_pre]:rounded [&_pre]:bg-slate-100 [&_pre]:p-4 [&_blockquote]:border-l-4 [&_blockquote]:border-slate-300 [&_blockquote]:pl-4 [&_ul[data-type=taskList]]:list-none [&_li[data-type=taskItem]]:flex [&_li[data-type=taskItem]]:gap-3">
+    <div className="rounded-lg border border-slate-300 dark:border-slate-600 [&_h1]:text-3xl [&_h2]:text-2xl [&_h3]:text-xl [&_h1]:font-semibold [&_h2]:font-semibold [&_h3]:font-semibold [&_p]:my-3 [&_ul]:ml-5 [&_ul]:list-disc [&_ol]:ml-5 [&_ol]:list-decimal [&_pre]:overflow-auto [&_pre]:rounded [&_pre]:bg-slate-100 [&_pre]:p-4 [&_blockquote]:border-l-4 [&_blockquote]:border-slate-300 [&_blockquote]:pl-4 [&_ul[data-type=taskList]]:list-none [&_li[data-type=taskItem]]:flex [&_li[data-type=taskItem]]:gap-3">
       <div
         role="toolbar"
         aria-label="Text formatting"
-        className="flex flex-wrap gap-1 border-b border-slate-200 bg-slate-50 p-2"
+        className="flex flex-wrap gap-1 border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 p-2"
       >
         {controls.map((control) => (
           <button
             key={control.label}
             type="button"
             disabled={disabled}
-            className="rounded px-2 py-1 text-sm hover:bg-slate-200 aria-pressed:bg-teal-100 disabled:opacity-40"
+            className="rounded px-2 py-1 text-sm hover:bg-slate-200 dark:hover:bg-slate-700 aria-pressed:bg-teal-100 disabled:opacity-40"
             aria-pressed={control.active}
             onClick={control.run}
           >

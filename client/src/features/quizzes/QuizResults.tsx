@@ -31,12 +31,15 @@ export default function QuizResults() {
       {attempt && result && (
         <>
           <Link
-            className="text-sm text-teal-800 underline"
+            className="text-sm text-teal-800 dark:text-teal-300 underline"
             to={'/quizzes/' + attempt.quizId}
           >
             Back to quiz
           </Link>
-          <Link className="ml-4 text-sm text-teal-800 underline" to="/history">
+          <Link
+            className="ml-4 text-sm text-teal-800 dark:text-teal-300 underline"
+            to="/history"
+          >
             Study history
           </Link>
           <h1
@@ -46,7 +49,7 @@ export default function QuizResults() {
           >
             {attempt.quizTitle} — results
           </h1>
-          <p className="mb-4 text-sm text-slate-600">
+          <p className="mb-4 text-sm text-slate-600 dark:text-slate-300">
             Attempted version {attempt.version} · {attempt.mode} · completed{' '}
             {attempt.finishedAt
               ? new Date(attempt.finishedAt).toLocaleString()
@@ -61,10 +64,10 @@ export default function QuizResults() {
               ['Elapsed time', formatDuration(result.elapsedMs)],
             ].map(([label, value]) => (
               <div
-                className="rounded-xl border border-slate-200 bg-white p-4"
+                className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-4"
                 key={label}
               >
-                <dt className="text-sm text-slate-600">{label}</dt>
+                <dt className="text-sm text-slate-600 dark:text-slate-300">{label}</dt>
                 <dd className="mt-2 text-xl font-semibold">{value}</dd>
               </div>
             ))}
@@ -104,7 +107,7 @@ export default function QuizResults() {
               return (
                 <li
                   key={question.id}
-                  className="rounded-xl border border-slate-200 bg-white p-4"
+                  className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-4"
                 >
                   <h2 className="text-lg font-semibold">
                     {index + 1}. {question.prompt}
@@ -125,7 +128,7 @@ export default function QuizResults() {
                       {question.feedback.explanation}
                     </p>
                   )}
-                  <p className="mt-3 text-xs text-slate-600">
+                  <p className="mt-3 text-xs text-slate-600 dark:text-slate-300">
                     Sources:{' '}
                     {question.sourceKeys
                       .map((key) => {

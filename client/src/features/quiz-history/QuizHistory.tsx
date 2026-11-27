@@ -23,7 +23,10 @@ export default function QuizHistory() {
   return (
     <section>
       {projectId && (
-        <Link className="text-sm text-teal-800 underline" to={'/projects/' + projectId}>
+        <Link
+          className="text-sm text-teal-800 dark:text-teal-300 underline"
+          to={'/projects/' + projectId}
+        >
           Back to project
         </Link>
       )}
@@ -33,7 +36,7 @@ export default function QuizHistory() {
       <label className="mb-4 grid max-w-xs gap-1 text-sm">
         Attempt status
         <select
-          className="rounded border border-slate-300 p-2"
+          className="rounded border border-slate-300 dark:border-slate-600 p-2"
           value={status}
           onChange={(event) => {
             setStatus(event.target.value as typeof status);
@@ -59,12 +62,12 @@ export default function QuizHistory() {
         {history.data?.data.map((attempt) => (
           <li
             key={attempt.id}
-            className="rounded-xl border border-slate-200 bg-white p-4"
+            className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-4"
           >
             <h2 className="font-semibold">
               {attempt.quizTitle} · version {attempt.version}
             </h2>
-            <p className="my-2 text-sm text-slate-600">
+            <p className="my-2 text-sm text-slate-600 dark:text-slate-300">
               {attempt.projectTitle}
               {attempt.projectDeleted ? ' (removed project)' : ''} · {attempt.mode} ·{' '}
               {attempt.difficulty} · {new Date(attempt.startedAt).toLocaleString()}
@@ -83,13 +86,16 @@ export default function QuizHistory() {
             <div className="flex flex-wrap gap-4">
               {attempt.status === 'COMPLETED' ? (
                 <Link
-                  className="text-teal-800 underline"
+                  className="text-teal-800 dark:text-teal-300 underline"
                   to={'/attempts/' + attempt.id + '/results'}
                 >
                   Review / retake
                 </Link>
               ) : (
-                <Link className="text-teal-800 underline" to={'/attempts/' + attempt.id}>
+                <Link
+                  className="text-teal-800 dark:text-teal-300 underline"
+                  to={'/attempts/' + attempt.id}
+                >
                   {attempt.status === 'IN_PROGRESS'
                     ? 'Resume attempt'
                     : 'View recorded attempt'}
@@ -100,7 +106,7 @@ export default function QuizHistory() {
               </button>
               {!projectId && (
                 <Link
-                  className="text-teal-800 underline"
+                  className="text-teal-800 dark:text-teal-300 underline"
                   to={'/projects/' + attempt.projectId + '/history'}
                 >
                   Project history

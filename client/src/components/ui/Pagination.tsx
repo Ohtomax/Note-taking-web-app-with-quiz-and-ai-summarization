@@ -16,14 +16,14 @@ export function Pagination({ page, total, pageSize, onChange }: PaginationProps)
       </span>
       <div className="flex gap-3">
         <button
-          className="rounded border border-slate-300 px-3 py-2 disabled:opacity-40"
+          className="rounded border border-slate-300 dark:border-slate-600 px-3 py-2 disabled:opacity-40"
           disabled={page <= 1}
           onClick={() => onChange(page - 1)}
         >
           Previous
         </button>
         <button
-          className="rounded border border-slate-300 px-3 py-2 disabled:opacity-40"
+          className="rounded border border-slate-300 dark:border-slate-600 px-3 py-2 disabled:opacity-40"
           disabled={page >= pages}
           onClick={() => onChange(page + 1)}
         >

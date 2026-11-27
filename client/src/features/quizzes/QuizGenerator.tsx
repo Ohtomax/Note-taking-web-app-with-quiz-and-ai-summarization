@@ -49,7 +49,7 @@ export function QuizGenerator({
   };
   return (
     <section
-      className="mt-4 rounded-xl border border-slate-200 bg-white p-4"
+      className="mt-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-4"
       aria-label="Generate quiz"
     >
       <h2 className="font-semibold">Generate a quiz</h2>
@@ -64,7 +64,7 @@ export function QuizGenerator({
         <label className="grid gap-1 text-sm">
           Quiz title
           <input
-            className="rounded border border-slate-300 p-2"
+            className="rounded border border-slate-300 dark:border-slate-600 p-2"
             required
             maxLength={200}
             value={settings.title}
@@ -75,7 +75,7 @@ export function QuizGenerator({
           <label className="grid gap-1 text-sm">
             Questions
             <input
-              className="rounded border border-slate-300 p-2"
+              className="rounded border border-slate-300 dark:border-slate-600 p-2"
               type="number"
               min={1}
               max={50}
@@ -89,7 +89,7 @@ export function QuizGenerator({
           <label className="grid gap-1 text-sm">
             Difficulty
             <select
-              className="rounded border border-slate-300 p-2"
+              className="rounded border border-slate-300 dark:border-slate-600 p-2"
               value={settings.difficulty}
               onChange={(event) =>
                 setSettings({
@@ -106,7 +106,7 @@ export function QuizGenerator({
           <label className="grid gap-1 text-sm">
             Default mode
             <select
-              className="rounded border border-slate-300 p-2"
+              className="rounded border border-slate-300 dark:border-slate-600 p-2"
               value={settings.defaultMode}
               onChange={(event) =>
                 setSettings({
@@ -150,7 +150,7 @@ export function QuizGenerator({
           />
           Include explanations
         </label>
-        <p className="text-sm text-slate-600">
+        <p className="text-sm text-slate-600 dark:text-slate-300">
           {choice?.description ?? 'Choose sources first.'} Generation uses your AI
           allowance and preserves saved notes.
         </p>
@@ -166,12 +166,12 @@ export function QuizGenerator({
         </button>
       </form>
       {validation && (
-        <p role="alert" className="mt-3 text-red-700">
+        <p role="alert" className="mt-3 text-red-700 dark:text-red-300">
           {validation}
         </p>
       )}
       {generation.error && (
-        <p role="alert" className="mt-3 text-red-700">
+        <p role="alert" className="mt-3 text-red-700 dark:text-red-300">
           {generation.error.message} The same request key is retained.
         </p>
       )}
@@ -189,7 +189,7 @@ export function QuizGenerator({
       {generation.data &&
         ['SUCCEEDED', 'FAILED', 'UNCERTAIN'].includes(generation.data.status) && (
           <button
-            className="mt-3 rounded border border-slate-300 px-3 py-2 disabled:opacity-50"
+            className="mt-3 rounded border border-slate-300 dark:border-slate-600 px-3 py-2 disabled:opacity-50"
             disabled={!ready || generation.pending}
             onClick={() => submit(true)}
           >

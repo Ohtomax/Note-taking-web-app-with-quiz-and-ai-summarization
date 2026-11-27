@@ -30,16 +30,19 @@ export function ResumeAttempt({ attempt }: { attempt: OpenAttempt }) {
       </p>
     );
   return (
-    <article className="rounded-xl border border-slate-200 bg-white p-4">
+    <article className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-4">
       <h3 className="font-semibold">
         {attempt.quizTitle} · version {attempt.version}
       </h3>
-      <p className="my-2 text-sm text-slate-600">
+      <p className="my-2 text-sm text-slate-600 dark:text-slate-300">
         {attempt.mode} · saved location: question {attempt.lastQuestionIndex + 1} of{' '}
         {attempt.totalQuestions}
       </p>
       <div className="flex gap-4">
-        <Link className="text-teal-800 underline" to={'/attempts/' + attempt.id}>
+        <Link
+          className="text-teal-800 dark:text-teal-300 underline"
+          to={'/attempts/' + attempt.id}
+        >
           Resume attempt
         </Link>
         <button className="underline" onClick={() => setConfirm(true)}>

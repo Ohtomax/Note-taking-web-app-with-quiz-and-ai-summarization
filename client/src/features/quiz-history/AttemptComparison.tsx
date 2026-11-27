@@ -13,7 +13,7 @@ export function AttemptComparison({ attemptId }: { attemptId: string }) {
   });
   const data = comparison.data?.data;
   return (
-    <section className="mt-6 rounded-xl border border-slate-200 bg-white p-4">
+    <section className="mt-6 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-4">
       <h2 className="text-lg font-semibold">Attempt comparison</h2>
       <AsyncState
         loading={comparison.isPending}
@@ -33,7 +33,10 @@ export function AttemptComparison({ attemptId }: { attemptId: string }) {
                 <tr>
                   {['Attempt', 'Version', 'Status', 'Score', 'Elapsed time'].map(
                     (label) => (
-                      <th className="border-b border-slate-200 p-2" key={label}>
+                      <th
+                        className="border-b border-slate-200 dark:border-slate-700 p-2"
+                        key={label}
+                      >
                         {label}
                       </th>
                     ),
@@ -54,7 +57,7 @@ export function AttemptComparison({ attemptId }: { attemptId: string }) {
                       <td className="p-2">
                         {item?.status === 'COMPLETED' ? (
                           <Link
-                            className="text-teal-800 underline"
+                            className="text-teal-800 dark:text-teal-300 underline"
                             to={'/attempts/' + item.id + '/results'}
                           >
                             {formatPercent(item.percentage)}

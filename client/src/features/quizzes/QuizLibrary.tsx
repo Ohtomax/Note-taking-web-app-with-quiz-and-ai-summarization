@@ -76,25 +76,25 @@ export function QuizDetail() {
       {data && (
         <>
           <Link
-            className="text-sm text-teal-800 underline"
+            className="text-sm text-teal-800 dark:text-teal-300 underline"
             to={'/projects/' + data.projectId + '/quizzes'}
           >
             Back to quizzes
           </Link>
           <Link
-            className="text-teal-800 underline"
+            className="text-teal-800 dark:text-teal-300 underline"
             to={'/quizzes/' + quizId + '/analytics'}
           >
             Quiz analytics
           </Link>
           <h1 className="my-5 text-2xl font-semibold">{data.title}</h1>
           <OpenAttempts quizId={quizId} />
-          <p className="mb-4 text-sm text-slate-600">
+          <p className="mb-4 text-sm text-slate-600 dark:text-slate-300">
             Each version preserves its own questions and key. Existing attempts retain
             their recorded version.
           </p>
           <button
-            className="mb-4 rounded border border-slate-300 px-3 py-2"
+            className="mb-4 rounded border border-slate-300 dark:border-slate-600 px-3 py-2"
             onClick={() => setRegenerating((value) => !value)}
           >
             {regenerating ? 'Close regeneration' : 'Regenerate from saved sources'}
@@ -138,7 +138,7 @@ export function QuizDetail() {
             {versions.data?.data.map((item) => (
               <li
                 key={item.id}
-                className="rounded-xl border border-slate-200 bg-white p-4"
+                className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-4"
               >
                 <h2 className="font-semibold">Version {item.version}</h2>
                 <StartAttempt
@@ -146,12 +146,12 @@ export function QuizDetail() {
                   versionId={item.id}
                   version={item.version}
                 />
-                <p className="my-2 text-sm text-slate-600">
+                <p className="my-2 text-sm text-slate-600 dark:text-slate-300">
                   {item.difficulty} · {item._count.questions} questions ·{' '}
                   {new Date(item.generatedAt).toLocaleString()}
                 </p>
                 <Link
-                  className="text-teal-800 underline"
+                  className="text-teal-800 dark:text-teal-300 underline"
                   to={'/quizzes/' + quizId + '/versions/' + item.id + '/edit'}
                 >
                   Review or edit version {item.version}
@@ -214,7 +214,10 @@ export default function QuizLibrary() {
   });
   return (
     <section>
-      <Link className="text-sm text-teal-800 underline" to={'/projects/' + projectId}>
+      <Link
+        className="text-sm text-teal-800 dark:text-teal-300 underline"
+        to={'/projects/' + projectId}
+      >
         Back to project
       </Link>
       <h1 className="my-5 text-2xl font-semibold">Saved quizzes</h1>
@@ -222,7 +225,7 @@ export default function QuizLibrary() {
         Search quizzes
         <input
           type="search"
-          className="rounded border border-slate-300 p-3"
+          className="rounded border border-slate-300 dark:border-slate-600 p-3"
           value={search}
           onChange={(event) => {
             setSearch(event.target.value);
@@ -242,14 +245,17 @@ export default function QuizLibrary() {
       />
       <ul className="grid gap-3">
         {library.data?.data.map((quiz) => (
-          <li key={quiz.id} className="rounded-xl border border-slate-200 bg-white p-4">
+          <li
+            key={quiz.id}
+            className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-4"
+          >
             <Link
-              className="font-semibold text-teal-800 underline"
+              className="font-semibold text-teal-800 dark:text-teal-300 underline"
               to={'/quizzes/' + quiz.id}
             >
               {quiz.title}
             </Link>
-            <p className="my-3 text-sm text-slate-600">
+            <p className="my-3 text-sm text-slate-600 dark:text-slate-300">
               Latest version {quiz.versions[0]?.version ?? 'unavailable'} ·{' '}
               {quiz.versions[0]?._count.questions ?? 0} questions
             </p>
@@ -283,7 +289,7 @@ export default function QuizLibrary() {
         ))}
       </ul>
       {duplicate.error && (
-        <p role="alert" className="mt-3 text-red-700">
+        <p role="alert" className="mt-3 text-red-700 dark:text-red-300">
           {duplicate.error.message}
         </p>
       )}
@@ -311,7 +317,7 @@ export default function QuizLibrary() {
             <label className="grid gap-1 text-sm">
               Quiz title
               <input
-                className="rounded border border-slate-300 p-2"
+                className="rounded border border-slate-300 dark:border-slate-600 p-2"
                 required
                 maxLength={200}
                 value={editing.title}

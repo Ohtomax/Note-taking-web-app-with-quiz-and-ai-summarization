@@ -7,7 +7,7 @@ export function StudySources(props: Omit<SourcePickerProps, 'onChange'>) {
   const [choice, setChoice] = useState<SourceChoice | null>(null);
   return (
     <details className="my-5">
-      <summary className="cursor-pointer font-medium text-teal-800">
+      <summary className="cursor-pointer font-medium text-teal-800 dark:text-teal-300">
         Choose study sources
       </summary>
       <div className="mt-3">
@@ -15,7 +15,7 @@ export function StudySources(props: Omit<SourcePickerProps, 'onChange'>) {
         <SummaryGenerator projectId={props.projectId} choice={choice} />
         <QuizGenerator projectId={props.projectId} choice={choice} />
         {choice?.projectId === props.projectId && (
-          <p className="mt-2 text-xs text-slate-500">
+          <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">
             Source ready for study tools: {choice.description}
           </p>
         )}

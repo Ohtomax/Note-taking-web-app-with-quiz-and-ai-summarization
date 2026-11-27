@@ -67,16 +67,16 @@ function Picker({ projectId, note, dirty = false, onChange }: SourcePickerProps)
     onChange(choice);
   }, [choice, onChange]);
   return (
-    <fieldset className="grid gap-4 rounded-xl border border-slate-200 bg-white p-4">
+    <fieldset className="grid gap-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-4">
       <legend className="px-2 font-semibold">Study sources</legend>
-      <p className="text-sm text-slate-600">
+      <p className="text-sm text-slate-600 dark:text-slate-300">
         Generation sends your selected saved material to Groq. Archived and deleted notes
         are excluded. Unsaved edits are never sent.
       </p>
       <label className="grid gap-1 text-sm">
         Source scope
         <select
-          className="rounded border border-slate-300 p-2"
+          className="rounded border border-slate-300 dark:border-slate-600 p-2"
           value={scope}
           onChange={(event) => setScope(event.target.value as SourceRequest['scope'])}
         >
@@ -91,7 +91,7 @@ function Picker({ projectId, note, dirty = false, onChange }: SourcePickerProps)
         </select>
       </label>
       {['NOTE', 'EXCERPT'].includes(scope) && dirty && (
-        <p role="alert" className="text-sm text-amber-800">
+        <p role="alert" className="text-sm text-amber-800 dark:text-amber-200">
           Save this note before choosing its text for generation.
         </p>
       )}
@@ -101,7 +101,7 @@ function Picker({ projectId, note, dirty = false, onChange }: SourcePickerProps)
             Select a passage in the saved text
             <textarea
               readOnly
-              className="min-h-32 rounded border border-slate-300 p-3"
+              className="min-h-32 rounded border border-slate-300 dark:border-slate-600 p-3"
               value={plain}
               onSelect={(event) => {
                 const target = event.currentTarget;
@@ -121,7 +121,7 @@ function Picker({ projectId, note, dirty = false, onChange }: SourcePickerProps)
             </p>
           )}
           {choice?.source.scope === 'EXCERPT' && (
-            <blockquote className="whitespace-pre-wrap rounded bg-slate-50 p-3 text-sm">
+            <blockquote className="whitespace-pre-wrap rounded bg-slate-50 dark:bg-slate-950 p-3 text-sm">
               {[...plain].slice(choice.source.start, choice.source.end).join('')}
             </blockquote>
           )}
@@ -132,7 +132,7 @@ function Picker({ projectId, note, dirty = false, onChange }: SourcePickerProps)
           <label className="grid gap-1 text-sm">
             Search source notes
             <input
-              className="rounded border border-slate-300 p-2"
+              className="rounded border border-slate-300 dark:border-slate-600 p-2"
               type="search"
               value={query.search}
               onChange={(event) =>

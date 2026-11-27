@@ -47,14 +47,16 @@ function AuthForm({ mode, code }: { mode: string; code: string }) {
   };
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-slate-50 p-6">
-      <section className="w-full max-w-md rounded-2xl border border-slate-200 bg-white p-8 shadow-sm">
-        <Link to="/" className="font-semibold text-teal-800">
+    <main className="flex min-h-screen items-center justify-center bg-slate-50 dark:bg-slate-950 p-6">
+      <section className="w-full max-w-md rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-8 shadow-sm">
+        <Link to="/" className="font-semibold text-teal-800 dark:text-teal-300">
           Studyspace
         </Link>
-        <h1 className="mt-6 text-2xl font-semibold text-slate-900">{title}</h1>
+        <h1 className="mt-6 text-2xl font-semibold text-slate-900 dark:text-slate-100">
+          {title}
+        </h1>
         {!firebaseAuth && (
-          <p role="status" className="mt-4 text-sm text-slate-600">
+          <p role="status" className="mt-4 text-sm text-slate-600 dark:text-slate-300">
             Sign-in is waiting for your Firebase project configuration.
           </p>
         )}
@@ -63,7 +65,7 @@ function AuthForm({ mode, code }: { mode: string; code: string }) {
             <label className="grid gap-1 text-sm">
               Email address
               <input
-                className="rounded-lg border border-slate-300 p-3"
+                className="rounded-lg border border-slate-300 dark:border-slate-600 p-3"
                 name="email"
                 type="email"
                 autoComplete="email"
@@ -76,7 +78,7 @@ function AuthForm({ mode, code }: { mode: string; code: string }) {
             <label className="grid gap-1 text-sm">
               Password
               <input
-                className="rounded-lg border border-slate-300 p-3"
+                className="rounded-lg border border-slate-300 dark:border-slate-600 p-3"
                 name="password"
                 type="password"
                 minLength={registering || resetting ? 8 : 1}
@@ -106,19 +108,19 @@ function AuthForm({ mode, code }: { mode: string; code: string }) {
                     : 'Sign in'}
           </button>
           {error && (
-            <p role="alert" className="text-sm text-red-700">
+            <p role="alert" className="text-sm text-red-700 dark:text-red-300">
               {error}
             </p>
           )}
           {message && (
-            <p role="status" className="text-sm text-teal-800">
+            <p role="status" className="text-sm text-teal-800 dark:text-teal-300">
               {message}
             </p>
           )}
         </form>
         <nav
           aria-label="Account access"
-          className="mt-6 flex flex-wrap gap-4 text-sm text-teal-800"
+          className="mt-6 flex flex-wrap gap-4 text-sm text-teal-800 dark:text-teal-300"
         >
           <Link to="/auth">Sign in</Link>
           <Link to="/auth?mode=register">Create account</Link>

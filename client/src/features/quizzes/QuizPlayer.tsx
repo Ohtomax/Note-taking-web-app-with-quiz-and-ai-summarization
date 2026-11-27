@@ -54,7 +54,7 @@ function QuestionPane({
     });
   return (
     <section>
-      <p className="mb-2 text-sm text-slate-600">
+      <p className="mb-2 text-sm text-slate-600 dark:text-slate-300">
         {attempt.mode} · version {attempt.version} · {answered} of{' '}
         {attempt.totalQuestions} answered
       </p>
@@ -87,7 +87,7 @@ function QuestionPane({
             <label className="grid gap-2 text-sm">
               Identification answer
               <input
-                className="rounded border border-slate-300 bg-white p-3"
+                className="rounded border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 p-3"
                 maxLength={500}
                 value={text}
                 onChange={(event) => {
@@ -99,7 +99,7 @@ function QuestionPane({
           ) : (
             question.options.map((option) => (
               <label
-                className="flex cursor-pointer items-center gap-3 rounded border border-slate-300 bg-white p-3"
+                className="flex cursor-pointer items-center gap-3 rounded border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 p-3"
                 key={option.id}
               >
                 <input
@@ -151,7 +151,7 @@ function QuestionPane({
           )}
           {dirty && (
             <>
-              <span role="status" className="text-sm text-amber-800">
+              <span role="status" className="text-sm text-amber-800 dark:text-amber-200">
                 Unsaved answer. Save or discard before navigating.
               </span>
               <button
@@ -171,7 +171,10 @@ function QuestionPane({
         </div>
       </form>
       {question.feedback && (
-        <div role="status" className="my-4 rounded border border-teal-300 bg-teal-50 p-4">
+        <div
+          role="status"
+          className="my-4 rounded border border-teal-300 bg-teal-50 dark:bg-teal-950 p-4"
+        >
           <h3 className="font-semibold">
             {question.feedback.isCorrect ? 'Correct' : 'Incorrect'}
           </h3>
@@ -194,7 +197,7 @@ function QuestionPane({
       {error && (
         <div
           role="alert"
-          className="my-4 rounded border border-red-300 p-3 text-sm text-red-700"
+          className="my-4 rounded border border-red-300 p-3 text-sm text-red-700 dark:text-red-300"
         >
           <p>{error.message}</p>
           <p className="mt-1">
@@ -207,14 +210,14 @@ function QuestionPane({
       )}
       <div className="mt-5 flex flex-wrap gap-3">
         <button
-          className="rounded border border-slate-300 px-4 py-2 disabled:opacity-50"
+          className="rounded border border-slate-300 dark:border-slate-600 px-4 py-2 disabled:opacity-50"
           disabled={busy || dirty || index === 0}
           onClick={() => onNavigate(index - 1)}
         >
           Previous question
         </button>
         <button
-          className="rounded border border-slate-300 px-4 py-2 disabled:opacity-50"
+          className="rounded border border-slate-300 dark:border-slate-600 px-4 py-2 disabled:opacity-50"
           disabled={busy || dirty || index === attempt.totalQuestions - 1}
           onClick={() => onNavigate(index + 1)}
         >
@@ -280,7 +283,7 @@ export default function QuizPlayer() {
       {attempt && (
         <>
           <Link
-            className="text-sm text-teal-800 underline"
+            className="text-sm text-teal-800 dark:text-teal-300 underline"
             to={'/quizzes/' + attempt.quizId}
           >
             Back to quiz
@@ -295,7 +298,7 @@ export default function QuizPlayer() {
             <div role="status">
               <h2 className="text-xl font-semibold">Attempt completed</h2>
               <Link
-                className="mt-3 inline-block text-teal-800 underline"
+                className="mt-3 inline-block text-teal-800 dark:text-teal-300 underline"
                 to={'/attempts/' + attempt.id + '/results'}
               >
                 View results and answer review
@@ -360,7 +363,7 @@ export default function QuizPlayer() {
                 </button>
               </div>
               {submit.error && (
-                <p role="alert" className="mt-3 text-red-700">
+                <p role="alert" className="mt-3 text-red-700 dark:text-red-300">
                   {submit.error.message}
                 </p>
               )}

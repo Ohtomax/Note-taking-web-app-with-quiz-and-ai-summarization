@@ -23,7 +23,7 @@ function NoteForm({ note, readOnly }: { note: Note; readOnly: boolean }) {
         </p>
       )}
       <Link
-        className="text-sm text-teal-800 underline"
+        className="text-sm text-teal-800 dark:text-teal-300 underline"
         to={`/projects/${note.projectId}`}
       >
         Back to project
@@ -31,7 +31,7 @@ function NoteForm({ note, readOnly }: { note: Note; readOnly: boolean }) {
       <label className="my-5 grid gap-2 text-sm">
         Note title
         <input
-          className="rounded-lg border border-slate-300 p-3 text-xl font-semibold"
+          className="rounded-lg border border-slate-300 dark:border-slate-600 p-3 text-xl font-semibold"
           value={save.draft.title}
           required
           maxLength={200}
@@ -62,7 +62,7 @@ function NoteForm({ note, readOnly }: { note: Note; readOnly: boolean }) {
         >
           {save.status === 'error' ? 'Retry save' : 'Save note'}
         </button>
-        <p role="status" className="text-sm text-slate-600">
+        <p role="status" className="text-sm text-slate-600 dark:text-slate-300">
           {save.status === 'saving'
             ? 'Saving…'
             : save.status === 'saved'
@@ -78,12 +78,12 @@ function NoteForm({ note, readOnly }: { note: Note; readOnly: boolean }) {
         )}
       </div>
       {save.error && (
-        <p role="alert" className="mt-3 text-sm text-red-700">
+        <p role="alert" className="mt-3 text-sm text-red-700 dark:text-red-300">
           {save.error}
         </p>
       )}
       {save.status === 'conflict' && (
-        <div className="mt-5 rounded-lg border border-amber-300 bg-amber-50 p-4">
+        <div className="mt-5 rounded-lg border border-amber-300 bg-amber-50 dark:bg-amber-950 p-4">
           <button
             className="underline disabled:opacity-50"
             disabled={save.loadingLatest}
@@ -115,7 +115,7 @@ function NoteForm({ note, readOnly }: { note: Note; readOnly: boolean }) {
           )}
         </div>
       )}
-      <p className="mt-4 text-xs text-slate-500">
+      <p className="mt-4 text-xs text-slate-500 dark:text-slate-400">
         Created {new Date(note.createdAt).toLocaleString()} · Edited{' '}
         {new Date(note.updatedAt).toLocaleString()}
       </p>

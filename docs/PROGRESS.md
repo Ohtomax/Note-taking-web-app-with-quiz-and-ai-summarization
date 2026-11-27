@@ -270,3 +270,5 @@ Every frontend task has its own commit and push to main, including implemented t
 - **P5-T24 completed 2026-11-27** Dashboard includes counts, performance, recent notes/projects/summaries/quizzes/attempts and create-note project picker. Note opening preserves edit timestamp and revision in a serializable transaction. Database ownership/order checks and dashboard shortcut checks pass.
 
 - **P5-T25 completed 2026-11-27** Dashboard and generation forms show UTC quotas, remaining allowance, active work and unknown-cost states. Generation admission and terminal polling invalidate usage. Account switch and exhausted-quota retake component check passes; no quota gate is applied to reading or attempts.
+
+- **P5-T26 deferred 2026-11-27** Implementation and automated keyboard/theme/dialog-focus checks pass. Real-browser phone/tablet/desktop and screen-reader acceptance is deferred because Computer Use native pipe is unavailable; the task remains unchecked.

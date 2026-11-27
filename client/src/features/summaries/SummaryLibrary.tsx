@@ -15,13 +15,16 @@ function SummaryText({ summary }: { summary: SavedSummary }) {
   return (
     <div className="grid gap-4">
       {summary.content.sections.map((section, index) => (
-        <section key={index} className="rounded border border-slate-200 bg-white p-4">
+        <section
+          key={index}
+          className="rounded border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-4"
+        >
           {section.heading && <h2 className="mb-2 font-semibold">{section.heading}</h2>}
           <p className="whitespace-pre-wrap">
             {summary.settings.format === 'BULLETS' ? '• ' : ''}
             {section.text}
           </p>
-          <p className="mt-3 text-xs text-slate-500">
+          <p className="mt-3 text-xs text-slate-500 dark:text-slate-400">
             Sources:{' '}
             {section.sourceKeys
               .map(
@@ -68,7 +71,7 @@ function SummaryEdit({
       <label className="grid gap-1 text-sm">
         Summary title
         <input
-          className="rounded border border-slate-300 p-2"
+          className="rounded border border-slate-300 dark:border-slate-600 p-2"
           required
           maxLength={200}
           value={content.title}
@@ -79,7 +82,7 @@ function SummaryEdit({
         <label key={index} className="grid gap-1 text-sm">
           Section {index + 1} text
           <textarea
-            className="min-h-28 rounded border border-slate-300 p-2"
+            className="min-h-28 rounded border border-slate-300 dark:border-slate-600 p-2"
             required
             maxLength={16000}
             value={section.text}
@@ -103,7 +106,7 @@ function SummaryEdit({
         </button>
         <button
           type="button"
-          className="rounded border border-slate-300 px-4 py-2"
+          className="rounded border border-slate-300 dark:border-slate-600 px-4 py-2"
           disabled={save.isPending}
           onClick={onClose}
         >
@@ -111,7 +114,7 @@ function SummaryEdit({
         </button>
       </div>
       {save.error && (
-        <p role="alert" className="text-red-700">
+        <p role="alert" className="text-red-700 dark:text-red-300">
           {save.error.message}
         </p>
       )}
@@ -148,20 +151,20 @@ export function SummaryDetail() {
       {data && (
         <>
           <Link
-            className="text-sm text-teal-800 underline"
+            className="text-sm text-teal-800 dark:text-teal-300 underline"
             to={'/projects/' + data.projectId + '/summaries'}
           >
             Back to summaries
           </Link>
           <h1 className="my-4 text-2xl font-semibold">{data.title}</h1>
-          <p className="mb-4 text-sm text-slate-600">
+          <p className="mb-4 text-sm text-slate-600 dark:text-slate-300">
             Generated {new Date(data.generatedAt).toLocaleString()} ·{' '}
             {data.settings.length} · {data.settings.format}
           </p>
           {data.staleSources && (
             <p
               role="status"
-              className="mb-4 rounded border border-amber-300 bg-amber-50 p-3"
+              className="mb-4 rounded border border-amber-300 bg-amber-50 dark:bg-amber-950 p-3"
             >
               Sources changed or were removed. This saved summary retains the captured
               revisions.
@@ -184,7 +187,7 @@ export function SummaryDetail() {
           ) : (
             <SummaryText summary={data} />
           )}
-          <ul className="mt-5 text-xs text-slate-600">
+          <ul className="mt-5 text-xs text-slate-600 dark:text-slate-300">
             {data.sources.map((source) => (
               <li key={source.sourceKey}>
                 {source.noteTitle} · revision {source.revision}
@@ -216,7 +219,7 @@ export function SummaryDetail() {
                 </button>
               </div>
               {remove.error && (
-                <p role="alert" className="mt-3 text-red-700">
+                <p role="alert" className="mt-3 text-red-700 dark:text-red-300">
                   {remove.error.message}
                 </p>
               )}
@@ -238,7 +241,10 @@ export default function SummaryLibrary() {
   });
   return (
     <section>
-      <Link className="text-sm text-teal-800 underline" to={'/projects/' + projectId}>
+      <Link
+        className="text-sm text-teal-800 dark:text-teal-300 underline"
+        to={'/projects/' + projectId}
+      >
         Back to project
       </Link>
       <h1 className="my-5 text-2xl font-semibold">Saved summaries</h1>
@@ -256,20 +262,22 @@ export default function SummaryLibrary() {
         {history.data?.data.map((summary) => (
           <li
             key={summary.id}
-            className="rounded-xl border border-slate-200 bg-white p-4"
+            className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-4"
           >
             <Link
-              className="font-semibold text-teal-800 underline"
+              className="font-semibold text-teal-800 dark:text-teal-300 underline"
               to={'/summaries/' + summary.id}
             >
               {summary.title}
             </Link>
-            <p className="mt-2 text-sm text-slate-600">
+            <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">
               {new Date(summary.generatedAt).toLocaleString()} · {summary.sources.length}{' '}
               sources
             </p>
             {summary.staleSources && (
-              <p className="mt-1 text-sm text-amber-800">Sources changed</p>
+              <p className="mt-1 text-sm text-amber-800 dark:text-amber-200">
+                Sources changed
+              </p>
             )}
           </li>
         ))}

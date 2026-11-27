@@ -42,13 +42,16 @@ export function PerformanceOverview({ data }: { data: Analytics }) {
             t.meanElapsedMs === null ? 'No data' : formatDuration(t.meanElapsedMs),
           ],
         ].map(([label, value]) => (
-          <div className="rounded-xl border border-slate-200 bg-white p-4" key={label}>
-            <dt className="text-sm text-slate-600">{label}</dt>
+          <div
+            className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-4"
+            key={label}
+          >
+            <dt className="text-sm text-slate-600 dark:text-slate-300">{label}</dt>
             <dd className="mt-2 text-xl font-semibold">{value}</dd>
           </div>
         ))}
       </dl>
-      <p className="text-sm text-slate-600">
+      <p className="text-sm text-slate-600 dark:text-slate-300">
         Mean score uses {t.scoredAttempts} completed attempts. Accuracy uses {t.answered}{' '}
         answered questions. {t.skipped} skipped of {t.questionsAssigned} assigned.
         Improvement:{' '}
@@ -66,7 +69,7 @@ export function PerformanceOverview({ data }: { data: Analytics }) {
         />
       </label>
       <div className="grid gap-6 lg:grid-cols-2">
-        <section className="min-w-0 rounded-xl border border-slate-200 bg-white p-4">
+        <section className="min-w-0 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-4">
           <h2 className="font-semibold">Mean score over time (UTC)</h2>
           <div className="mt-4 h-64" aria-hidden="true">
             <ResponsiveContainer width="100%" height="100%">
@@ -111,7 +114,7 @@ export function PerformanceOverview({ data }: { data: Analytics }) {
             </div>
           </details>
         </section>
-        <section className="min-w-0 rounded-xl border border-slate-200 bg-white p-4">
+        <section className="min-w-0 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-4">
           <h2 className="font-semibold">Score comparison</h2>
           <div className="mt-4 h-64" aria-hidden="true">
             <ResponsiveContainer width="100%" height="100%">
@@ -132,7 +135,7 @@ export function PerformanceOverview({ data }: { data: Analytics }) {
             ))}
           </dl>
         </section>
-        <section className="min-w-0 rounded-xl border border-slate-200 bg-white p-4">
+        <section className="min-w-0 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-4">
           <h2 className="font-semibold">Answered question distribution</h2>
           {t.answered ? (
             <div className="h-56" aria-hidden="true">
@@ -190,7 +193,7 @@ export default function AnalyticsPage() {
   const data = query.data;
   return (
     <section className="space-y-6">
-      <nav className="flex flex-wrap gap-4 text-teal-800 underline">
+      <nav className="flex flex-wrap gap-4 text-teal-800 dark:text-teal-300 underline">
         <Link to="/">Projects</Link>
         <Link to="/history">Study history</Link>
         {projectId && <Link to={'/projects/' + projectId}>Project study</Link>}
@@ -237,7 +240,7 @@ export default function AnalyticsPage() {
       )}
       {data && !invalid && (
         <>
-          <p className="text-sm text-slate-600">
+          <p className="text-sm text-slate-600 dark:text-slate-300">
             {data.window.from.slice(0, 10)} to {data.window.to.slice(0, 10)} (exclusive).
             Workspace counts include archived material and exclude deleted material.
           </p>

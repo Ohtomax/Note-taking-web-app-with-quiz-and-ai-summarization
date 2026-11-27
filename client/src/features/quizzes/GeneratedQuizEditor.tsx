@@ -57,7 +57,7 @@ export function GeneratedQuizEditor({
         <p role="status">
           Quiz saved.{' '}
           <Link
-            className="text-teal-800 underline"
+            className="text-teal-800 dark:text-teal-300 underline"
             to={
               '/quizzes/' +
               save.data.data.quizId +
