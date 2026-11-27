@@ -975,6 +975,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
   - **Verify** Run the matrix against the real API routing stack and compare the fixture records before and after each rejected mutation.
 
 - [ ] **P6-T03 · Prove note autosave survives concurrent edits** (MVP)
+  - **Status 2026-11-28** Real HTTP/Prisma tests pass for two independent editor instances, delayed stale writes, offline recovery, rapid typing and reopening. Actual two-tab/browser acceptance remains deferred because Computer Use is unavailable.
   - **Work and purpose** Cover delayed responses, disconnection, rapid edits, and two tabs saving the same revision. Check the editor's unsaved and conflict states.
   - **Files** `client/src/features/notes/`, `server/tests/integration/note-autosave.test.ts`, `tests/e2e/note-autosave.spec.ts` · **Depends on** P6-T01
   - **Output** A repeatable browser and API autosave regression.

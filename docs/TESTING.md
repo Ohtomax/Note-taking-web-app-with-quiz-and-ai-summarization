@@ -134,3 +134,7 @@ Limits: real-browser viewport, visual contrast and screen-reader acceptance rema
 ## Phase 6 runner
 
 Use the [local validation guide](./PHASE6_VALIDATION.md) and scripts/test-local.ps1 -Repetitions 2 -CleanCheckout for repeatable lockfile installs, isolated PostgreSQL, mock-only tests and code/build checks. Browser and hosted integration acceptance remain separate.
+
+### P6-T03 autosave concurrency
+
+client/tests/autosave.integration.test.tsx runs two independent useNoteSave editor instances through actual HTTP/Express/Prisma. A delayed revision-1 request loses to the newer committed revision-2 write, receives a conflict and retains its recoverable draft. Comparing/accepting the latest server version is explicit. A disconnected write preserves its draft and persists revision 3 after retry; a third editor reopens that content. A second test holds a successful acknowledgment while two newer edits arrive, then verifies that only the final queued draft becomes revision 3. Both tests pass along with strict test types/lint. These complement the component fake-clock cases and database revision race. They model independent editors in jsdom; actual browser tabs remain unverified and the task stays open for that acceptance.

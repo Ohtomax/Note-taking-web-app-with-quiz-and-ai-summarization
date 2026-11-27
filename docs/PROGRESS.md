@@ -282,3 +282,5 @@ Phase 5 implementation status: 26 of 27 MVP task checkboxes are complete. P5-T26
 - **P6-T01 completed 2026-11-28** Two clean npm-ci passes each passed 39 unit, 63 database/API and 38 frontend tests, with no live provider/identity credentials. Type/lint/format/build checks pass twice. Windows native-module locks are avoided through temporary exports, and tracked candidate patches preserve LF. PHASE6_VALIDATION.md documents reproduction.
 
 - **P6-T02 completed 2026-11-28** The expanded real-routing/Prisma matrix passes in both identity directions, snapshots both accounts after every rejected read/write, checks token failures and owner-only history/analytics/usage, and records zero provider calls. Strict test types and lint pass.
+
+- **P6-T03 deferred/partial 2026-11-28** Two editor/real API tests pass for delayed stale writes, recoverable drafts, disconnection, queued rapid edits and third-editor reopening. Browser/two-tab visual acceptance remains deferred; task left unchecked.
