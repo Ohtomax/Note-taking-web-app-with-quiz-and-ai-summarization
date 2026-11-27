@@ -982,7 +982,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
   - **Accept when** A stale save cannot overwrite the latest stored revision and the losing editor retains recoverable text.
   - **Verify** Delay the older write, complete the newer save, release the delayed write, and reopen the note in a third session.
 
-- [ ] **P6-T04 · Verify AI source and output boundaries** (MVP)
+- [x] **P6-T04 · Verify AI source and output boundaries** (MVP)
   - **Work and purpose** Use synthetic notes containing instruction-like text, a mixed-owner selection, and mock outputs with invalid structure or unknown source IDs. Check ownership before provider invocation and validation before persistence.
   - **Files** `server/tests/integration/ai-generation.test.ts`, `server/tests/fixtures/ai/` · **Depends on** P6-T01
   - **Output** Tests for source selection, prompt construction, output validation, and failure cleanup.

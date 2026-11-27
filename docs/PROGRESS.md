@@ -284,3 +284,5 @@ Phase 5 implementation status: 26 of 27 MVP task checkboxes are complete. P5-T26
 - **P6-T02 completed 2026-11-28** The expanded real-routing/Prisma matrix passes in both identity directions, snapshots both accounts after every rejected read/write, checks token failures and owner-only history/analytics/usage, and records zero provider calls. Strict test types and lint pass.
 
 - **P6-T03 deferred/partial 2026-11-28** Two editor/real API tests pass for delayed stale writes, recoverable drafts, disconnection, queued rapid edits and third-editor reopening. Browser/two-tab visual acceptance remains deferred; task left unchecked.
+
+- **P6-T04 completed 2026-11-28** Summary and quiz HTTP cases pass for instruction-like source text, mixed-owner rejection before provider calls, exact source-data envelopes, fabricated citations, persistence guards and unchanged notes. Existing malformed and boundary fixtures remain active.
