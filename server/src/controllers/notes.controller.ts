@@ -4,6 +4,23 @@ import type { NotesService } from '@/services/notes.service.js';
 import { UserHandleError } from '@/utils/error-handler/userErrorHandler.js';
 import type { NoteListInput } from '@/utils/input-validators/notes.js';
 
+export const duplicateNote =
+  (service: NotesService) =>
+  async (req: AuthRequest, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      res.status(201).json({
+        data: await service.duplicate(
+          req.account!.id,
+          req.params.projectId!,
+          req.params.noteId!,
+          req.body.expectedRevision,
+        ),
+      });
+    } catch (error) {
+      UserHandleError(error, next);
+    }
+  };
+
 export const deleteNote =
   (service: NotesService) =>
   async (req: AuthRequest, res: Response, next: NextFunction): Promise<void> => {

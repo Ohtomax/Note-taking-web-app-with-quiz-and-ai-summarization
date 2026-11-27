@@ -447,7 +447,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
   - **Accept when** An owner can remove the note from active use and historical quiz snapshots remain reviewable.
   - **Verify** Delete a fixture linked to a quiz attempt, read the old snapshot and repeat the request from a second account.
 
-- [ ] **P3-T14 · Duplicate a note** (MVP)
+- [x] **P3-T14 · Duplicate a note** (MVP)
   - **Work and purpose** Copy the title and rich-text content into an independently versioned note for learners who need a new draft.
   - **Files** `server/src/services/notes.service.ts`, `server/src/repositories/notes.repository.ts` · **Depends on** P3-T07, P3-T08
   - **Output** Duplicate-note operation.

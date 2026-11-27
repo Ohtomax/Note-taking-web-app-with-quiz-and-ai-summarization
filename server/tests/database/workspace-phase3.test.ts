@@ -484,3 +484,41 @@ test('P3-T13 confirmed note removal retains source links and original grading sn
     );
   });
 });
+
+test('P3-T14 duplicated note is independent from source revisions', async () => {
+  await withWorkspace(async ({ project, api }) => {
+    const doc = {
+      type: 'doc',
+      content: [
+        {
+          type: 'codeBlock',
+          attrs: { language: null },
+          content: [{ type: 'text', text: 'ping' }],
+        },
+      ],
+    };
+    const note = (
+      await api
+        .post('/api/v1/projects/' + project.id + '/notes')
+        .set('Authorization', 'Bearer alice')
+        .send({ title: 'Original', content: doc })
+    ).body.data;
+    const url = '/api/v1/projects/' + project.id + '/notes';
+    const copy = await api
+      .post(url + '/' + note.id + '/duplicate')
+      .set('Authorization', 'Bearer alice')
+      .send({ expectedRevision: 1 });
+    assert.equal(copy.status, 201);
+    assert.notEqual(copy.body.data.id, note.id);
+    assert.deepEqual(copy.body.data.content, doc);
+    await api
+      .patch(url + '/' + copy.body.data.id)
+      .set('Authorization', 'Bearer alice')
+      .send({ expectedRevision: 1, title: 'Edited copy' });
+    const original = await api
+      .get(url + '/' + note.id)
+      .set('Authorization', 'Bearer alice');
+    assert.equal(original.body.data.title, 'Original');
+    assert.equal(original.body.data.revision, 1);
+  });
+});

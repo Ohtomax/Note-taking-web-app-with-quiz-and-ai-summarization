@@ -22,6 +22,12 @@ export const createNotesRouter = (
 ) => {
   const router = Router({ mergeParams: true });
   router.use(createVerifyToken(verify), synchronizeUser(users), verifyUser);
+  router.post(
+    '/:noteId/duplicate',
+    validate('params', noteParamsSchema),
+    validate('body', revisionSchema),
+    notesController.duplicateNote(service),
+  );
   router.delete(
     '/:noteId',
     validate('params', noteParamsSchema),
