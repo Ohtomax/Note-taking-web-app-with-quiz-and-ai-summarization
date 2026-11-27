@@ -202,3 +202,5 @@ Every frontend task has its own commit and push to main, including implemented t
 - **P4-T15 completed 2026-11-27** HTTP fixtures verify free edits/rename/delete, foreign rejection and unchanged saved originals after failed and successful regeneration previews. Acceptance saves a separate new summary.
 
 - **P4-T16 completed 2026-11-27** All difficulties and both modes pass. Invalid counts, unsupported/duplicate types, forged fields and impossible mixed requests fail before generation.
+
+- **P4-T17 completed 2026-11-27** Valid multiple-choice, true/false and multiple-select fixtures pass. Repeated IDs/text, invented keys and impossible answer sets are rejected.

@@ -656,7 +656,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
   - **Accept when** Easy, medium, hard and mixed-type requests validate and unsupported combinations fail before generation.
   - **Verify** Exercise each setting boundary and verify the mock provider remains unused for invalid requests.
 
-- [ ] **P4-T17 · Validate choice-based questions** (MVP)
+- [x] **P4-T17 · Validate choice-based questions** (MVP)
   - **Work and purpose** Define Zod shapes for multiple choice, true/false and multiple-select items, enforcing valid option IDs, distinct choices and correct answer cardinality.
   - **Files** `server/src/ai/schemas/quiz-question.ts`, `server/tests/ai/quiz-questions.test.ts` · **Depends on** P4-T16
   - **Output** Checked option and answer-key structures for three question types.
