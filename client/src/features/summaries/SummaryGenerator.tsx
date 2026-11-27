@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { AIUsage } from '@/features/dashboard/AIUsage';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useGeneration } from './useGeneration';
 import {
@@ -158,6 +159,7 @@ export function SummaryGenerator({
       aria-label="Generate summary"
     >
       <h2 className="font-semibold">Generate a summary</h2>
+      <AIUsage compact />
       <div className="my-4 grid gap-3 sm:grid-cols-2">
         <label className="grid gap-1 text-sm">
           Summary length

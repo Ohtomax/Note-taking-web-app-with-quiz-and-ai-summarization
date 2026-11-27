@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { studyApi, type GenerateInput } from '@/api/study';
 import { useSession } from '@/store/session';
@@ -33,6 +33,12 @@ export function useGeneration(projectId: string, regenerateQuizId?: string) {
         ? 1000
         : false,
   });
+  const terminalStatus = status.data?.data.status;
+  useEffect(() => {
+    if (terminalStatus && !['RESERVED', 'RUNNING'].includes(terminalStatus)) {
+      void cache.invalidateQueries({ queryKey: [uid, 'ai-usage'] });
+    }
+  }, [terminalStatus, uid, cache]);
   const generate = (request: GenerateInput, fresh = false) => {
     const signature = JSON.stringify({ projectId, ...request });
     if (fresh || attempt.current?.signature !== signature)

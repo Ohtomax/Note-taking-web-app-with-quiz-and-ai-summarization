@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { AIUsage } from '@/features/dashboard/AIUsage';
 import { useGeneration } from '@/features/summaries/useGeneration';
 import {
   quizSettingsSchema,
@@ -52,6 +53,7 @@ export function QuizGenerator({
       aria-label="Generate quiz"
     >
       <h2 className="font-semibold">Generate a quiz</h2>
+      <AIUsage compact />
       <form
         className="mt-4 grid gap-4"
         onSubmit={(event) => {

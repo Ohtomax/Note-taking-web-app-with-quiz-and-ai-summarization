@@ -908,7 +908,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
   - **Accept when** Opening an old note moves it to the recently opened list, and each shortcut opens the correct workflow.
   - **Verify** Use a new account and a populated account, open an older note and verify the ordering and quick actions.
 
-- [ ] **P5-T25 · Display AI usage** (MVP)
+- [x] **P5-T25 · Display AI usage** (MVP)
   - **Work and purpose** Show the current user's usage, quota period, allowance remaining and reset information from the backend. Refresh after generation and account changes.
   - **Files** `client/src/features/dashboard/AIUsage.tsx`, `client/src/features/summaries/SummaryGenerator.tsx`, `client/src/features/quizzes/QuizGenerator.tsx` · **Depends on** P5-T02, P5-T04, P5-T24
   - **Output** A dashboard usage indicator and generation-limit feedback.

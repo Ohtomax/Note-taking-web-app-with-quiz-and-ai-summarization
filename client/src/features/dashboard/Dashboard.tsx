@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { AIUsage } from './AIUsage';
 import { Link, useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { useSession } from '@/store/session';
@@ -189,6 +190,7 @@ export default function Dashboard() {
             </ul>
           </section>
           <h2 className="text-lg font-semibold">Performance in the last 30 days</h2>
+          <AIUsage />
           <PerformanceOverview data={data.performance} />
         </>
       )}
