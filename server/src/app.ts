@@ -10,9 +10,12 @@ import type { RequestHandler } from 'express';
 import type { TokenVerifier } from '@/types/auth.type.js';
 import type { UserService } from '@/services/user.service.js';
 import { createUserRouter } from '@/routes/user.routes.js';
+import { createProjectsRouter } from '@/routes/projects.routes.js';
+import type { ProjectsService } from '@/services/projects.service.js';
 import { ServiceError } from '@/utils/error-handler/ServiceError.js';
 
 export interface AppServices {
+  projectsService?: ProjectsService;
   userService: UserService;
   verifyToken: TokenVerifier;
   rateLimiter: RequestHandler;
@@ -49,6 +52,15 @@ export function createApp(
   );
   if (services) {
     app.use('/api/v1/me', createUserRouter(services.userService, services.verifyToken));
+    if (services.projectsService)
+      app.use(
+        '/api/v1/projects',
+        createProjectsRouter(
+          services.projectsService,
+          services.userService,
+          services.verifyToken,
+        ),
+      );
   }
   app.use((_request, response) => {
     response.status(404).json({

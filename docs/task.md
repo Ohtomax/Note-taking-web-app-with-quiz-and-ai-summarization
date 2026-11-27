@@ -356,7 +356,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
 
 ### Task checklist
 
-- [ ] **P3-T01 · Create a project** (MVP)
+- [x] **P3-T01 · Create a project** (MVP)
   - **Work and purpose** Accept a name, description and allowed display settings, deriving ownership from the verified account so folders are private from creation.
   - **Files** `server/src/routes/projects.routes.ts`, `server/src/controllers/projects.controller.ts`, `server/src/services/projects.service.ts`, `server/src/repositories/projects.repository.ts` · **Depends on** None
   - **Output** Project creation endpoint returning the new project.

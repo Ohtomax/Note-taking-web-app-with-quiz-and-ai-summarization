@@ -11,6 +11,8 @@ import {
 import { createUserRepository } from '@/repositories/user.repository.js';
 import { createUserService } from '@/services/user.service.js';
 import type { AppServices } from '@/app.js';
+import { createProjectsRepository } from '@/repositories/projects.repository.js';
+import { createProjectsService } from '@/services/projects.service.js';
 
 export const createRuntime = async (environment: Environment) => {
   const firebase = createFirebaseVerifier(environment);
@@ -25,6 +27,7 @@ export const createRuntime = async (environment: Environment) => {
   let services: AppServices | undefined;
   if (database && firebase.app && redis?.status === 'ready') {
     services = {
+      projectsService: createProjectsService(createProjectsRepository(database)),
       userService: createUserService(createUserRepository(database)),
       verifyToken: firebase.verify,
       rateLimiter: createApiLimiter(

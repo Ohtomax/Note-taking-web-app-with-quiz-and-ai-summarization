@@ -104,3 +104,5 @@ All Phase 2 implementation tasks were processed under the owner's authorization 
 - **P2-T20 completed** 17 unit/HTTP and 13 database tests pass; cross-user fixtures and startup verified.
 
 - **P2-T20 clean-checkout follow-up** A fresh clone completed npm ci, generated Prisma Client, passed the 17-test credential-free suite, strict typechecks including tests, lint, format checking and compiled build. The 13-test database suite previously passed on the migrated local fixture. Reviewed error response correlation and added request IDs consistently to parser, not-found and rate-limit responses. Dependency audit remains at four high-severity findings documented in SECURITY.md. The three live infrastructure checks remain deferred.
+
+- **P3-T01 completed and verified 2026-11-27** Real HTTP and disposable PostgreSQL acceptance fixture passed. Isolated task snapshot passed strict typechecking, lint and the task acceptance case before its separate push.
