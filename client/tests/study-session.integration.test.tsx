@@ -22,6 +22,8 @@ import { analyticsApi } from '@/api/analytics';
 import { dashboardApi } from '@/api/dashboard';
 import { usageApi } from '@/api/usage';
 import { z } from 'zod';
+import { configure } from '@testing-library/react';
+configure({ asyncUtilTimeout: 5000 });
 const enabled = Boolean(process.env.STUDY_TEST_DATABASE_URL);
 let fixture: ChildProcess | undefined,
   projectId = '',

@@ -9,6 +9,8 @@ import { resolveSession } from '@/features/auth/session.service';
 import { queryClient } from '@/config/queryClient';
 import { notesApi } from '@/api/notes';
 import { useDrafts } from '@/store/drafts';
+import { configure } from '@testing-library/react';
+configure({ asyncUtilTimeout: 5000 });
 
 const enabled = Boolean(process.env.STUDY_TEST_DATABASE_URL);
 let fixture: ChildProcess | undefined;

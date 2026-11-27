@@ -960,7 +960,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
 
 ### Task checklist
 
-- [ ] **P6-T01 · Make the regression suite reproducible** (MVP)
+- [x] **P6-T01 · Make the regression suite reproducible** (MVP)
   - **Work and purpose** Define clean-install commands for backend unit and integration tests and frontend component tests. Isolate a disposable database, Firebase test identities, and a mock AI provider so repeated runs have predictable inputs.
   - **Files** `server/tests/fixtures/`, `server/package.json`, `client/package.json`, `docs/TESTING.md` · **Depends on** None
   - **Output** A repeatable test setup and documented commands.

@@ -130,3 +130,7 @@ Two older database assertions were scoped to their own fixture project so concur
 With STUDY_TEST_DATABASE_URL configured using the guarded local setup above, run npm test and npm run test:db in server/, then npm test in client/. To repeat only the full study session, run client npm test -- tests/study-session.integration.test.tsx; both clean scenarios execute. The local migrations were applied only to the disposable test database. No owner database migration or deployment occurred.
 
 Limits: real-browser viewport, visual contrast and screen-reader acceptance remain open in P5-T26. PostgreSQL driver emits its existing nested-query deprecation notice. Vite reports the main chunk at approximately 539 kB uncompressed (154 kB gzip); charts and editor remain lazy route assets. The final locked-dependency audit still reports 10 high server and 5 high client findings, zero critical, in the existing AI SDK 4/Prisma/Zod 3 and Firebase chains. No forced major dependency migration was performed; release review remains necessary in Phase 6.
+
+## Phase 6 runner
+
+Use the [local validation guide](./PHASE6_VALIDATION.md) and scripts/test-local.ps1 -Repetitions 2 -CleanCheckout for repeatable lockfile installs, isolated PostgreSQL, mock-only tests and code/build checks. Browser and hosted integration acceptance remain separate.
