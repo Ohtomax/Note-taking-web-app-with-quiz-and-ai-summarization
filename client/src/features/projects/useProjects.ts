@@ -26,6 +26,8 @@ export function useProjectMutation<T>(mutationFn: (input: T) => Promise<unknown>
       await Promise.all([
         cache.invalidateQueries({ queryKey: [uid, 'projects'] }),
         cache.invalidateQueries({ queryKey: [uid, 'project'] }),
+        cache.invalidateQueries({ queryKey: [uid, 'dashboard'] }),
+        cache.invalidateQueries({ queryKey: [uid, 'analytics'] }),
       ]);
     },
   });

@@ -7,11 +7,21 @@ import { AsyncState } from '@/components/ui/AsyncState';
 import { extractPlainText } from '@/types/note-content';
 import type { Note } from '@/types/workspace';
 import { StudySources } from './StudySources';
+import { useNoteOpen } from './useNoteOpen';
 
 function NoteForm({ note, readOnly }: { note: Note; readOnly: boolean }) {
   const save = useNoteSave(note, readOnly);
+  const opened = useNoteOpen(note.projectId, note.id);
   return (
     <section>
+      {opened.isError && (
+        <p role="status">
+          Recent note activity could not update.{' '}
+          <button className="underline" onClick={() => opened.retry()}>
+            Retry activity update
+          </button>
+        </p>
+      )}
       <Link
         className="text-sm text-teal-800 underline"
         to={`/projects/${note.projectId}`}

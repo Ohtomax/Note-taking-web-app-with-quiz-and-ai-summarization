@@ -16,6 +16,7 @@ const QuizPlayer = lazy(() => import('@/features/quizzes/QuizPlayer'));
 const QuizResults = lazy(() => import('@/features/quizzes/QuizResults'));
 const QuizHistory = lazy(() => import('@/features/quiz-history/QuizHistory'));
 const AnalyticsPage = lazy(() => import('@/features/analytics/AnalyticsPage'));
+const Dashboard = lazy(() => import('@/features/dashboard/Dashboard'));
 const QuizDetail = lazy(() =>
   import('@/features/quizzes/QuizLibrary').then((module) => ({
     default: module.QuizDetail,
@@ -46,6 +47,7 @@ export function App() {
           <Route element={<ProtectedRoute />}>
             <Route element={<WorkspaceLayout />}>
               <Route path="/" element={<ProjectLibrary />} />
+              <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/projects/:projectId" element={<ProjectDetail />} />
               <Route path="/projects/:projectId/summaries" element={<SummaryLibrary />} />
               <Route path="/projects/:projectId/quizzes" element={<QuizLibrary />} />

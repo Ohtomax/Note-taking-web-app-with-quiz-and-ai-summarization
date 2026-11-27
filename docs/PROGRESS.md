@@ -266,3 +266,5 @@ Every frontend task has its own commit and push to main, including implemented t
 - **P5-T22 completed 2026-11-27** Fixture checks reconcile retakes, completed means/improvement/duration, paginated version comparisons and wrong/answered/skipped question samples. Soft deletion preserves private historical metrics and foreign reports are hidden.
 
 - **P5-T23 completed 2026-11-27** Added lazy global/project/quiz chart routes, cards, daily tables, version comparisons, missed-question samples and date filters. Fixture and scope-switch component checks pass. Charts use responsive containers and static rendering; actual viewport verification is tracked in P5-T26.
+
+- **P5-T24 completed 2026-11-27** Dashboard includes counts, performance, recent notes/projects/summaries/quizzes/attempts and create-note project picker. Note opening preserves edit timestamp and revision in a serializable transaction. Database ownership/order checks and dashboard shortcut checks pass.

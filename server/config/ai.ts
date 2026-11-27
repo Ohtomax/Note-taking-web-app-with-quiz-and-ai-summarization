@@ -21,6 +21,8 @@ import { createQuizHistoryRepository } from '@/repositories/quiz-history.reposit
 import { createQuizHistoryService } from '@/services/quiz-history.service.js';
 import { createAnalyticsRepository } from '@/repositories/analytics.repository.js';
 import { createAnalyticsService } from '@/services/analytics.service.js';
+import { createDashboardRepository } from '@/repositories/dashboard.repository.js';
+import { createDashboardService } from '@/services/dashboard.service.js';
 export interface StudyServiceOptions {
   quota?: typeof quotaPolicy;
   pricing?: Pricing;
@@ -43,6 +45,10 @@ export function createStudyServices(
     usage: aiUsageService,
   });
   return {
+    dashboardService: createDashboardService(
+      createDashboardRepository(db),
+      createAnalyticsService(createAnalyticsRepository(db)),
+    ),
     analyticsService: createAnalyticsService(createAnalyticsRepository(db)),
     quizHistoryService: createQuizHistoryService(createQuizHistoryRepository(db)),
     quizAttemptService: createQuizAttemptService(createQuizAttemptRepository(db)),

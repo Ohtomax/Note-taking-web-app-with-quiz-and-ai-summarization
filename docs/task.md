@@ -901,7 +901,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
   - **Accept when** Scope changes fetch the right owner-scoped data, and zero answers or a single attempt produce an intelligible view.
   - **Verify** Compare charts and accessible values against the fixture at mobile and desktop widths.
 
-- [ ] **P5-T24 · Fill the study dashboard** (MVP)
+- [x] **P5-T24 · Fill the study dashboard** (MVP)
   - **Work and purpose** Show the welcome section, counts, recent notes by last opened time, newest projects, summaries, quizzes and attempts, average score and performance overview. Record note opens independently of edit timestamps. Link to create project, create note, history and analytics.
   - **Files** `server/src/services/dashboard.service.ts`, `client/src/features/dashboard/Dashboard.tsx` · **Depends on** P5-T17, P5-T20, P5-T23
   - **Output** A dashboard backed by bounded recent-activity queries.

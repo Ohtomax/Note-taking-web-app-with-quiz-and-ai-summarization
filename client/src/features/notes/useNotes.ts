@@ -24,7 +24,7 @@ export function useNoteMutation<T, R>(mutationFn: (input: T) => Promise<R>) {
     mutationFn,
     onSuccess: async () => {
       await Promise.all(
-        ['notes', 'note', 'project', 'projects'].map((domain) =>
+        ['notes', 'note', 'project', 'projects', 'dashboard', 'analytics'].map((domain) =>
           cache.invalidateQueries({ queryKey: [uid, domain] }),
         ),
       );

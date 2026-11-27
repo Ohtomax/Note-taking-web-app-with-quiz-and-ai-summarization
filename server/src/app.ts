@@ -1,4 +1,8 @@
 import express from 'express';
+import {
+  createDashboardRouter,
+  createNoteOpenRouter,
+} from '@/routes/dashboard.routes.js';
 import helmet from 'helmet';
 import cors from 'cors';
 import { parseEnvironment, type Environment } from '../config/env.ts';
@@ -38,6 +42,7 @@ import {
 } from '@/routes/summaries.routes.js';
 
 export interface AppServices {
+  dashboardService?: import('@/services/dashboard.service.js').DashboardService;
   analyticsService?: import('@/services/analytics.service.js').AnalyticsService;
   quizHistoryService?: import('@/services/quiz-history.service.js').QuizHistoryService;
   quizAttemptService?: import('@/services/quiz-attempt.service.js').QuizAttemptService;
@@ -84,6 +89,16 @@ export function createApp(
       }),
   );
   if (services) {
+    if (services.dashboardService) {
+      app.use(
+        '/api/v1/dashboard',
+        createDashboardRouter(services, services.dashboardService),
+      );
+      app.use(
+        '/api/v1/projects/:projectId/notes/:noteId/open',
+        createNoteOpenRouter(services, services.dashboardService),
+      );
+    }
     if (services.analyticsService)
       app.use(
         '/api/v1/quizzes/:quizId/analytics',
