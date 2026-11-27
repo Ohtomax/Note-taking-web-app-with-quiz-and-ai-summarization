@@ -88,13 +88,17 @@ export const createQuizAttemptService = (repository: QuizAttemptRepository) => (
       question = attempt.version.questions.find((item) => item.id === questionId);
     if (!question)
       throw new ServiceError('RESOURCE_NOT_FOUND', 'Resource not found', 404);
-    if (attempt.mode !== 'PRACTICE')
-      throw new ServiceError(
-        'MODE_MISMATCH',
-        'Use the exam draft workflow for this attempt.',
-        409,
-      );
     const outcome = scoreAnswer(question, input);
+    if (attempt.mode === 'EXAM')
+      return playerAttempt(
+        await repository.exam(
+          ownerId,
+          id,
+          questionId,
+          input.expectedAnswerRevision,
+          outcome,
+        ),
+      );
     if (!outcome.answered)
       throw new ServiceError(
         'ANSWER_REQUIRED',

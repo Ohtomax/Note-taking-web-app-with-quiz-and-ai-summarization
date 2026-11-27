@@ -810,7 +810,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
   - **Accept when** A repeated submission yields its original feedback, and a conflicting second answer cannot replace it.
   - **Verify** Race two different answers for one question and verify one persisted answer and zero disclosures for unanswered questions.
 
-- [ ] **P5-T11 · Save exam answers** (MVP)
+- [x] **P5-T11 · Save exam answers** (MVP)
   - **Work and purpose** Save or revise draft answers for open exams with a revision check. Load the saved choices across refreshes and return only the recorded choices and progress.
   - **Files** `server/src/repositories/quiz-attempt.repository.ts`, `server/src/services/quiz-attempt.service.ts` · **Depends on** P5-T07, P5-T08
   - **Output** A resumable exam answer endpoint.

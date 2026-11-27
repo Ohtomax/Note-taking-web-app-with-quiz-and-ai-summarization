@@ -240,3 +240,5 @@ Every frontend task has its own commit and push to main, including implemented t
 - **P5-T09 completed 2026-11-27** Table-driven tests cover exact multiple-select sets, duplicate/foreign IDs, both single-choice types, normalized identification variants, punctuation, unknown synonyms, blanks and zero denominators.
 
 - **P5-T10 completed 2026-11-27** Concurrent different answers yield one committed row and one conflict. Identical retries return original feedback, unanswered questions reveal nothing and foreign attempts/questions remain inaccessible.
+
+- **P5-T11 completed 2026-11-27** Two-tab fixtures reject stale writes, preserve the newer choice across reload and permit explicit clearing. Draft rows remain ungraded and every exam response excludes keys, explanations and correctness.

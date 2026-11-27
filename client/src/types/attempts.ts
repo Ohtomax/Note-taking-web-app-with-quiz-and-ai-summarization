@@ -72,3 +72,8 @@ export interface StartAttemptInput {
   shuffleQuestions: boolean;
   shuffleOptions: boolean;
 }
+export interface SaveAnswerInput {
+  expectedAnswerRevision: number;
+  optionIds?: string[] | undefined;
+  text?: string | undefined;
+}

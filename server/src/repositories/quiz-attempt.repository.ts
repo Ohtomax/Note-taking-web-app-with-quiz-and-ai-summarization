@@ -98,6 +98,46 @@ function shuffled<T>(items: T[], enabled: boolean): T[] {
   return result;
 }
 export const createQuizAttemptRepository = (db: PrismaClient) => ({
+  exam: (
+    ownerId: string,
+    id: string,
+    questionId: string,
+    expectedRevision: number,
+    outcome: AnswerOutcome,
+  ) =>
+    serializable(db, async (tx) => {
+      const attempt = await lockAttempt(tx, ownerId, id);
+      if (attempt.status !== 'IN_PROGRESS' || attempt.mode !== 'EXAM')
+        throw new ServiceError(
+          'ATTEMPT_CLOSED',
+          'This exam attempt cannot be changed.',
+          409,
+        );
+      if (!attempt.version.questions.some((question) => question.id === questionId))
+        throw new ServiceError('RESOURCE_NOT_FOUND', 'Resource not found', 404);
+      const answer = attempt.answers.find((item) => item.questionId === questionId);
+      if (expectedRevision !== (answer?.revision ?? 0))
+        throw new ServiceError(
+          'ANSWER_REVISION_CONFLICT',
+          'A newer answer is recorded. Reload before changing it.',
+          409,
+        );
+      const data = {
+        selectedOptionIds: outcome.selectedOptionIds,
+        text: outcome.text,
+        isCorrect: null,
+      };
+      if (answer)
+        await tx.quizAttemptAnswer.update({
+          where: { id: answer.id },
+          data: { ...data, revision: { increment: 1 }, submittedAt: new Date() },
+        });
+      else
+        await tx.quizAttemptAnswer.create({
+          data: { attemptId: id, versionId: attempt.versionId, questionId, ...data },
+        });
+      return tx.quizAttempt.findUniqueOrThrow({ where: { id }, select: attemptSelect });
+    }),
   practice: (
     ownerId: string,
     id: string,
