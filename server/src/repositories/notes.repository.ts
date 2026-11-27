@@ -19,6 +19,32 @@ async function findWritableNote(
 }
 
 export const createNotesRepository = (db: PrismaClient) => ({
+  move: (
+    ownerId: string,
+    projectId: string,
+    noteId: string,
+    expectedRevision: number,
+    destinationProjectId: string,
+  ) =>
+    db.$transaction(async (tx) => {
+      // A consistent lock order prevents two opposing moves from deadlocking.
+      for (const parentId of [...new Set([projectId, destinationProjectId])].sort())
+        await lockProject(tx, ownerId, parentId);
+      const note = await findWritableNote(tx, projectId, noteId);
+      checkRevision(note.revision, expectedRevision);
+      if (note.archivedAt)
+        throw new ServiceError('NOTE_ARCHIVED', 'Restore the note before moving', 409);
+      if (projectId === destinationProjectId) return note;
+      const moved = await tx.note.update({
+        where: { id: noteId },
+        data: { projectId: destinationProjectId, revision: { increment: 1 } },
+      });
+      await tx.project.updateMany({
+        where: { id: { in: [projectId, destinationProjectId] }, ownerId },
+        data: { revision: { increment: 1 }, updatedAt: new Date() },
+      });
+      return moved;
+    }),
   duplicate: (
     ownerId: string,
     projectId: string,

@@ -48,3 +48,10 @@ export const pinNoteSchema = z
 export const deleteNoteSchema = z
   .object({ expectedRevision: z.number().int().positive(), confirmed: z.literal(true) })
   .strict();
+
+export const moveNoteSchema = z
+  .object({
+    expectedRevision: z.number().int().positive(),
+    destinationProjectId: z.string().uuid(),
+  })
+  .strict();

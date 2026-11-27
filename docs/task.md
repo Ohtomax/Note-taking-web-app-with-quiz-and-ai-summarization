@@ -454,7 +454,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
   - **Accept when** The copy has a new ID and editing it leaves the source content and revision intact.
   - **Verify** Duplicate a note with lists and code blocks, edit the copy and reread both.
 
-- [ ] **P3-T15 · Move a note between projects** (MVP)
+- [x] **P3-T15 · Move a note between projects** (MVP)
   - **Work and purpose** Check the note, its current parent and the destination against the same owner within the move operation to prevent cross-account transfers.
   - **Files** `server/src/services/notes.service.ts`, `server/src/repositories/notes.repository.ts` · **Depends on** P3-T05, P3-T08, P3-T09
   - **Output** Atomic note move operation.

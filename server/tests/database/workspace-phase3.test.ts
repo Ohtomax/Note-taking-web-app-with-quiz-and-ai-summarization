@@ -522,3 +522,48 @@ test('P3-T14 duplicated note is independent from source revisions', async () => 
     assert.equal(original.body.data.revision, 1);
   });
 });
+
+test('P3-T15 moves require two writable owned parents and preserve rejected source', async () => {
+  await withWorkspace(async ({ db, alice, project, foreign, api }) => {
+    const target = await db.project.create({
+      data: { ownerId: alice.id, title: 'Target' },
+    });
+    const archived = await db.project.create({
+      data: { ownerId: alice.id, title: 'Archived', archivedAt: new Date() },
+    });
+    const note = await db.note.create({
+      data: { projectId: project.id, title: 'Move', plainText: 'Keep' },
+    });
+    const url = '/api/v1/projects/' + project.id + '/notes/' + note.id + '/move';
+    assert.equal(
+      (
+        await api
+          .post(url)
+          .set('Authorization', 'Bearer alice')
+          .send({ expectedRevision: 1, destinationProjectId: foreign.id })
+      ).status,
+      404,
+    );
+    assert.equal(
+      (
+        await api
+          .post(url)
+          .set('Authorization', 'Bearer alice')
+          .send({ expectedRevision: 1, destinationProjectId: archived.id })
+      ).status,
+      409,
+    );
+    assert.equal(
+      (await db.note.findUniqueOrThrow({ where: { id: note.id } })).projectId,
+      project.id,
+    );
+    const moved = await api
+      .post(url)
+      .set('Authorization', 'Bearer alice')
+      .send({ expectedRevision: 1, destinationProjectId: target.id });
+    assert.equal(moved.status, 200);
+    assert.equal(moved.body.data.id, note.id);
+    assert.equal(moved.body.data.projectId, target.id);
+    assert.equal(moved.body.data.plainText, 'Keep');
+  });
+});

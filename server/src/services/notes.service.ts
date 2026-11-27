@@ -5,6 +5,14 @@ import type { UpdateNoteInput } from '@/utils/input-validators/notes.js';
 import type { NoteListInput } from '@/utils/input-validators/notes.js';
 
 export const createNotesService = (repository: NotesRepository) => ({
+  move: (
+    ownerId: string,
+    projectId: string,
+    noteId: string,
+    expectedRevision: number,
+    destinationProjectId: string,
+  ) =>
+    repository.move(ownerId, projectId, noteId, expectedRevision, destinationProjectId),
   duplicate: (
     ownerId: string,
     projectId: string,
