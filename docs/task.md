@@ -370,7 +370,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
   - **Accept when** Pages have stable ordering and counts follow the documented active-note rule.
   - **Verify** Seed folders for two accounts, including equal timestamps and archived records, then compare pages and counts.
 
-- [ ] **P3-T03 · Read one project** (MVP)
+- [x] **P3-T03 · Read one project** (MVP)
   - **Work and purpose** Fetch a single folder through the ownership predicate to support direct navigation without leaking another learner’s project.
   - **Files** `server/src/services/projects.service.ts`, `server/src/repositories/projects.repository.ts` · **Depends on** P3-T01
   - **Output** Project detail endpoint.

@@ -3,6 +3,13 @@ import type { CreateProjectInput } from '@/utils/input-validators/projects.js';
 import type { ProjectListInput } from '@/utils/input-validators/projects.js';
 
 export const createProjectsRepository = (db: PrismaClient) => ({
+  find: (ownerId: string, projectId: string) =>
+    db.project.findFirst({
+      where: { id: projectId, ownerId, deletedAt: null },
+      include: {
+        _count: { select: { notes: { where: { deletedAt: null, archivedAt: null } } } },
+      },
+    }),
   list: async (ownerId: string, query: ProjectListInput) => {
     const where = {
       ownerId,

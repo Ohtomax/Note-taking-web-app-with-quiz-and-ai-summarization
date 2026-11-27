@@ -1,3 +1,4 @@
+import { randomUUID } from 'node:crypto';
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { withWorkspace } from './workspace.fixture.ts';
@@ -59,5 +60,23 @@ test('P3-T02 projects search and pagination isolate owners and count active note
       first.body.data.find((p: { id: string }) => p.id === project.id).noteCount,
       1,
     );
+  });
+});
+
+test('P3-T03 owner detail hides missing and foreign projects identically', async () => {
+  await withWorkspace(async ({ project, api }) => {
+    const own = await api
+      .get('/api/v1/projects/' + project.id)
+      .set('Authorization', 'Bearer alice');
+    assert.equal(own.status, 200);
+    assert.equal(own.body.data.id, project.id);
+    const foreign = await api
+      .get('/api/v1/projects/' + project.id)
+      .set('Authorization', 'Bearer bob');
+    const absent = await api
+      .get('/api/v1/projects/' + randomUUID())
+      .set('Authorization', 'Bearer bob');
+    assert.equal(foreign.status, 404);
+    assert.deepEqual(foreign.body.error, absent.body.error);
   });
 });

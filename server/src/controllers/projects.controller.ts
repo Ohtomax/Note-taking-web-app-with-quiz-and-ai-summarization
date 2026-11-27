@@ -4,6 +4,18 @@ import type { ProjectsService } from '@/services/projects.service.js';
 import { UserHandleError } from '@/utils/error-handler/userErrorHandler.js';
 import type { ProjectListInput } from '@/utils/input-validators/projects.js';
 
+export const viewProject =
+  (service: ProjectsService) =>
+  async (req: AuthRequest, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      res
+        .status(200)
+        .json({ data: await service.find(req.account!.id, req.params.projectId!) });
+    } catch (error) {
+      UserHandleError(error, next);
+    }
+  };
+
 export const listProjects =
   (service: ProjectsService) =>
   async (req: AuthRequest, res: Response, next: NextFunction): Promise<void> => {
