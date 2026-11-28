@@ -3,15 +3,19 @@
   "environment": "Local Docker Linux; synthetic credentials; disposable PostgreSQL 18 with TLS and Redis 8",
   "command": "node scripts/test-render-docker.mjs",
   "image": "quillquiz-api:render-free",
-  "imageBytes": 524116754,
+  "imageBytes": 524117010,
   "nodeUser": "node:node",
   "cpuLimit": 0.1,
   "memoryLimitMiB": 512,
   "oldSpaceLimitMiB": 256,
   "databasePoolMax": 2,
-  "startupToReadinessMs": 7832,
-  "readinessSample": { "requests": 25, "concurrency": 5, "p95Ms": 11 },
-  "memorySamplesMiB": [84.66, 84.91, 85, 85, 84.78, 84.78],
+  "startupToReadinessMs": 8866,
+  "readinessSample": { "requests": 25, "concurrency": 5, "p95Ms": 9 },
+  "memorySamplesMiB": [89.62, 90.23, 89.7, 89.7, 89.72, 89.72],
+  "dependencyRecovery": [
+    { "dependency": "PostgreSQL", "unavailableResponseMs": 3002 },
+    { "dependency": "Redis", "unavailableResponseMs": 2004 }
+  ],
   "checks": {
     "nonRoot": "passed",
     "excludedEnvironmentAndProbeFiles": "passed",
@@ -20,7 +24,11 @@
     "untrustedDatabaseCA": "rejected",
     "missingFirebaseToken": 401,
     "allowedAndUnlistedCorsOrigins": "passed",
-    "outOfMemoryKilled": false
+    "outOfMemoryKilled": false,
+    "stalledDependencyReadiness": 503,
+    "stalledDependencyLiveness": 200,
+    "redisFailureBlocksPrivateRequests": "passed",
+    "resumedDependenciesRestoreReadinessAndAdmission": "passed"
   },
   "limits": [
     "Readiness samples do not establish real-user or AI generation capacity.",

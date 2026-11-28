@@ -1073,7 +1073,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
   - **Verify** Validate required names and types using staging equivalents, inspect client build artifacts for test secret markers, and compare configured origins to the deployment inventory.
 
 - [ ] **P6-T16 · Verify health checks and operational signals** (MVP)
-  - **Status 2026-11-28** Staging/operational verification is deferred with deployment. Existing local health/log-redaction tests pass; production dependency interruption, bounded readiness/latency acceptance and an external alert path remain unverified.
+  - **Status 2026-11-28** Readiness now has a 3-second response deadline and coalesces overlapping dependency probes; Redis commands time out after 2 seconds. All 41 server unit tests, type checks and lint pass. The disposable production-mode Docker API passes at 0.1 CPU / 512 MiB while PostgreSQL and Redis are deliberately paused: readiness returns 503 in 3002/2004 ms, liveness stays 200, Redis-backed admission fails closed, and readiness/missing-token 401 recover after resuming dependencies. Local sampled memory 89.62–90.23 MiB, readiness p95 9 ms. Hosted interruption/notification verification and live request tracing remain pending, so this task stays unchecked.
   - **Work and purpose** Supply a lightweight health endpoint for Render and a bounded readiness check for required dependencies. Record request errors, latency, and AI quota or provider failures without logging note content or credentials.
   - **Files** `server/src/routes/health.routes.ts`, `server/src/middlewares/`, `docs/DEPLOYMENT.md` · **Depends on** P6-T13
   - **Output** Health and readiness responses, privacy-safe logs, and a documented alert path.

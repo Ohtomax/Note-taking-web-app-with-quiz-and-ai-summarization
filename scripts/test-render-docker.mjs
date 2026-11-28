@@ -286,6 +286,47 @@ try {
     );
   }
   latencies.sort((a, b) => a - b);
+  const dependencyRecovery = [];
+  for (const dependency of [pg, prefix + '-redis']) {
+    step = 'checking readiness during a stalled disposable dependency';
+    docker(['pause', dependency]);
+    try {
+      await pause(100);
+      const began = Date.now();
+      const response = await fetch(origin + '/api/health/ready', {
+        signal: AbortSignal.timeout(5000),
+      });
+      assert.equal(response.status, 503);
+      await response.arrayBuffer();
+      const unavailableMs = Date.now() - began;
+      assert.ok(unavailableMs < 5000);
+      assert.equal((await fetch(origin + '/api/health/live')).status, 200);
+      if (dependency.endsWith('-redis')) {
+        assert.ok((await fetch(origin + '/api/v1/me')).status >= 500);
+      }
+      dependencyRecovery.push({
+        dependency: dependency === pg ? 'PostgreSQL' : 'Redis',
+        unavailableMs,
+      });
+    } finally {
+      docker(['unpause', dependency]);
+    }
+    await pause(100);
+    let recovered = false;
+    for (let attempt = 0; attempt < 30; attempt++) {
+      const response = await fetch(origin + '/api/health/ready', {
+        signal: AbortSignal.timeout(5000),
+      });
+      await response.arrayBuffer();
+      if (response.ok) {
+        recovered = true;
+        break;
+      }
+      await pause(1000);
+    }
+    assert.ok(recovered, 'Readiness did not recover after dependency resumed');
+    assert.equal((await fetch(origin + '/api/v1/me')).status, 401);
+  }
   step = 'inspecting final API state';
   const state = JSON.parse(docker(['inspect', '--format', '{{json .State}}', api]));
   assert.equal(state.OOMKilled, false);
@@ -302,6 +343,7 @@ try {
         readinessRequests: latencies.length,
         p95Ms: latencies[Math.ceil(latencies.length * 0.95) - 1],
         memorySamples: samples.map((sample) => sample.MemUsage),
+        dependencyRecovery,
         tls: 'Authenticated database read passed; unrelated CA rejected',
         privateAPI: 'Missing token rejected with 401; no live Firebase login tested',
         cors: 'Allowed origin accepted; unlisted origin omitted',

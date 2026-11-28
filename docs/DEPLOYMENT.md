@@ -34,7 +34,13 @@ The acceptance script builds both image targets and creates uniquely named dispo
 
 Temporary context-probe files contain synthetic markers, are Git-ignored, and are removed immediately after image construction. They must not be committed.
 
-## Runtime secrets
+## Health and recovery
+
+Render should probe /api/health/ready. Its response deadline is 3 seconds, below Render's 5-second HTTP health-check limit. Overlapping probes share one dependency check instead of adding queries to an unavailable database. Timing out the HTTP response does not cancel that shared query. Redis commands also have a 2-second timeout. /api/health/live stays available while dependencies are stalled; protected request admission stays fail-closed if Redis is unavailable.
+
+The local Docker acceptance script deliberately pauses PostgreSQL and Redis, verifies bounded readiness failure/liveness, resumes each dependency and verifies readiness and token admission recover. See [recorded measurements](./evidence/render-free.json). Hosted Render notification delivery, real identity access and live capacity remain unverified.
+
+## Runtime secret values
 
 Provide these through Render's Environment page, without surrounding .env quotes:
 
