@@ -11,12 +11,17 @@
 !config/**
 !src/
 !src/**
+!certs/
+!certs/**
 src/generated/
 # Keep accidental secrets out even when placed below an allowed source folder.
 **/.env
 **/.env.*
 **/*.pem
 **/*.key
-**/*.crt
 **/*serviceAccount*.json
 **/*service-account*.json
+# Block .crt files everywhere EXCEPT the certs/ directory
+src/**/*.crt
+config/**/*.crt
+prisma/**/*.crt
