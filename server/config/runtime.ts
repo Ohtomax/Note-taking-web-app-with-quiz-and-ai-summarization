@@ -16,7 +16,8 @@ import { createProjectsService } from '@/services/projects.service.js';
 import { createNotesService } from '@/services/notes.service.js';
 import { createNotesRepository } from '@/repositories/notes.repository.js';
 import { createStudyServices } from './ai.ts';
-import { createAIClient, parseAIConfig } from '@/ai/client.js';
+import { createAIClient } from '@/ai/client.js';
+import { parseAIConfig } from '@/ai/config.js';
 import { createAIGenerationLimiter } from '@/utils/rate-limiter/ai.js';
 import { quotaPolicy } from '@/repositories/ai-admission.repository.js';
 

@@ -13,6 +13,7 @@ Read [DEPLOYMENT.md](./DEPLOYMENT.md) for runtime secret values, CA-file setup, 
 5. Apply reviewed migrations through the separate local Docker runner after backup/status checks. Render Free has no shell or pre-deploy command, so migrations are deliberately not configured as a Render command.
 6. Once the CA file and migrated schema are ready, use **Manual Deploy > Deploy latest commit**. Docker's CMD starts the API; leave any custom Docker command empty.
 7. Verify the public HTTPS URL and save the successful deploy revision. Do not enable automatic deploys until the hosted checks below pass.
+8. To enable quiz and summary generation, add the Google Gemini `AI_API_KEY` and set `AI_ENABLED=true` in the API service's Environment settings. Save and deploy the updated service. The Blueprint sets `AI_MODEL=gemini-3.5-flash-lite`.
 
 Initial Blueprint creation can start a build before the CA file has been added. A failure naming DATABASE_CA_PATH, a missing certificate or failed readiness must be corrected through Environment, then redeployed. Do not switch the health check to liveness to bypass missing infrastructure.
 
@@ -36,7 +37,7 @@ If an API service already exists, inspect it before creating another or syncing 
 | Health Check Path    | /api/health/ready             |
 | Auto Deploy          | Off until release checks pass |
 
-Set the same environment values listed in render.yaml and the secret inputs documented above. Set REDIS_URL to the existing Key Value's **internal** URL. The blueprint assumes one Render reverse-proxy hop (**TRUST_PROXY_HOPS=1**); verify the forwarded client address in the actual deployment before enabling traffic. Never use trust proxy=true. Adding a CDN/proxy requires revisiting this topology.
+Set the same environment values listed in render.yaml and the secret inputs documented above. Set REDIS_URL to the existing Key Value's **internal** URL. Add the Google Gemini `AI_API_KEY` and set `AI_ENABLED=true` on the existing API service to enable generation. The blueprint assumes one Render reverse-proxy hop (**TRUST_PROXY_HOPS=1**); verify the forwarded client address in the actual deployment before enabling traffic. Never use trust proxy=true. Adding a CDN/proxy requires revisiting this topology.
 
 Keep an existing service in its current region, and put Key Value in that same region. Render does not support changing the region of an existing service. Do not delete/recreate existing services automatically.
 
@@ -49,7 +50,7 @@ Keep an existing service in its current region, and put Key Value in that same r
 - The approved frontend origin receives the expected CORS header; an unlisted origin does not.
 - Inspect Render logs/metrics for restarts, out-of-memory events, request latency and redaction. Record the deploy's Git revision and HTTPS URL.
 - Interrupt a staging dependency, observe readiness fail, restore it and confirm recovery. Configure Render notification settings for failed deploys/restarts.
-- Saved notes/quizzes remain available with **AI_ENABLED=false**. Gemini generation needs a separate backend provider integration.
+- With Gemini enabled, generate a quiz and a summary from synthetic notes and check that both operations record Gemini usage.
 
 Local Docker acceptance uses a synthetic Firebase service-account key to initialize the SDK and checks missing-token rejection. It does not establish successful Firebase sign-in or owner access on Render. A small local readiness test does not establish real user capacity on 0.1 CPU.
 

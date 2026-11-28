@@ -70,8 +70,8 @@ function Picker({ projectId, note, dirty = false, onChange }: SourcePickerProps)
     <fieldset className="grid gap-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-4">
       <legend className="px-2 font-semibold">Study sources</legend>
       <p className="text-sm text-slate-600 dark:text-slate-300">
-        Generation sends your selected saved material to Groq. Archived and deleted notes
-        are excluded. Unsaved edits are never sent.
+        Generation sends your selected saved material to Google Gemini. Archived and
+        deleted notes are excluded. Unsaved edits are never sent.
       </p>
       <label className="grid gap-1 text-sm">
         Source scope

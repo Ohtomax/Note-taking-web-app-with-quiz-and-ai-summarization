@@ -18,7 +18,7 @@ The repository implements project notes, source-linked generation, saved summari
 | Frontend | React, TypeScript, and Vite for the app. React Router for navigation, Tailwind CSS for styling, TanStack Query for API data, and Zustand for temporary UI state. |
 | Backend | Node.js and Express with TypeScript for the REST API. Zod validates requests, environment settings, and generated AI output. |
 | Identity and data | Firebase Authentication manages credentials. The backend verifies ID tokens with Firebase Admin and scopes Prisma queries against Supabase PostgreSQL to the signed-in user. |
-| AI generation | A backend service processes authorized source notes, validates model output, and tracks usage. Groq uses the OpenAI-compatible adapter with structured output; deterministic mock generation is used for local tests. |
+| AI generation | A backend service processes authorized source notes with Google Gemini, validates structured output, and tracks usage. Local tests use deterministic mock generation. |
 | Deployment | Vercel for the frontend, Render for the Dockerized API, and Supabase for PostgreSQL. |
 
 ## Development phases

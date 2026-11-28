@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { geminiModelSchema } from '@/ai/config.js';
 
 const serviceAccountSchema = z.object({
   project_id: z.string().min(1),
@@ -63,11 +64,7 @@ const environmentSchema = z
       .enum(['true', 'false'])
       .default('false')
       .transform((value) => value === 'true'),
-    AI_MODEL: z
-      .string()
-      .regex(/^[a-zA-Z0-9/_.-]+$/)
-      .max(100)
-      .default('openai/gpt-oss-120b'),
+    AI_MODEL: geminiModelSchema,
   })
   .superRefine((config, context) => {
     if (config.AI_ENABLED && !config.AI_API_KEY)

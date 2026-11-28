@@ -33,8 +33,10 @@ services:
         value: '2'
       - key: TRUST_PROXY_HOPS
         value: '1'
-      - key: AI_ENABLED
-        value: 'false'
+      - key: AI_MODEL
+        value: gemini-3.5-flash-lite
+      - key: AI_API_KEY
+        sync: false
       - key: AI_GLOBAL_CONCURRENCY
         value: '1'
       - key: DATABASE_CA_PATH

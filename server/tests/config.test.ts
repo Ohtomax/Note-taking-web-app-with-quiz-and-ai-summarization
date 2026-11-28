@@ -7,6 +7,8 @@ test('local configuration supports deferred infrastructure and AI credentials', 
   assert.equal(config.PORT, 3001);
   assert.equal(config.DATABASE_URL, undefined);
   assert.equal(config.AI_API_KEY, undefined);
+  assert.equal(config.AI_MODEL, 'gemini-3.5-flash-lite');
+  assert.throws(() => parseEnvironment({ AI_MODEL: 'openai/gpt-oss-120b' }), /AI_MODEL/);
 });
 
 test('production requires infrastructure names and never prints their values', () => {

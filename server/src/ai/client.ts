@@ -1,24 +1,17 @@
 import { z } from 'zod';
-import { createOpenAI } from '@ai-sdk/openai';
-import { APICallError, generateObject, NoObjectGeneratedError } from 'ai';
+import { createGoogleGenerativeAI } from '@ai-sdk/google';
+import {
+  APICallError,
+  generateObject,
+  NoObjectGeneratedError,
+  wrapLanguageModel,
+} from 'ai';
+import type { parseAIConfig } from '@/ai/config.js';
 import { ServiceError } from '@/utils/error-handler/ServiceError.js';
 
-export const aiConfigSchema = z
-  .object({
-    enabled: z.boolean().default(false),
-    apiKey: z.string().trim().min(1).optional(),
-    model: z
-      .string()
-      .regex(/^[a-zA-Z0-9/_.-]+$/)
-      .max(100)
-      .default('openai/gpt-oss-120b'),
-  })
-  .refine((value) => !value.enabled || Boolean(value.apiKey));
-export function parseAIConfig(input: unknown) {
-  const result = aiConfigSchema.safeParse(input);
-  if (!result.success) throw new Error('Invalid AI configuration');
-  return result.data;
-}
+const geminiTokenUsageSchema = z.object({
+  usageMetadata: z.object({ totalTokenCount: z.number().int().nonnegative() }),
+});
 export interface AIUsageCounts {
   inputTokens: number | null;
   outputTokens: number | null;
@@ -57,23 +50,42 @@ export function createAIClient(
   config: ReturnType<typeof parseAIConfig>,
   transport?: typeof fetch,
 ): AIClient {
-  const provider = createOpenAI({
-    name: 'groq',
-    baseURL: 'https://api.groq.com/openai/v1',
+  const gemini = createGoogleGenerativeAI({
     apiKey: config.apiKey ?? 'unconfigured',
-    compatibility: 'compatible',
     ...(transport ? { fetch: transport } : {}),
+  });
+  const model = wrapLanguageModel({
+    model: gemini(config.model),
+    middleware: {
+      wrapGenerate: async ({ doGenerate }) => {
+        const result = await doGenerate();
+        const metadata = geminiTokenUsageSchema.safeParse(result.rawResponse?.body);
+        const promptTokens = result.usage.promptTokens;
+        // The SDK's candidate count excludes Gemini thinking tokens. There are no tools.
+        const totalTokens = metadata.success
+          ? metadata.data.usageMetadata.totalTokenCount
+          : NaN;
+        return {
+          ...result,
+          usage: {
+            promptTokens,
+            completionTokens:
+              totalTokens >= promptTokens ? totalTokens - promptTokens : NaN,
+          },
+        };
+      },
+    },
   });
   return {
     available: config.enabled,
-    provider: 'groq',
+    provider: 'gemini',
     model: config.model,
     generate: async (request) => {
       if (!config.enabled)
         throw new ServiceError('AI_UNAVAILABLE', 'AI generation is not configured.', 503);
       try {
         const result = await generateObject({
-          model: provider.chat(config.model, { structuredOutputs: true }),
+          model,
           system: request.system,
           prompt: request.prompt,
           schema: request.schema,

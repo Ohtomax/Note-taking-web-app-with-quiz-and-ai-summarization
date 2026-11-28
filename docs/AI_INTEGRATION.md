@@ -1,6 +1,6 @@
 # AI provider decision and usage plan
 
-Reviewed official sources on 2026-11-26. Recommend Groq GPT-OSS 120B as the initial candidate for a source-grounded structured-output pilot. Its published cost and strict JSON mode fit small study generations. Keep the model configurable and a small service boundary so a quality pilot can change this choice. The recommendation is an inference from documented capabilities. Quality, latency, account availability and sustained reliability remain unmeasured until credentials are supplied.
+QuillQuiz uses Google Gemini 3.5 Flash-Lite to generate summaries and quizzes. The comparison below records the providers reviewed on 2026-11-26.
 
 | Candidate | USD per million input / output tokens | Context | Structured output and access |
 | --- | --- | --- | --- |
@@ -23,7 +23,7 @@ Cost = inputTokens × inputRate / 1,000,000 + billedOutputTokens × outputRate /
 | One note, 3,000 input and 700 billed output | $0.00265 | $0.00215 | $0.00087 |
 | Folder, five map calls each 20,000 input/1,000 output, then 6,000 input/1,500 output reduction | $0.04805 | $0.03950 | $0.01980 |
 
-Folder totals are 106,000 input and 6,500 output. If reasoning exceeds the assumed billed output, recalculate from provider usage. At the candidate rate, 1,000 note summaries cost about $0.87 before retries and overhead.
+Folder totals are 106,000 input and 6,500 output. If reasoning exceeds the assumed billed output, recalculate from provider usage. At the listed Gemini rate, 1,000 note summaries cost about $2.65 before retries and overhead.
 
 Initial configurable policy proposes 20 logical generations/user/day, one concurrent generation/user and four global concurrent provider calls. Reserve worst-case bounded tokens before admission, cap per-request output, and settle from actual usage. Apply a separate operator budget and request ceiling. Count intermediate and retried calls. Cost estimates are estimates and unknown usage stays unknown.
 
@@ -56,9 +56,11 @@ For an excerpt, offsets resolve against the server-owned plainText at the specif
 
 ## Phase 4 implementation settings
 
-The server adapter uses AI SDK 4 and its OpenAI-compatible provider with the Groq endpoint, following the requested SDK major and the project provider decision. AI remains disabled by default. The owner can later supply AI_API_KEY and set AI_ENABLED=true; AI_MODEL defaults to openai/gpt-oss-120b. Missing enabled configuration fails with a redacted message. No live credentials or account settings were changed. Production never selects the deterministic adapter.
+The server adapter uses AI SDK 4 with its Google Generative AI provider. Set `AI_API_KEY` to a Gemini API key and `AI_ENABLED=true` on the server. `AI_MODEL` defaults to `gemini-3.5-flash-lite`. Missing enabled configuration fails with a redacted message.
 
-SDK 4 is marked unsupported in the official documentation; this implementation retains the requested major. Treat a supported SDK migration and dependency advisories as release follow-up. Contract checks use a synthetic HTTP response, not a live Groq call. See [AI SDK 4 generateObject](https://v4.ai-sdk.dev/docs/reference/ai-sdk-core/generate-object), [compatible provider configuration](https://v4.ai-sdk.dev/providers/ai-sdk-providers/openai), and [Groq structured output](https://console.groq.com/docs/structured-outputs).
+The adapter accounts for Gemini thinking tokens using the total token count in the provider response. The transport contract test uses a synthetic Google API response. See [AI SDK 4 generateObject](https://v4.ai-sdk.dev/docs/reference/ai-sdk-core/generate-object), [Google provider configuration](https://v4.ai-sdk.dev/providers/ai-sdk-providers/google-generative-ai), and [Gemini structured output](https://ai.google.dev/gemini-api/docs/structured-output).
+
+On 2026-11-29, live Gemini checks with synthetic notes passed for a single-note summary, a quiz with all four question types, and a folder summary covering two map calls, one merge and a final call. Each result passed the application's validation and returned token counts.
 
 ## Phase 4 runtime limits and accounting
 
@@ -72,7 +74,7 @@ Pricing can be supplied explicitly through the trusted createStudyServices prici
 
 ## P4-T25 long-folder execution evaluation
 
-On 2026-11-27 the largest supported local fixture (200 notes, exactly 100,000 UTF-8 source bytes) completed the full authenticated HTTP → source collection → quota reservation → 14 mock provider calls → persisted operation path in 353 ms. The complete test, including a second deliberately disconnected request, finished in about 851 ms. Mock calls add 1 ms latency and use deterministic outputs. This measures application/database overhead only; it does not measure Groq latency, output quality or a hosting proxy timeout.
+On 2026-11-27 the largest supported local fixture (200 notes, exactly 100,000 UTF-8 source bytes) completed the full authenticated HTTP → source collection → quota reservation → 14 mock provider calls → persisted operation path in 353 ms. The complete test, including a second deliberately disconnected request, finished in about 851 ms. Mock calls add 1 ms latency and use deterministic outputs. These timings measure local application and database overhead.
 
 The disconnect check aborts the HTTP connection after the first provider call begins. The persisted operation remains RUNNING, completes under the bounded in-process execution, and the same key retrieves its original result. Provider calls and accounted tokens do not increase on that retry. Test HTTP servers and connections close explicitly, including the aborted socket. Process termination is different: an expired running lease becomes UNCERTAIN and is not automatically reissued.
 
@@ -90,6 +92,6 @@ P6-T05 adds three passing database/API cases. Two simultaneous requests at a one
 
 ## Phase 6 controlled long-folder measurement
 
-P6-T11 seeds 200 notes / 100,000 source bytes, with distinct FIRST_CONCEPT and LAST_CONCEPT markers. Normal HTTP generation with a deterministic 5 ms provider-stage delay completes in 367 ms locally, using 14 provider calls against a planned maximum of 14. Estimated source tokens are 100,000 under the conservative byte-based estimator. All 200 unique citations and both end concepts reach the final output. The accepted summary saves normally. These are local mock timings, not Groq/network latency measurements.
+P6-T11 seeds 200 notes / 100,000 source bytes, with distinct FIRST_CONCEPT and LAST_CONCEPT markers. Normal HTTP generation with a deterministic 5 ms provider-stage delay completes in 367 ms locally, using 14 provider calls against a planned maximum of 14. Estimated source tokens are 100,000 under the conservative byte-based estimator. All 200 unique citations and both end concepts reach the final output. The accepted summary saves normally. These timings use a local mock provider.
 
 Repeating with a simulated uncertain provider timeout yields UNCERTAIN, no result artifact and a retained reserved-token allowance; replaying the key makes no additional invocation. The previous accepted summary and 200 source notes remain intact. The separate fake-clock call-policy tests prove a real timeout aborts at the configured deadline without automatic retry. Work remains within the documented generation deadline and stage limits. Live timing/quality remains deferred with provider setup.

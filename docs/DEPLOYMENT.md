@@ -58,7 +58,7 @@ Under Environment > Secret Files add supabase-ca.crt containing the certificate 
 
 Revoke and replace the Firebase private key previously shared in chat. Supply the replacement directly in Render; never commit it or paste it in chat. A Firebase JSON file is unnecessary when FIREBASE_SERVICE_ACCOUNT is set.
 
-AI_API_KEY is optional while AI_ENABLED=false. The implemented provider is Groq. AI_MODEL=gemini-3.5-flash-lite does not switch the adapter to Google; leave AI disabled until Gemini support is implemented. Daily quota, per-user concurrency, source limits and deadlines other than AI_GLOBAL_CONCURRENCY remain code policies. The environment example lists only inputs the runtime reads.
+Set `AI_API_KEY` to the Google Gemini API key in Render's Environment settings. Set `AI_ENABLED=true` to activate quiz and summary generation. The default model is `gemini-3.5-flash-lite`. For deployments with generation disabled, `AI_API_KEY` is optional. Daily quotas, per-user concurrency, source limits and deadlines remain server policies.
 
 DIRECT_URL belongs only to the migration runner. Keep it out of the web service. Frontend VITE_* settings belong to the separate client deployment; never expose backend credentials with a VITE_ prefix.
 

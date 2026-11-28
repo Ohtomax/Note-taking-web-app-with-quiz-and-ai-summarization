@@ -1,7 +1,8 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { z } from 'zod';
-import { createAIClient, createMockAIClient, parseAIConfig } from '../src/ai/client.ts';
+import { AIProviderError, createAIClient, createMockAIClient } from '../src/ai/client.ts';
+import { parseAIConfig } from '../src/ai/config.ts';
 test('P4-T01 invalid AI configuration is redacted and missing configuration fails closed', async () => {
   assert.throws(
     () => parseAIConfig({ enabled: true, apiKey: '', model: 'secret value' }),
@@ -33,24 +34,41 @@ test('P4-T01 deterministic adapter uses the same validated contract without netw
   );
   assert.equal(client.calls.length, 1);
 });
-test('P4-T01 production adapter issues a schema constrained request with no SDK retries', async () => {
-  let sent: Record<string, unknown> = {};
-  const transport: typeof fetch = async (_url, init) => {
-    sent = JSON.parse(String(init?.body)) as Record<string, unknown>;
+test('P4-T01 Gemini sends a native schema request and counts thinking tokens', async () => {
+  const transport: typeof fetch = async (url, init) => {
+    assert.equal(
+      String(url),
+      'https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent',
+    );
+    assert.equal(new Headers(init?.headers).get('x-goog-api-key'), 'synthetic');
+    assert.deepEqual(JSON.parse(String(init?.body)), {
+      generationConfig: {
+        maxOutputTokens: 100,
+        temperature: 0,
+        responseMimeType: 'application/json',
+        responseSchema: {
+          required: ['ok'],
+          type: 'object',
+          properties: { ok: { type: 'boolean' } },
+        },
+      },
+      systemInstruction: { parts: [{ text: 'trusted' }] },
+      contents: [{ role: 'user', parts: [{ text: 'untrusted data' }] }],
+    });
     return new Response(
       JSON.stringify({
-        id: 'fixture',
-        object: 'chat.completion',
-        created: 1,
-        model: 'openai/gpt-oss-120b',
-        choices: [
+        candidates: [
           {
-            index: 0,
-            message: { role: 'assistant', content: '{"ok":true}' },
-            finish_reason: 'stop',
+            content: { role: 'model', parts: [{ text: '{"ok":true}' }] },
+            finishReason: 'STOP',
           },
         ],
-        usage: { prompt_tokens: 25, completion_tokens: 5, total_tokens: 30 },
+        usageMetadata: {
+          promptTokenCount: 25,
+          candidatesTokenCount: 5,
+          thoughtsTokenCount: 2,
+          totalTokenCount: 32,
+        },
       }),
       { status: 200, headers: { 'Content-Type': 'application/json' } },
     );
@@ -59,15 +77,24 @@ test('P4-T01 production adapter issues a schema constrained request with no SDK 
     parseAIConfig({ enabled: true, apiKey: 'synthetic' }),
     transport,
   );
-  const result = await client.generate({
+  const request = {
     system: 'trusted',
     prompt: 'untrusted data',
     schema: z.object({ ok: z.boolean() }).strict(),
     maxOutputTokens: 100,
     signal: new AbortController().signal,
-  });
+  };
+  const result = await client.generate(request);
+  assert.equal(client.provider, 'gemini');
   assert.equal(result.object.ok, true);
-  assert.deepEqual(result.usage, { inputTokens: 25, outputTokens: 5 });
-  assert.equal((sent.response_format as { type: string }).type, 'json_schema');
-  assert.equal(sent.tools, undefined);
+  assert.deepEqual(result.usage, { inputTokens: 25, outputTokens: 7 });
+  await assert.rejects(
+    client.generate({ ...request, schema: request.schema.refine(() => false) }),
+    (error: unknown) => {
+      assert.ok(error instanceof AIProviderError);
+      assert.equal(error.kind, 'INVALID');
+      assert.deepEqual(error.usage, { inputTokens: 25, outputTokens: 7 });
+      return true;
+    },
+  );
 });
