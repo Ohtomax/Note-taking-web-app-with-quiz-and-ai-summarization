@@ -4,6 +4,8 @@ The API runs in one Docker container on Render Free (0.1 CPU, 512 MB). The React
 
 The owner authorized Docker/Render preparation on 2026-11-28. Repository configuration and local container verification do not establish a live Render deployment. See [task.md](./task.md) for status. The remaining [dependency audit findings](./DEPENDENCY_AUDIT.md) still require resolution before production release.
 
+Follow [the Render setup steps](./RENDER_SETUP.md) to apply the repository-root render.yaml or configure an existing web service. Both declared resources use the free plan; no paid deployment resource is included.
+
 ## Container configuration
 
 | Setting               | Render Free value                 | Purpose                                                    |

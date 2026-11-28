@@ -1,0 +1,52 @@
+# yaml-language-server: $schema=https://render.com/schema/render.yaml.json
+# Hobby deployment: no paid database, disk, worker or private-service resources.
+services:
+  - type: keyvalue
+    name: quillquiz-rate-limits
+    region: singapore
+    plan: free
+    ipAllowList: []
+    maxmemoryPolicy: noeviction
+
+  - type: web
+    name: quillquiz-api
+    runtime: docker
+    region: singapore
+    plan: free
+    rootDir: server
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    healthCheckPath: /api/health/ready
+    autoDeployTrigger: 'off'
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: '10000'
+      - key: NODE_OPTIONS
+        value: --max-old-space-size=256
+      - key: UV_THREADPOOL_SIZE
+        value: '2'
+      - key: MALLOC_ARENA_MAX
+        value: '2'
+      - key: DB_POOL_MAX
+        value: '2'
+      - key: TRUST_PROXY_HOPS
+        value: '1'
+      - key: AI_ENABLED
+        value: 'false'
+      - key: AI_GLOBAL_CONCURRENCY
+        value: '1'
+      - key: DATABASE_CA_PATH
+        value: /etc/secrets/prod-ca-2021.crt
+      - key: DATABASE_URL
+        sync: false
+      - key: FIREBASE_SERVICE_ACCOUNT
+        sync: false
+      - key: CORS_ORIGINS
+        sync: false
+      - key: REDIS_URL
+        fromService:
+          type: keyvalue
+          name: quillquiz-rate-limits
+          property: connectionString

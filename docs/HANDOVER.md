@@ -1,5 +1,7 @@
 # Phase 6 local handover, 2026-11-28
 
+**Docker/Render follow-up:** The owner subsequently authorized Render Free deployment preparation. [Docker configuration](./DEPLOYMENT.md), [Render setup](./RENDER_SETUP.md) and [container evidence](./evidence/render-free.json) now cover a tested 0.1 CPU / 512 MiB runtime, CA verification and stalled-dependency recovery. P6-T13 is complete; P6-T16 and P6-T20 retain their hosted acceptance steps. The Render integration is not connected; no live service, secret, production migration or deployment was created. The earlier predeployment handover and 150-test candidate record below describe their original revision; the follow-up passes 41 server unit tests plus local container acceptance, source/test types, lint and formatting.
+
 This is a predeployment handover. No production release, hosted migration, Render deployment or Vercel deployment command was performed. No owner service credentials were collected or configured. External Git-triggered deployment automations were not inspected.
 
 ## Review and reproduce

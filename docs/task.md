@@ -1065,7 +1065,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
   - **Verify** Start, stop, and restart the stack with the same configuration and repeat one protected API read.
 
 - [ ] **P6-T15 · Configure production identities, secrets, and origins** (MVP)
-  - **Status 2026-11-28** Skipped under the owner rule. No Firebase, hosted database/CA, Redis, AI-provider secret, origin or production-account configuration was collected or changed.
+  - **Status 2026-11-28** Runtime configuration inventory and the server environment example are updated for Docker/Render Free. render.yaml prompts for private inputs and maps the Supabase certificate to /etc/secrets/supabase-ca.crt; docs/RENDER_SETUP.md explains uploading the same local CA as a Render secret file. No hosted credential, identity domain or origin was collected or changed; the task remains unchecked pending account configuration.
   - **Work and purpose** Separate public Vite settings from private backend credentials. Configure Firebase sign-in and password-reset domains, the approved frontend origin, Supabase TLS, the Redis connection, AI credentials, and quota settings.
   - **Files** `client/.env.example`, `server/.env.example`, `docs/DEPLOYMENT.md` · **Depends on** P6-T13
   - **Output** A production configuration inventory and provider-side settings with secret values held in their designated services.
@@ -1105,7 +1105,7 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
   - **Verify** Check migration status from the release runner and perform a read-only check of a representative relation and index.
 
 - [ ] **P6-T20 · Deploy the API to Render** (MVP)
-  - **Status 2026-11-28** Skipped under the owner rule. No Render service, runtime secret or image deployment was created or modified; no healthy production API is claimed.
+  - **Status 2026-11-28** Docker/Render work is now authorized. Added a schema-validated render.yaml for a free Docker API and free private Key Value service in Singapore, runtime memory/pool limits, readiness health checks and explicit manual deployments. docs/RENDER_SETUP.md covers new/existing services, same-certificate runtime mounting, migration runner and hosted acceptance. The Render integration was offered but is not connected in this session; no service/secrets/deployment were created or changed. Live HTTPS identity/ownership checks, hosted migration and unresolved dependency findings remain pending, so this task stays unchecked.
   - **Work and purpose** Deploy the reviewed image with runtime secrets, the designated listening port, and the health-check path. Tie the deployment to the release revision so rollback is repeatable.
   - **Files** `server/Dockerfile`, `docs/DEPLOYMENT.md` · **Depends on** P6-T09, P6-T11, P6-T16, P6-T19
   - **Output** A healthy HTTPS API deployment and recorded revision.

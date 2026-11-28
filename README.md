@@ -2,7 +2,7 @@
 
 Organize study notes by project, turn them into summaries and quizzes, and track what you learn across quiz attempts. For example, a student preparing for a networking exam could select their OSI model and TCP/IP notes, generate a combined study guide, and retake a quiz a week later to see which concepts still need practice.
 
-The repository implements project notes, source-linked generation, saved summaries and quizzes, study attempts, history, dashboard and analytics, plus the [project brief](./docs/PROJECT_BRIEF.md), [task checklist](./docs/task.md) and [verification log](./docs/PROGRESS.md). Hosted configuration, deployment and manual browser/accessibility acceptance remain deferred.
+The repository implements project notes, source-linked generation, saved summaries and quizzes, study attempts, history, dashboard and analytics, plus the [project brief](./docs/PROJECT_BRIEF.md), [task checklist](./docs/task.md) and [verification log](./docs/PROGRESS.md). Docker and [Render Free configuration](./docs/RENDER_SETUP.md) are prepared and locally verified at 0.1 CPU / 512 MiB. Hosted credentials, live deployment and manual browser/accessibility acceptance remain pending.
 
 ## Study workflow
 
@@ -32,7 +32,7 @@ The repository implements project notes, source-linked generation, saved summari
 | 5 | Build the study interfaces, quiz attempts, history, and analytics. |
 | 6 | Verify the complete workflow, optimize performance, and deploy. |
 
-The [roadmap](./docs/ROADMAP.md) maps requirements to tasks. The owner authorized implementation through Phase 5 with one commit and push per task. Phase 6 and deployment are separate work.
+The [roadmap](./docs/ROADMAP.md) maps requirements to tasks. Implementation and local Phase 6 verification use one commit and push per task. Docker/Render configuration is now authorized; the checklist distinguishes completed local checks from pending hosted acceptance.
 
 ## Local setup
 
