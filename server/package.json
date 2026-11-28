@@ -20,6 +20,7 @@
     "prisma:validate": "prisma validate",
     "postinstall": "prisma generate",
     "prisma:migrate": "node --env-file-if-exists=.env node_modules/prisma/build/index.js migrate dev",
+    "db:migrate": "node --env-file-if-exists=.env prisma-migrate.js",
     "db:push": "node --env-file-if-exists=.env node_modules/prisma/build/index.js db push"
   },
   "dependencies": {

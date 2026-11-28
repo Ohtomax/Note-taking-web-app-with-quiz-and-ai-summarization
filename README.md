@@ -68,6 +68,12 @@ Open http://127.0.0.1:5173/ for the frontend. Stop it with Ctrl+C. To serve the 
 
 Environment templates live in client/.env.example and server/.env.example. Populate local .env files when the relevant features are implemented. Keep real credentials out of Git. The [environment reference](./docs/DEPLOYMENT.md#environment-reference) identifies when each setting becomes necessary.
 
+### Database migrations
+
+From `server/`, run `npm run db:migrate` to apply pending migration files and verify the database's migration status. It loads `.env`, prefers `DIRECT_URL` when set, and uses verified TLS and the configured `DATABASE_CA_PATH` for remote database connections.
+
+When you change a Prisma schema file, create and review the migration against a development database with `npm run prisma:migrate -- --name describe_change`. Commit the migration along with the schema change. Use `npm run db:migrate` to apply the committed migrations to shared environments.
+
 Run npm test in server/ for the credential-free suite. Database tests use npm run test:db with an isolated loopback STUDY_TEST_DATABASE_URL named study_test_<uuid>, as described in the [testing plan](./docs/TESTING.md). Prisma Client is generated during installation and build. Application scripts load server/.env when it exists. Rich-text editing, source-linked generation, saved summaries/quizzes, practice and exam attempts, retakes, history, dashboard, usage and analytics are implemented. Live integrations require the owner-supplied settings.
 
 ## Design documents
