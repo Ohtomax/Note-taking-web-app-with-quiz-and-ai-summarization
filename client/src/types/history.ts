@@ -7,6 +7,8 @@ export const historyEntrySchema = z.object({
   quizTitle: z.string(),
   projectId: z.string().uuid(),
   projectTitle: z.string(),
+  attemptNumber: z.number().int().positive().nullable().optional(),
+  focusedReview: z.boolean().optional(),
   quizDeleted: z.boolean(),
   projectDeleted: z.boolean(),
   difficulty: z.enum(['EASY', 'MEDIUM', 'HARD', 'MIXED']),

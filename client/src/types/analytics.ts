@@ -10,6 +10,14 @@ const samples = {
   skipped: count,
   accuracy: percent,
 };
+const topicSchema = z.object({
+  sourceKey: z.string(),
+  noteId: z.string().uuid().nullable(),
+  noteTitle: z.string(),
+  projectId: z.string().uuid(),
+  answered: count,
+  correct: count,
+});
 export const analyticsSchema = z.object({
   scope: z.object({
     kind: z.enum(['GLOBAL', 'PROJECT', 'QUIZ']),
@@ -68,6 +76,9 @@ export const analyticsSchema = z.object({
       percentage: percent,
     }),
   ),
+  topics: z
+    .object({ strongest: z.array(topicSchema), review: z.array(topicSchema) })
+    .optional(),
   breakdowns: z
     .object({
       difficulty: z.array(

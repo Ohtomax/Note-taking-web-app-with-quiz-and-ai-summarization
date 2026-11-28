@@ -3,6 +3,8 @@ import type { QuizHistoryQuery } from '@/utils/input-validators/quiz-history.js'
 import { expireAttempts } from './quiz-attempt.repository.js';
 import { ServiceError } from '@/utils/error-handler/ServiceError.js';
 export const historySelect = {
+  attemptNumber: true,
+  focusedReview: true,
   id: true,
   versionId: true,
   mode: true,
@@ -41,6 +43,7 @@ export const createQuizHistoryRepository = (db: PrismaClient) => ({
       const where = {
         version: { quizId: selected.version.quiz.id, quiz: { project: { ownerId } } },
         status: 'COMPLETED' as const,
+        focusedReview: selected.focusedReview,
         correctCount: { not: null },
         finishedAt: { not: null },
         totalQuestions: { gt: 0 },
@@ -158,6 +161,8 @@ export const createQuizHistoryRepository = (db: PrismaClient) => ({
       quizTitle: row.version.quiz.title,
       projectId: row.version.quiz.projectId,
       projectTitle: row.version.quiz.project.title,
+      attemptNumber: row.attemptNumber,
+      focusedReview: row.focusedReview,
       quizDeleted: Boolean(row.version.quiz.deletedAt),
       projectDeleted: Boolean(row.version.quiz.project.deletedAt),
       difficulty: row.version.difficulty,

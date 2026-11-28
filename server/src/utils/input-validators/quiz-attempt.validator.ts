@@ -3,6 +3,7 @@ import { usageQuerySchema } from './ai-usage.js';
 export const startAttemptSchema = z
   .object({
     versionId: z.string().uuid(),
+    missedFromAttemptId: z.string().uuid().optional(),
     mode: z.enum(['PRACTICE', 'EXAM']),
     shuffleQuestions: z.boolean().default(false),
     shuffleOptions: z.boolean().default(false),

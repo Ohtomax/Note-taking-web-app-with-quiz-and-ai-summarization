@@ -9,6 +9,8 @@ import { serializable } from './serializable.js';
 import { ServiceError } from '@/utils/error-handler/ServiceError.js';
 import type { AnswerOutcome, scoreAttempt } from '@/services/quiz-scoring.service.js';
 export const attemptSelect = {
+  attemptNumber: true,
+  focusedReview: true,
   lastQuestionIndex: true,
   id: true,
   versionId: true,
@@ -224,14 +226,16 @@ export const createQuizAttemptRepository = (db: PrismaClient) => ({
           'The assigned question set is inconsistent.',
           409,
         );
-      for (const outcome of result.outcomes) {
-        const answer = attempt.answers.find(
-          (item) => item.questionId === outcome.questionId,
-        );
-        if (answer)
-          await tx.quizAttemptAnswer.update({
-            where: { id: answer.id },
-            data: { isCorrect: outcome.answered ? outcome.isCorrect : null },
+      for (const correctness of [true, false, null]) {
+        const ids = result.outcomes
+          .filter(
+            (outcome) => (outcome.answered ? outcome.isCorrect : null) === correctness,
+          )
+          .map((outcome) => outcome.questionId);
+        if (ids.length)
+          await tx.quizAttemptAnswer.updateMany({
+            where: { attemptId: id, questionId: { in: ids } },
+            data: { isCorrect: correctness },
           });
       }
       const finishedAt = new Date();
@@ -286,7 +290,12 @@ export const createQuizAttemptRepository = (db: PrismaClient) => ({
       const attempt = await lockAttempt(tx, ownerId, id);
       if (attempt.status !== 'IN_PROGRESS')
         throw new ServiceError('ATTEMPT_CLOSED', 'This attempt cannot be changed.', 409);
-      if (!attempt.version.questions.some((question) => question.id === questionId))
+      if (
+        !attempt.version.questions.some((question) => question.id === questionId) ||
+        (attempt.focusedReview &&
+          (!Array.isArray(attempt.questionOrder) ||
+            !attempt.questionOrder.includes(questionId)))
+      )
         throw new ServiceError('RESOURCE_NOT_FOUND', 'Resource not found', 404);
       if (questionIndex !== undefined && questionIndex >= attempt.totalQuestions)
         throw new ServiceError(
@@ -332,8 +341,8 @@ export const createQuizAttemptRepository = (db: PrismaClient) => ({
     const inputHash = createHash('sha256')
       .update(JSON.stringify({ quizId, ...input }))
       .digest('hex');
-    const existing = async () =>
-      db.quizAttempt.findFirst({
+    const existing = (client: Prisma.TransactionClient) =>
+      client.quizAttempt.findFirst({
         where: {
           versionId: input.versionId,
           requestKey: key,
@@ -350,10 +359,12 @@ export const createQuizAttemptRepository = (db: PrismaClient) => ({
         );
       return row;
     };
-    const previous = await existing();
+    const previous = await existing(db);
     if (previous) return check(previous);
     try {
       return await serializable(db, async (tx) => {
+        const duplicate = await existing(tx);
+        if (duplicate) return check(duplicate);
         const version = await tx.quizVersion.findFirst({
           where: {
             id: input.versionId,
@@ -362,6 +373,7 @@ export const createQuizAttemptRepository = (db: PrismaClient) => ({
           },
           select: {
             id: true,
+            quiz: { select: { updatedAt: true } },
             questions: {
               orderBy: { position: 'asc' },
               select: {
@@ -373,30 +385,61 @@ export const createQuizAttemptRepository = (db: PrismaClient) => ({
         });
         if (!version)
           throw new ServiceError('RESOURCE_NOT_FOUND', 'Resource not found', 404);
-        if (!version.questions.length)
+
+        let questions = version.questions;
+        if (input.missedFromAttemptId) {
+          const prior = await tx.quizAttempt.findFirst({
+            where: {
+              id: input.missedFromAttemptId,
+              versionId: version.id,
+              status: 'COMPLETED',
+              version: { quiz: { id: quizId, project: { ownerId } } },
+            },
+            select: {
+              answers: { where: { isCorrect: false }, select: { questionId: true } },
+            },
+          });
+          if (!prior)
+            throw new ServiceError(
+              'RESOURCE_NOT_FOUND',
+              'Completed attempt not found',
+              404,
+            );
+          const missed = new Set(prior.answers.map((answer) => answer.questionId));
+          questions = questions.filter((question) => missed.has(question.id));
+        }
+        if (!questions.length)
           throw new ServiceError(
             'QUIZ_EMPTY',
-            'This version has no playable questions.',
+            input.missedFromAttemptId
+              ? 'This attempt has no incorrect answers to retake.'
+              : 'This version has no playable questions.',
             422,
           );
-        const row = await tx.quizAttempt.upsert({
-          where: { versionId_requestKey: { versionId: version.id, requestKey: key } },
-          update: {},
-          create: {
+
+        const quiz = await tx.quiz.update({
+          where: { id: quizId },
+          data: { attemptCount: { increment: 1 }, updatedAt: version.quiz.updatedAt },
+          select: { attemptCount: true },
+        });
+        return tx.quizAttempt.create({
+          data: {
             versionId: version.id,
             requestKey: key,
             inputHash,
             mode: input.mode,
-            totalQuestions: version.questions.length,
+            attemptNumber: quiz.attemptCount,
+            focusedReview: Boolean(input.missedFromAttemptId),
+            totalQuestions: questions.length,
             questionOrder: shuffled(
-              version.questions.map((q) => q.id),
+              questions.map((question) => question.id),
               input.shuffleQuestions,
             ),
             optionOrder: Object.fromEntries(
-              version.questions.map((q) => [
-                q.id,
+              questions.map((question) => [
+                question.id,
                 shuffled(
-                  q.options.map((o) => o.id),
+                  question.options.map((option) => option.id),
                   input.shuffleOptions,
                 ),
               ]),
@@ -404,14 +447,13 @@ export const createQuizAttemptRepository = (db: PrismaClient) => ({
           },
           select: attemptSelect,
         });
-        return check(row);
       });
     } catch (error) {
       if (
         error instanceof Prisma.PrismaClientKnownRequestError &&
         error.code === 'P2002'
       ) {
-        const duplicate = await existing();
+        const duplicate = await existing(db);
         if (duplicate) return check(duplicate);
       }
       throw error;

@@ -19,6 +19,8 @@ import type { Analytics } from '@/types/analytics';
 import { useSession } from '@/store/session';
 import { formatPercent, formatDuration } from '@/utils/display';
 import { Pagination } from '@/components/ui/Pagination';
+import { AsyncState } from '@/components/ui/AsyncState';
+import { SourceLink } from '@/features/notes/SourceLink';
 export function PerformanceOverview({ data }: { data: Analytics }) {
   const t = data.totals;
   const comparison = [
@@ -42,10 +44,7 @@ export function PerformanceOverview({ data }: { data: Analytics }) {
             t.meanElapsedMs === null ? 'No data' : formatDuration(t.meanElapsedMs),
           ],
         ].map(([label, value]) => (
-          <div
-            className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-4"
-            key={label}
-          >
+          <div className="surface p-4" key={label}>
             <dt className="text-sm text-slate-600 dark:text-slate-300">{label}</dt>
             <dd className="mt-2 text-xl font-semibold">{value}</dd>
           </div>
@@ -69,7 +68,7 @@ export function PerformanceOverview({ data }: { data: Analytics }) {
         />
       </label>
       <div className="grid gap-6 lg:grid-cols-2">
-        <section className="min-w-0 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-4">
+        <section className="min-w-0 surface p-4">
           <h2 className="font-semibold">Mean score over time (UTC)</h2>
           <div className="mt-4 h-64" aria-hidden="true">
             <ResponsiveContainer width="100%" height="100%">
@@ -115,7 +114,7 @@ export function PerformanceOverview({ data }: { data: Analytics }) {
             </div>
           </details>
         </section>
-        <section className="min-w-0 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-4">
+        <section className="min-w-0 surface p-4">
           <h2 className="font-semibold">Score comparison</h2>
           <div className="mt-4 h-64" aria-hidden="true">
             <ResponsiveContainer width="100%" height="100%">
@@ -136,7 +135,7 @@ export function PerformanceOverview({ data }: { data: Analytics }) {
             ))}
           </dl>
         </section>
-        <section className="min-w-0 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-4">
+        <section className="min-w-0 surface p-4">
           <h2 className="font-semibold">Answered question distribution</h2>
           {t.answered ? (
             <div className="h-56" aria-hidden="true">
@@ -200,7 +199,7 @@ export default function AnalyticsPage() {
         {projectId && <Link to={'/projects/' + projectId}>Project study</Link>}
         {quizId && <Link to={'/quizzes/' + quizId}>Saved quiz</Link>}
       </nav>
-      <h1 className="text-2xl font-semibold">
+      <h1 className="page-title">
         Study analytics{data ? ' · ' + data.scope.title : ''}
       </h1>
       <div className="flex flex-wrap gap-4">
@@ -230,7 +229,11 @@ export default function AnalyticsPage() {
         </label>
       </div>
       {invalid && <p role="alert">End date must follow start date.</p>}
-      {query.isPending && <p role="status">Loading analytics…</p>}
+      <AsyncState
+        loading={query.isPending}
+        error={null}
+        retry={() => void query.refetch()}
+      />
       {query.isError && (
         <p role="alert">
           Analytics could not load. Choose a window of at most 366 days.{' '}
@@ -246,6 +249,52 @@ export default function AnalyticsPage() {
             Workspace counts include archived material and exclude deleted material.
           </p>
           <PerformanceOverview data={data} />
+          {data.topics && (
+            <section className="surface p-5">
+              <h2 className="text-lg font-semibold">Study topics</h2>
+              <p className="mb-4 mt-1 text-sm text-muted">
+                Based on answered questions from up to 20 completed attempts in this
+                period.
+              </p>
+              <div className="grid gap-4 sm:grid-cols-2">
+                {(
+                  [
+                    [
+                      'Strongest topics',
+                      data.topics.strongest,
+                      'Complete a quiz with source-linked questions to see your strongest topics.',
+                    ],
+                    [
+                      'Topics to review',
+                      data.topics.review,
+                      'No missed answers with sources in this sample.',
+                    ],
+                  ] as const
+                ).map(([label, topics, empty]) => (
+                  <div className="rounded-xl bg-canvas p-4" key={label}>
+                    <h3 className="font-semibold">{label}</h3>
+                    {topics.length ? (
+                      <ul className="mt-3 space-y-2 text-sm">
+                        {topics.map((topic) => (
+                          <li
+                            className="flex flex-wrap justify-between gap-2"
+                            key={topic.projectId + ':' + topic.sourceKey}
+                          >
+                            <SourceLink source={topic} projectId={topic.projectId} />
+                            <span className="text-muted">
+                              {topic.correct} / {topic.answered} correct
+                            </span>
+                          </li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <p className="mt-2 text-sm text-muted">{empty}</p>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
           {data.breakdowns && (
             <div className="overflow-x-auto">
               <table className="w-full text-left text-sm">

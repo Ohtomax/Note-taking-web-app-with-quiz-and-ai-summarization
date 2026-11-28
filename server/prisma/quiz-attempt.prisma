@@ -5,6 +5,8 @@ enum AttemptStatus {
 }
 
 model QuizAttempt {
+  attemptNumber Int?
+  focusedReview Boolean @default(false)
   typeMetrics QuizAttemptTypeMetric[]
   scoreRatio Float?
   elapsedMs Int?

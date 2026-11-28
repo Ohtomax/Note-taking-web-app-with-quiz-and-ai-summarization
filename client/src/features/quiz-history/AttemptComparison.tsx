@@ -13,7 +13,7 @@ export function AttemptComparison({ attemptId }: { attemptId: string }) {
   });
   const data = comparison.data?.data;
   return (
-    <section className="mt-6 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-4">
+    <section className="surface mt-6 p-5">
       <h2 className="text-lg font-semibold">Attempt comparison</h2>
       <AsyncState
         loading={comparison.isPending}
@@ -26,6 +26,18 @@ export function AttemptComparison({ attemptId }: { attemptId: string }) {
             {data.quizTitle} · {data.attemptCount} completed attempts · best score{' '}
             {formatPercent(data.bestScore)}
           </p>
+          {data.first?.percentage != null &&
+            data.latest?.percentage != null &&
+            data.attemptCount > 1 && (
+              <p className="mb-3 text-sm text-muted">
+                First to latest:{' '}
+                {new Intl.NumberFormat(undefined, {
+                  signDisplay: 'exceptZero',
+                  maximumFractionDigits: 1,
+                }).format(data.latest.percentage - data.first.percentage)}{' '}
+                percentage points
+              </p>
+            )}
           <div className="overflow-x-auto">
             <table className="w-full min-w-96 text-left text-sm">
               <caption className="sr-only">Attempt comparison</caption>

@@ -30,13 +30,13 @@ export default function QuizHistory() {
           Back to project
         </Link>
       )}
-      <h1 className="my-5 text-2xl font-semibold">
+      <h1 className="page-title my-5">
         {projectId ? 'Project study history' : 'Study history'}
       </h1>
       <label className="mb-4 grid max-w-xs gap-1 text-sm">
         Attempt status
         <select
-          className="rounded border border-slate-300 dark:border-slate-600 p-2"
+          className="field"
           value={status}
           onChange={(event) => {
             setStatus(event.target.value as typeof status);
@@ -60,17 +60,17 @@ export default function QuizHistory() {
       />
       <ul className="grid gap-3">
         {history.data?.data.map((attempt) => (
-          <li
-            key={attempt.id}
-            className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-4"
-          >
+          <li key={attempt.id} className="surface p-5">
             <h2 className="font-semibold">
               {attempt.quizTitle} · version {attempt.version}
+              {attempt.attemptNumber ? ' · Attempt ' + attempt.attemptNumber : ''}
+              {attempt.focusedReview ? ' · Focused review' : ''}
             </h2>
             <p className="my-2 text-sm text-slate-600 dark:text-slate-300">
               {attempt.projectTitle}
               {attempt.projectDeleted ? ' (removed project)' : ''} · {attempt.mode} ·{' '}
-              {attempt.difficulty} · {new Date(attempt.startedAt).toLocaleString()}
+              {attempt.difficulty} ·{' '}
+              {new Date(attempt.finishedAt ?? attempt.startedAt).toLocaleString()}
             </p>
             <p className="mb-3 text-sm">
               {attempt.status === 'COMPLETED'

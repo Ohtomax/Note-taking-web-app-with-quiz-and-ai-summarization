@@ -60,6 +60,30 @@ export function completedWhere(
   };
 }
 export const createAnalyticsRepository = (db: PrismaClient) => ({
+  recentTopicAnswers: async (
+    ownerId: string,
+    window: AnalyticsWindow,
+    scope: AnalyticsScope,
+  ) => {
+    const resolved = await analyticsScope(db, ownerId, scope);
+    return db.quizAttempt.findMany({
+      where: completedWhere(resolved.version, window),
+      orderBy: [{ finishedAt: 'desc' }, { id: 'desc' }],
+      take: 20,
+      select: {
+        version: {
+          select: {
+            quiz: { select: { projectId: true } },
+            sources: { select: { sourceKey: true, noteId: true, noteTitle: true } },
+          },
+        },
+        answers: {
+          where: { isCorrect: { not: null } },
+          select: { isCorrect: true, question: { select: { sourceKeys: true } } },
+        },
+      },
+    });
+  },
   quizDetails: async (
     ownerId: string,
     window: AnalyticsWindow,
@@ -71,6 +95,7 @@ export const createAnalyticsRepository = (db: PrismaClient) => ({
       ...completedWhere(resolved.version, window),
       scoreRatio: { not: null },
     };
+    const fullAttempts = { ...completed, focusedReview: false };
     const versionWhere = { quizId, attempts: { some: completed } };
     const [versions, total, wrong] = await Promise.all([
       db.quizVersion.findMany({
@@ -83,7 +108,7 @@ export const createAnalyticsRepository = (db: PrismaClient) => ({
       db.quizVersion.count({ where: versionWhere }),
       db.quizAttemptAnswer.groupBy({
         by: ['questionId', 'versionId'],
-        where: { isCorrect: false, attempt: completed },
+        where: { isCorrect: false, attempt: fullAttempts },
         _count: { _all: true },
         orderBy: [{ _count: { questionId: 'desc' } }, { questionId: 'asc' }],
         take: 10,
@@ -118,13 +143,13 @@ export const createAnalyticsRepository = (db: PrismaClient) => ({
         where: {
           questionId: { in: questionIds },
           isCorrect: { not: null },
-          attempt: completed,
+          attempt: fullAttempts,
         },
         _count: { _all: true },
       }),
       db.quizAttempt.groupBy({
         by: ['versionId'],
-        where: { ...completed, versionId: { in: wrongVersionIds } },
+        where: { ...fullAttempts, versionId: { in: wrongVersionIds } },
         _count: { _all: true },
       }),
     ]);

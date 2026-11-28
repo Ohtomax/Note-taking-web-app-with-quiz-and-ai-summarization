@@ -43,6 +43,8 @@ export const playerAnswerSchema = z
 export const attemptSchema = z
   .object({
     lastQuestionIndex: z.number().int().nonnegative(),
+    attemptNumber: z.number().int().positive().nullable().optional(),
+    focusedReview: z.boolean().optional(),
     result: attemptResultSchema.optional(),
     id: z.string().uuid(),
     quizId: z.string().uuid(),
@@ -81,6 +83,7 @@ export type PlayerQuestion = z.infer<typeof playerQuestionSchema>;
 export const attemptResponseSchema = z.object({ data: attemptSchema });
 export interface StartAttemptInput {
   versionId: string;
+  missedFromAttemptId?: string;
   mode: 'PRACTICE' | 'EXAM';
   shuffleQuestions: boolean;
   shuffleOptions: boolean;

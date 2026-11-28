@@ -13,9 +13,10 @@ export function RetakeQuiz({ attempt }: { attempt: PlayerAttempt }) {
     cache = useQueryClient(),
     uid = useSession((state) => state.user!.uid);
   const start = useMutation({
-    mutationFn: () => {
+    mutationFn: (missedOnly: boolean) => {
       const input = {
           versionId: attempt.versionId,
+          ...(missedOnly ? { missedFromAttemptId: attempt.id } : {}),
           mode,
           shuffleQuestions,
           shuffleOptions,
@@ -35,10 +36,7 @@ export function RetakeQuiz({ attempt }: { attempt: PlayerAttempt }) {
     },
   });
   return (
-    <section
-      className="my-6 grid gap-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-4"
-      aria-label="Retake quiz"
-    >
+    <section className="surface grid gap-3 p-5" aria-label="Retake quiz">
       <h2 className="font-semibold">Retake version {attempt.version}</h2>
       <p className="text-sm text-slate-600 dark:text-slate-300">
         Retaking uses this saved question set and creates a separate attempt without an AI
@@ -74,17 +72,30 @@ export function RetakeQuiz({ attempt }: { attempt: PlayerAttempt }) {
         />
         Shuffle options
       </label>
-      <button
-        className="w-fit rounded bg-teal-800 px-4 py-2 text-white disabled:opacity-50"
-        disabled={start.isPending}
-        onClick={() => start.mutate()}
-      >
-        {start.isPending
-          ? 'Starting…'
-          : start.error
-            ? 'Retry retake'
-            : 'Retake this version'}
-      </button>
+      <div className="flex flex-wrap gap-2">
+        <button
+          className="action action-primary"
+          disabled={start.isPending}
+          onClick={() => start.mutate(false)}
+        >
+          {start.isPending
+            ? 'Starting…'
+            : start.error && !start.variables
+              ? 'Retry retake'
+              : 'Retake this version'}
+        </button>
+        {Boolean(attempt.result?.incorrectCount) && (
+          <button
+            className="action"
+            disabled={start.isPending}
+            onClick={() => start.mutate(true)}
+          >
+            {start.error && start.variables
+              ? 'Retry focused retake'
+              : 'Retake incorrect questions'}
+          </button>
+        )}
+      </div>
       {start.error && (
         <p role="alert" className="text-sm text-red-700 dark:text-red-300">
           {start.error.message} Retrying keeps the same start key.
@@ -96,7 +107,7 @@ export function RetakeQuiz({ attempt }: { attempt: PlayerAttempt }) {
           className="text-teal-800 dark:text-teal-300 underline"
           to={'/quizzes/' + attempt.quizId + '?regenerate=true'}
         >
-          regenerate from sources
+          generate a new quiz
         </Link>
         . Generation uses AI allowance.
       </p>

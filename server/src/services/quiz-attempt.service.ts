@@ -11,6 +11,8 @@ import { ServiceError } from '@/utils/error-handler/ServiceError.js';
 export function attemptSummary(row: AttemptRow) {
   return {
     id: row.id,
+    attemptNumber: row.attemptNumber,
+    focusedReview: row.focusedReview,
     lastQuestionIndex: row.lastQuestionIndex,
     quizId: row.version.quiz.id,
     projectId: row.version.quiz.projectId,
@@ -143,7 +145,15 @@ export const createQuizAttemptService = (repository: QuizAttemptRepository) => (
               : { optionIds: z.array(z.string()).parse(answer.selectedOptionIds) },
           );
         }
-        return scoreAttempt(row.version.questions, answers);
+        return scoreAttempt(
+          row.version.questions.filter(
+            (question) =>
+              !row.focusedReview ||
+              (Array.isArray(row.questionOrder) &&
+                row.questionOrder.includes(question.id)),
+          ),
+          answers,
+        );
       }),
     );
   },
