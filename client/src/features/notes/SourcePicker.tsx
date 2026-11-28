@@ -13,7 +13,9 @@ export interface SourcePickerProps {
   onChange: (value: SourceChoice | null) => void;
 }
 function Picker({ projectId, note, dirty = false, onChange }: SourcePickerProps) {
-  const [scope, setScope] = useState<SourceRequest['scope']>(note ? 'NOTE' : 'PROJECT');
+  const [scope, setScope] = useState<Exclude<SourceRequest['scope'], 'SUMMARY'>>(
+    note ? 'NOTE' : 'PROJECT',
+  );
   const [ids, setIds] = useState<string[]>([]);
   const [selection, setSelection] = useState<{
     start: number;
@@ -78,7 +80,9 @@ function Picker({ projectId, note, dirty = false, onChange }: SourcePickerProps)
         <select
           className="rounded border border-slate-300 dark:border-slate-600 p-2"
           value={scope}
-          onChange={(event) => setScope(event.target.value as SourceRequest['scope'])}
+          onChange={(event) =>
+            setScope(event.target.value as Exclude<SourceRequest['scope'], 'SUMMARY'>)
+          }
         >
           {note && (
             <>

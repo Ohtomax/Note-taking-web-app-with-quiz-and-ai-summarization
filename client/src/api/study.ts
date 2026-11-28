@@ -1,3 +1,4 @@
+import { requestSummary } from './summary-generation';
 import { apiRequest } from './client';
 import {
   generationResponseSchema,
@@ -11,14 +12,12 @@ export interface GenerateInput {
   settings: Record<string, unknown>;
 }
 export const studyApi = {
-  regenerateSummary: async (summaryId: string, key: string, input: GenerateInput) =>
-    generationResponseSchema.parse(
-      await apiRequest<unknown>('/summaries/' + summaryId + '/regenerate', {
-        method: 'POST',
-        headers: { 'Idempotency-Key': key },
-        body: JSON.stringify(input),
-      }),
-    ),
+  regenerateSummary: (
+    summaryId: string,
+    key: string,
+    input: GenerateInput,
+    onSummary?: (content: SummaryContent) => void,
+  ) => requestSummary('/summaries/' + summaryId + '/regenerate', key, input, onSummary),
   regenerateQuiz: async (quizId: string, key: string, input: GenerateInput) =>
     generationResponseSchema.parse(
       await apiRequest<unknown>('/quizzes/' + quizId + '/regenerate', {
@@ -27,14 +26,21 @@ export const studyApi = {
         body: JSON.stringify(input),
       }),
     ),
-  generate: async (projectId: string, key: string, input: GenerateInput) =>
-    generationResponseSchema.parse(
-      await apiRequest<unknown>('/projects/' + projectId + '/generations', {
-        method: 'POST',
-        headers: { 'Idempotency-Key': key },
-        body: JSON.stringify(input),
-      }),
-    ),
+  generate: async (
+    projectId: string,
+    key: string,
+    input: GenerateInput,
+    onSummary?: (content: SummaryContent) => void,
+  ) =>
+    input.operation === 'SUMMARY'
+      ? requestSummary('/projects/' + projectId + '/generations', key, input, onSummary)
+      : generationResponseSchema.parse(
+          await apiRequest<unknown>('/projects/' + projectId + '/generations', {
+            method: 'POST',
+            headers: { 'Idempotency-Key': key },
+            body: JSON.stringify(input),
+          }),
+        ),
   status: async (id: string, signal?: AbortSignal) =>
     generationResponseSchema.parse(
       await apiRequest<unknown>('/generations/' + id, signal ? { signal } : {}),

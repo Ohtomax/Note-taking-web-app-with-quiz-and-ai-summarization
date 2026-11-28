@@ -21,5 +21,12 @@ export const sourceRequestSchema = z.discriminatedUnion('scope', [
     })
     .strict(),
   z.object({ scope: z.literal('PROJECT') }).strict(),
+  z
+    .object({
+      scope: z.literal('SUMMARY'),
+      summaryId: z.string().uuid(),
+      updatedAt: z.string().datetime(),
+    })
+    .strict(),
 ]);
 export type SourceRequest = z.infer<typeof sourceRequestSchema>;

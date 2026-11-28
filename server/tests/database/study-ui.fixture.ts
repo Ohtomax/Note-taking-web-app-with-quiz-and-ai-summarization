@@ -19,18 +19,24 @@ const client = createMockAIClient((request) => {
       allowedSourceKeys: z.array(z.string()),
     })
     .parse(JSON.parse(request.prompt));
-  return data.operation === 'QUIZ'
-    ? validQuiz(settings, data.allowedSourceKeys)
-    : {
-        title: 'Session summary',
-        sections: [
-          {
-            heading: null,
-            text: 'TCP is reliable transport.',
-            sourceKeys: data.allowedSourceKeys,
-          },
-        ],
-      };
+  if (data.operation === 'QUIZ') return validQuiz(settings, data.allowedSourceKeys);
+  const summary = {
+    title: 'Session summary',
+    sections: [
+      {
+        heading: 'Overview',
+        text: 'TCP is reliable transport.',
+        sourceKeys: data.allowedSourceKeys,
+      },
+      {
+        heading: 'Key concept',
+        text: '**Reliability** is the distinguishing property of TCP in this note.',
+        sourceKeys: data.allowedSourceKeys,
+      },
+    ],
+  };
+  request.onPartial?.({ title: summary.title, sections: [summary.sections[0], {}] });
+  return summary;
 });
 try {
   await withWorkspace(async ({ app, db, project, alice }) => {

@@ -69,6 +69,7 @@ function topicScores(
     string,
     {
       sourceKey: string;
+      topic: string;
       noteId: string | null;
       noteTitle: string;
       projectId: string;
@@ -80,13 +81,23 @@ function topicScores(
     const sources = new Map(version.sources.map((source) => [source.sourceKey, source]));
     for (const answer of answers) {
       if (!Array.isArray(answer.question.sourceKeys)) continue;
-      for (const key of new Set(answer.question.sourceKeys)) {
-        if (typeof key !== 'string') continue;
+      const sourceKeys = answer.question.sourceKeys.filter(
+        (key): key is string => typeof key === 'string' && sources.has(key),
+      );
+      const keys = answer.question.topic
+        ? sourceKeys.slice(0, 1)
+        : [...new Set(sourceKeys)];
+      for (const key of keys) {
         const source = sources.get(key);
         if (!source) continue;
-        const topicKey = version.quiz.projectId + ':' + key;
+        const label = answer.question.topic ?? source.noteTitle;
+        const topicKey =
+          version.quiz.projectId +
+          ':' +
+          (answer.question.topic ? label.toLocaleLowerCase('en-US') : key);
         const topic = topics.get(topicKey) ?? {
           ...source,
+          topic: label,
           projectId: version.quiz.projectId,
           answered: 0,
           correct: 0,
@@ -101,10 +112,10 @@ function topicScores(
     (a, b) =>
       b.correct / b.answered - a.correct / a.answered ||
       b.answered - a.answered ||
-      a.noteTitle.localeCompare(b.noteTitle),
+      a.topic.localeCompare(b.topic),
   );
   return {
-    strongest: ranked.slice(0, 3),
+    strongest: ranked.filter((topic) => topic.correct > 0).slice(0, 3),
     review: ranked
       .filter((topic) => topic.correct < topic.answered)
       .reverse()

@@ -149,7 +149,9 @@ export const createSummariesRepository = (db: PrismaClient) => ({
       ).parse(editedContent ?? stored.output);
       const available = await tx.note.findMany({
         where: {
-          id: { in: stored.manifest.sources.map((s) => s.noteId) },
+          id: {
+            in: stored.manifest.sources.flatMap((s) => (s.noteId ? [s.noteId] : [])),
+          },
           project: { ownerId },
         },
         select: { id: true },

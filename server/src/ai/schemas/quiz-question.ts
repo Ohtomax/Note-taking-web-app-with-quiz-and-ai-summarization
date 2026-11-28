@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { normalizeAnswer } from '@/services/answer-normalization.js';
 export const questionBase = {
+  topic: z.string().trim().min(1).max(120).nullable().optional(),
   prompt: z.string().trim().min(1).max(2000),
   explanation: z.string().trim().min(1).max(4000).nullable(),
   sourceKeys: z.array(z.string().min(1).max(100)).min(1).max(200),
@@ -15,6 +16,7 @@ export const choiceQuestionSchema = z
           .object({
             id: z.string().regex(/^[a-zA-Z0-9_-]{1,64}$/),
             text: z.string().trim().min(1).max(1000),
+            rationale: z.string().trim().min(1).max(1000).nullable().optional(),
           })
           .strict(),
       )

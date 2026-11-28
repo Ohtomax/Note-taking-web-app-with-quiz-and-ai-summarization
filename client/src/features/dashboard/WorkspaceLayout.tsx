@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from 'react';
+import { useEffect, useRef, useState, type FormEvent } from 'react';
 import {
   ArrowRight,
   BookOpen,
@@ -158,6 +158,20 @@ export function WorkspaceLayout() {
   const [folders, setFolders] = useState(false);
   const [creating, setCreating] = useState(false);
   const [error, setError] = useState('');
+  const drawerClose = useRef<HTMLButtonElement>(null);
+  useEffect(() => {
+    if (!sidebarOpen) return;
+    const trigger = document.activeElement;
+    drawerClose.current?.focus();
+    const onEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape' && !event.defaultPrevented) closeSidebar();
+    };
+    window.addEventListener('keydown', onEscape);
+    return () => {
+      window.removeEventListener('keydown', onEscape);
+      if (trigger instanceof HTMLElement && trigger.isConnected) trigger.focus();
+    };
+  }, [sidebarOpen, closeSidebar]);
   const breadcrumb =
     links.find((link) => link.to === location.pathname)?.label ??
     (location.pathname.includes('/notes/')
@@ -217,6 +231,7 @@ export function WorkspaceLayout() {
           </Link>
           <button
             className={`action w-8 px-0 md:hidden`}
+            ref={drawerClose}
             aria-label="Close menu"
             onClick={closeSidebar}
           >
@@ -339,7 +354,7 @@ export function WorkspaceLayout() {
           </form>
           <button
             className="action action-primary w-10 px-0 lg:w-auto lg:px-3.5"
-            aria-label="New note"
+            aria-label="New note in a project"
             title="New note"
             onClick={() => {
               closeSidebar();

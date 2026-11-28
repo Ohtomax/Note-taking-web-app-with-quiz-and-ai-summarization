@@ -1,15 +1,7 @@
 import { fork, type ChildProcess } from 'node:child_process';
 import { resolve } from 'node:path';
 import { beforeEach, afterEach, it, expect } from 'vitest';
-import {
-  act,
-  render,
-  screen,
-  fireEvent,
-  waitFor,
-  within,
-  cleanup,
-} from '@testing-library/react';
+import { act, render, screen, fireEvent, within, cleanup } from '@testing-library/react';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { App } from '@/routes/App';
 import { queryClient } from '@/config/queryClient';
@@ -172,17 +164,17 @@ it.skipIf(!enabled).each([1, 2])(
       3,
     );
     await visit('/dashboard');
-    await screen.findByText(/Welcome back/);
-    await screen.findByRole('link', { name: 'Session summary' });
+    await screen.findByRole('heading', { name: 'Study dashboard' });
+    await screen.findByRole('link', { name: /Session summary/ });
     const stats = await new Promise<unknown>((resolve) => {
       fixture!.once('message', resolve);
       fixture!.send('stats');
     });
     expect(stats).toEqual({ calls: 2, attempts: 3, requests: 2 });
     act(() => login('bob'));
-    await screen.findByText('No attempts yet. Save a quiz to start studying.');
+    await screen.findByText('Start a quiz to track your progress here.');
     expect(
-      screen.queryByRole('link', { name: 'Session summary' }),
+      screen.queryByRole('link', { name: /Session summary/ }),
     ).not.toBeInTheDocument();
     expect((await dashboardApi.read()).performance.totals.completedAttempts).toBe(0);
     expect((await usageApi.read()).quota.requestsUsed).toBe(0);

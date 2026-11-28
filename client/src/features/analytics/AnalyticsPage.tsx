@@ -278,9 +278,16 @@ export default function AnalyticsPage() {
                         {topics.map((topic) => (
                           <li
                             className="flex flex-wrap justify-between gap-2"
-                            key={topic.projectId + ':' + topic.sourceKey}
+                            key={
+                              topic.projectId + ':' + topic.sourceKey + ':' + topic.topic
+                            }
                           >
-                            <SourceLink source={topic} projectId={topic.projectId} />
+                            <div className="min-w-0">
+                              {topic.topic && topic.topic !== topic.noteTitle && (
+                                <p className="font-medium">{topic.topic}</p>
+                              )}
+                              <SourceLink source={topic} projectId={topic.projectId} />
+                            </div>
                             <span className="text-muted">
                               {topic.correct} / {topic.answered} correct
                             </span>

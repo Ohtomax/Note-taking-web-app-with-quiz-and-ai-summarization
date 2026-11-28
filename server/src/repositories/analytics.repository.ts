@@ -79,7 +79,10 @@ export const createAnalyticsRepository = (db: PrismaClient) => ({
         },
         answers: {
           where: { isCorrect: { not: null } },
-          select: { isCorrect: true, question: { select: { sourceKeys: true } } },
+          select: {
+            isCorrect: true,
+            question: { select: { sourceKeys: true, topic: true } },
+          },
         },
       },
     });

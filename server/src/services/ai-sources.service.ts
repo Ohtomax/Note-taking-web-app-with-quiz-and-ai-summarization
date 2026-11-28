@@ -1,10 +1,11 @@
 import { createHash } from 'node:crypto';
 import type { AISourcesRepository } from '@/repositories/ai-sources.repository.js';
 import type { SourceRequest } from '@/utils/input-validators/ai-sources.js';
+import { summaryContentSchema } from '@/utils/input-validators/summaries.js';
 import { ServiceError } from '@/utils/error-handler/ServiceError.js';
 export interface SourceSnapshot {
   sourceKey: string;
-  noteId: string;
+  noteId: string | null;
   noteTitle: string;
   revision: number;
   text: string;
@@ -26,6 +27,40 @@ export const createAISourcesService = (repository: AISourcesRepository) => ({
     projectId: string,
     request: SourceRequest,
   ): Promise<SourceManifest> => {
+    if (request.scope === 'SUMMARY') {
+      const { summary, projectRevision } = await repository.summary(
+        ownerId,
+        projectId,
+        request.summaryId,
+      );
+      if (summary.updatedAt.getTime() !== new Date(request.updatedAt).getTime())
+        throw new ServiceError(
+          'SOURCE_CHANGED',
+          'Reload the current summary before generating a quiz.',
+          409,
+        );
+      const content = summaryContentSchema.parse(summary.content);
+      const text = content.sections
+        .map((section) => [section.heading, section.text].filter(Boolean).join('\n'))
+        .join('\n\n');
+      return {
+        projectId,
+        projectRevision,
+        scope: request.scope,
+        sources: [
+          {
+            sourceKey: 'summary:' + request.summaryId,
+            noteId: null,
+            noteTitle: summary.title,
+            revision: 1,
+            text,
+            contentHash: hashContent(text),
+            rangeStart: null,
+            rangeEnd: null,
+          },
+        ],
+      };
+    }
     const single = request.scope === 'NOTE' || request.scope === 'EXCERPT';
     const ids = single
       ? [request.noteId]

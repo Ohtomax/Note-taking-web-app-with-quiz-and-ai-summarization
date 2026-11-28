@@ -98,3 +98,62 @@ test('P4-T01 Gemini sends a native schema request and counts thinking tokens', a
     },
   );
 });
+
+test('Gemini streams structured JSON and counts streamed thinking tokens', async () => {
+  const transport: typeof fetch = async (url) => {
+    assert.match(String(url), /:streamGenerateContent\?alt=sse$/);
+    const frames = [
+      {
+        candidates: [
+          { content: { role: 'model', parts: [{ text: '{"first":"Part A",' }] } },
+        ],
+      },
+      {
+        candidates: [
+          {
+            content: { role: 'model', parts: [{ text: '"second":"Part B"}' }] },
+            finishReason: 'STOP',
+          },
+        ],
+        usageMetadata: {
+          promptTokenCount: 20,
+          candidatesTokenCount: 5,
+          thoughtsTokenCount: 3,
+          totalTokenCount: 28,
+        },
+      },
+    ];
+    const text = frames
+      .map((frame) => 'data: ' + JSON.stringify(frame) + '\n\n')
+      .join('');
+    return new Response(
+      new ReadableStream({
+        start(controller) {
+          const bytes = new TextEncoder().encode(text);
+          controller.enqueue(bytes.slice(0, 110));
+          controller.enqueue(bytes.slice(110));
+          controller.close();
+        },
+      }),
+      { headers: { 'Content-Type': 'text/event-stream' } },
+    );
+  };
+  const client = createAIClient(
+    parseAIConfig({ enabled: true, apiKey: 'synthetic' }),
+    transport,
+  );
+  const partials: unknown[] = [];
+  const result = await client.generate({
+    system: 'trusted',
+    prompt: 'untrusted data',
+    schema: z.object({ first: z.string(), second: z.string() }).strict(),
+    maxOutputTokens: 100,
+    signal: new AbortController().signal,
+    onPartial: (value) => partials.push(value),
+  });
+  assert.ok(partials.length >= 2);
+  assert.deepEqual(result, {
+    object: { first: 'Part A', second: 'Part B' },
+    usage: { inputTokens: 20, outputTokens: 8 },
+  });
+});

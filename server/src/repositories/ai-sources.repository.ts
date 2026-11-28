@@ -2,6 +2,17 @@ import type { PrismaClient } from '@/generated/prisma/client.js';
 import { lockProject } from '@/repositories/workspace.repository.js';
 import { ServiceError } from '@/utils/error-handler/ServiceError.js';
 export const createAISourcesRepository = (db: PrismaClient) => ({
+  summary: (ownerId: string, projectId: string, summaryId: string) =>
+    db.$transaction(async (tx) => {
+      const project = await lockProject(tx, ownerId, projectId);
+      const summary = await tx.summary.findFirst({
+        where: { id: summaryId, projectId, deletedAt: null, project: { ownerId } },
+        select: { title: true, content: true, updatedAt: true },
+      });
+      if (!summary)
+        throw new ServiceError('RESOURCE_NOT_FOUND', 'Resource not found', 404);
+      return { summary, projectRevision: project.revision };
+    }),
   collect: (ownerId: string, projectId: string, ids?: string[]) =>
     db.$transaction(async (tx) => {
       // Every note writer locks its parent, so all pages observe the same source set.

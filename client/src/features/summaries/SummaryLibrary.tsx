@@ -11,10 +11,11 @@ import {
   type SummaryContent,
   type SavedSummary,
 } from '@/types/study';
-import { BookOpen, FileText, Pencil, RefreshCw, Trash2 } from 'lucide-react';
+import { BookOpen, FileText, Pencil, RefreshCw, Trash2, ChevronDown } from 'lucide-react';
 import { SummaryCopyExport } from './SummaryCopyExport';
 import { SummaryFields } from './SummaryFields';
 import { SummaryGenerator } from './SummaryGenerator';
+import { QuizGenerator } from '@/features/quizzes/QuizGenerator';
 import { summaryFormats, summaryLengths, type SummarySettings } from '@/types/study';
 import type { SourceChoice } from '@/types/study-sources';
 
@@ -112,6 +113,7 @@ export function SummaryDetail() {
     navigate = useNavigate();
   const [editing, setEditing] = useState(false),
     [deleting, setDeleting] = useState(false);
+  const [quizzing, setQuizzing] = useState(false);
   const [generating, setGenerating] = useState<SummarySettings | null>(null);
   const summary = useQuery({
     queryKey: [uid, 'summary', summaryId],
@@ -162,27 +164,54 @@ export function SummaryDetail() {
             </p>
           )}
           <div className="flex flex-wrap items-center gap-2">
+            <button
+              className="action action-primary"
+              aria-expanded={quizzing}
+              onClick={() => {
+                setQuizzing(!quizzing);
+                setGenerating(null);
+              }}
+            >
+              Generate quiz from summary
+            </button>
             <SummaryCopyExport content={data.content} />
             <button className="action" onClick={() => setEditing(true)}>
               <Pencil size={16} aria-hidden="true" />
               Edit summary
             </button>
-            <button className="action" onClick={() => setGenerating(data.settings)}>
-              <RefreshCw size={16} aria-hidden="true" />
-              Regenerate or change format
-            </button>
-            <button
-              className="action"
-              onClick={() => setGenerating({ length: 'SHORT', format: 'SIMPLIFIED' })}
-            >
-              Simplify
-            </button>
-            <button
-              className="action"
-              onClick={() => setGenerating({ length: 'DETAILED', format: 'PARAGRAPHS' })}
-            >
-              Expand
-            </button>
+            <details className="group relative">
+              <summary className="action list-none">
+                <RefreshCw size={16} aria-hidden="true" />
+                Regenerate
+                <ChevronDown size={14} aria-hidden="true" />
+              </summary>
+              <ul className="surface absolute left-0 z-10 mt-2 w-48 sm:right-0 sm:left-auto space-y-1 p-2">
+                {(
+                  [
+                    ['Regenerate or change format', data.settings],
+                    ['Simplify', { length: 'SHORT', format: 'SIMPLIFIED' }],
+                    ['Expand', { length: 'DETAILED', format: 'PARAGRAPHS' }],
+                  ] as const
+                ).map(([label, settings]) => (
+                  <li key={label}>
+                    <button
+                      className="w-full rounded-md px-2 py-2 text-left text-sm hover:bg-canvas"
+                      onClick={(event) => {
+                        const details = event.currentTarget.closest('details');
+                        if (details) {
+                          details.open = false;
+                          details.querySelector('summary')?.focus();
+                        }
+                        setQuizzing(false);
+                        setGenerating(settings);
+                      }}
+                    >
+                      {label}
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </details>
             <button
               className="action text-red-700 dark:text-red-300"
               onClick={() => setDeleting(true)}
@@ -191,7 +220,22 @@ export function SummaryDetail() {
               Delete summary
             </button>
           </div>
-          {generating && (
+          {quizzing && (
+            <QuizGenerator
+              key={data.updatedAt}
+              projectId={data.projectId}
+              choice={{
+                projectId: data.projectId,
+                source: {
+                  scope: 'SUMMARY',
+                  summaryId: data.id,
+                  updatedAt: data.updatedAt,
+                },
+                description: 'Saved summary · ' + data.title,
+              }}
+            />
+          )}
+          {generating && !quizzing && (
             <div className="grid gap-3">
               <button className="action w-fit" onClick={() => setGenerating(null)}>
                 Close generation settings

@@ -5,6 +5,7 @@ model QuizQuestionOption {
   position   Int
   text       String       @db.Text
   isCorrect  Boolean
+  rationale  String?      @db.Text
 
   @@unique([questionId, position])
 }

@@ -1,3 +1,4 @@
+import type { SummaryContent } from '@/types/study';
 import { useEffect, useRef, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { studyApi, type GenerateInput } from '@/api/study';
@@ -10,22 +11,28 @@ export function useGeneration(
     cache = useQueryClient();
   const attempt = useRef<{ signature: string; key: string } | null>(null);
   const [id, setId] = useState<string | null>(null);
+  const [partial, setPartial] = useState<SummaryContent | null>(null);
   const mutation = useMutation({
     mutationFn: (input: { key: string; request: GenerateInput }) =>
       !target
-        ? studyApi.generate(projectId, input.key, input.request)
+        ? studyApi.generate(projectId, input.key, input.request, setPartial)
         : 'quizId' in target
           ? studyApi.regenerateQuiz(target.quizId, input.key, input.request)
-          : studyApi.regenerateSummary(target.summaryId, input.key, input.request),
+          : studyApi.regenerateSummary(
+              target.summaryId,
+              input.key,
+              input.request,
+              setPartial,
+            ),
     onSuccess: (response) => {
       if (useSession.getState().user?.uid === uid) {
         cache.setQueryData([uid, 'generation', response.data.id], response);
         setId(response.data.id);
       }
     },
-    onSettled: () => {
-      void cache.invalidateQueries({ queryKey: [uid, 'ai-usage'] });
-      void cache.invalidateQueries({ queryKey: [uid, 'dashboard'] });
+    onSettled: (response) => {
+      if (!response || ['RESERVED', 'RUNNING'].includes(response.data.status))
+        void cache.invalidateQueries({ queryKey: [uid, 'ai-usage'] });
     },
   });
   const status = useQuery({
@@ -49,10 +56,12 @@ export function useGeneration(
     if (fresh || attempt.current?.signature !== signature)
       attempt.current = { signature, key: crypto.randomUUID() };
     setId(null);
+    setPartial(null);
     mutation.mutate({ key: attempt.current!.key, request });
   };
   return {
     generate,
+    partial,
     data: status.data?.data ?? mutation.data?.data,
     error: mutation.error ?? status.error,
     pending:

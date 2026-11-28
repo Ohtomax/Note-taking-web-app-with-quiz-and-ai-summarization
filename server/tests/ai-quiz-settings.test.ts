@@ -10,7 +10,7 @@ const settings = {
   includeExplanations: true,
 };
 test('P4-T16 validates every difficulty, mode and question type with explicit count boundaries', () => {
-  for (const difficulty of ['EASY', 'MEDIUM', 'HARD'])
+  for (const difficulty of ['EASY', 'MEDIUM', 'HARD', 'MIXED'])
     for (const defaultMode of ['PRACTICE', 'EXAM'])
       assert.ok(
         quizSettingsSchema.safeParse({ ...settings, difficulty, defaultMode }).success,

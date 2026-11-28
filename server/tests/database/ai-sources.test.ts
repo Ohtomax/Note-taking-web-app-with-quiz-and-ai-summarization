@@ -72,10 +72,12 @@ test('P4-T03 folder manifests page stably, exclude archived/empty notes and reje
       manifest.sources.map((s) => s.noteId),
       manifest.sources.map((s) => s.noteId).sort(),
     );
+    const firstNoteId = manifest.sources[0]?.noteId;
+    assert.ok(firstNoteId);
     await assert.rejects(
       resolver.resolve(alice.id, project.id, {
         scope: 'NOTES',
-        noteIds: [manifest.sources[0]!.noteId, outside.id],
+        noteIds: [firstNoteId, outside.id],
       }),
       /Resource not found/,
     );

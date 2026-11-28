@@ -46,6 +46,7 @@ export const createAIService = (client: AIClient, limits = generationLimits) => 
     schema: z.ZodType<T>,
     runner: AICallRunner = { call: (request) => client.generate(request) },
     signal = new AbortController().signal,
+    onFinalPartial?: (value: unknown) => void,
   ): Promise<{ object: T; usage: AIUsageCounts; calls: number }> => {
     const plan = planSources(manifest, limits);
     let calls = 0,
@@ -78,6 +79,7 @@ export const createAIService = (client: AIClient, limits = generationLimits) => 
         ...prompt,
         schema: shape,
         maxOutputTokens: limits.outputTokens,
+        ...(stage === 'FINAL' && onFinalPartial ? { onPartial: onFinalPartial } : {}),
         signal,
       });
       if (result.usage.inputTokens === null || result.usage.outputTokens === null)

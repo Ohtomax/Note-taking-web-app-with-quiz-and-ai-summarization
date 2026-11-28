@@ -1,3 +1,4 @@
+import type { SummaryContent } from '@/utils/input-validators/summaries.js';
 import type { SummariesRepository } from '@/repositories/summaries.repository.js';
 import type { SummaryGenerationService } from './summary-generation.service.js';
 import type { SummaryGenerationInput } from '@/utils/input-validators/generations.js';
@@ -15,9 +16,10 @@ export const createSummariesService = (
     id: string,
     key: string,
     input: SummaryGenerationInput,
+    onSummary?: (content: SummaryContent) => void,
   ) => {
     const summary = await repository.find(ownerId, id);
-    return generation.generate(ownerId, summary.projectId, key, input);
+    return generation.generate(ownerId, summary.projectId, key, input, onSummary);
   },
 });
 export type SummariesService = ReturnType<typeof createSummariesService>;

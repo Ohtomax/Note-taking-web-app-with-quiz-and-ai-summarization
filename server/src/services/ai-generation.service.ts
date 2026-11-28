@@ -40,6 +40,7 @@ export const createAIGenerationService = (dependencies: {
       source: SourceRequest,
       settings: Record<string, unknown>,
       schema: z.ZodType<T> | ((manifest: SourceManifest) => z.ZodType<T>),
+      partial?: (manifest: SourceManifest) => (value: unknown) => void,
     ) => {
       const manifest = await sources.resolve(userId, projectId, source);
       const inputHash = hashContent(
@@ -103,6 +104,8 @@ export const createAIGenerationService = (dependencies: {
           manifest,
           typeof schema === 'function' ? schema(manifest) : schema,
           runner,
+          undefined,
+          partial?.(manifest),
         );
         return await repository.complete(userId, record.id, {
           projectId,

@@ -3,10 +3,12 @@ import { SourcePicker, type SourcePickerProps } from './SourcePicker';
 import type { SourceChoice } from '@/types/study-sources';
 import { SummaryGenerator } from '@/features/summaries/SummaryGenerator';
 import { QuizGenerator } from '@/features/quizzes/QuizGenerator';
-export function StudySources(props: Omit<SourcePickerProps, 'onChange'>) {
+export function StudySources(
+  props: Omit<SourcePickerProps, 'onChange'> & { defaultOpen?: boolean | undefined },
+) {
   const [choice, setChoice] = useState<SourceChoice | null>(null);
   return (
-    <details className="surface my-5 p-4 sm:p-5">
+    <details open={props.defaultOpen} className="surface my-5 p-4 sm:p-5">
       <summary className="cursor-pointer font-semibold text-brand-text">
         Choose study sources
       </summary>

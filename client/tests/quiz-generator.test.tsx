@@ -84,6 +84,10 @@ it('validates quiz settings before calls and retains them through same-key retry
   await screen.findByRole('region', { name: 'Quiz preview' });
   expect(generate.mock.calls[0]![1]).toBe(generate.mock.calls[1]![1]);
   expect(generate.mock.calls[1]![2].settings).toEqual(settings);
+  expect(
+    screen.queryByLabelText('Question 1 accepted answers (one per line)'),
+  ).not.toBeInTheDocument();
+  fireEvent.click(screen.getByRole('button', { name: 'Edit questions' }));
   expect(screen.getByLabelText('Question 1 accepted answers (one per line)')).toHaveValue(
     'tcp',
   );

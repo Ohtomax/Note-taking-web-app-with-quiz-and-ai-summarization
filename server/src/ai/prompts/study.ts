@@ -46,7 +46,7 @@ export function buildStudyPrompt(
           'Use only sections supported by the learning material. Preserve technical wording, definitions, relationships, variables and formulas. Do not invent examples, misconceptions, citations, or tables.',
           'Use Markdown inside text fields. Highlight key terms with bold, use language-tagged fences for code, Markdown tables for relevant comparisons, and LaTeX with dollar delimiters for formulas. Put section titles in heading fields.',
         ].join(' ')
-      : 'For FINAL return exactly questionCount questions of the requested types, difficulty and explanation preference. For MIXED difficulty balance recall, interpretation, and application. Test distinct concepts and use plausible distractors grounded in the material. When explanations are requested, explain the correct answer and why each plausible incorrect choice does not fit, using only the cited material. Keys must be unambiguous.',
+      : 'For FINAL return exactly questionCount questions of the requested types, difficulty and explanation preference. For MIXED difficulty balance recall, interpretation, and application. Test distinct concepts, add a short topic label grounded in the source, and reuse topic labels where appropriate. Use plausible distractors. When explanations are requested, explain the correct answer in explanation and, if useful, add a short rationale to each incorrect option explaining why it does not fit. Use only the cited material. Keys must be unambiguous.',
     'Stage: ' + stage + '. Return only an object matching the supplied JSON schema.',
   ].join('\n');
   const prompt = JSON.stringify({

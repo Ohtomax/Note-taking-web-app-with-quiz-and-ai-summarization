@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { useProject, useProjects } from './useProjects';
 import { useNotes, useNoteMutation } from '@/features/notes/useNotes';
 import { notesApi } from '@/api/notes';
@@ -66,6 +66,7 @@ function MoveNoteDialog({ note, onClose }: { note: NoteItem; onClose: () => void
 
 function ProjectWorkspace({ projectId }: { projectId: string }) {
   const project = useProject(projectId);
+  const [params] = useSearchParams();
   const [query, setQuery] = useState(initialQuery);
   const notes = useNotes(projectId, query);
   const navigate = useNavigate();
@@ -92,7 +93,13 @@ function ProjectWorkspace({ projectId }: { projectId: string }) {
       />
       {data && (
         <>
-          {!data.archivedAt && <StudySources projectId={projectId} />}
+          {!data.archivedAt && (
+            <StudySources
+              key={params.get('study') ?? 'default'}
+              projectId={projectId}
+              defaultOpen={params.get('study') === 'quiz'}
+            />
+          )}
           <nav aria-label="Project study materials" className="my-4 flex flex-wrap gap-4">
             <Link
               className="text-teal-800 dark:text-teal-300 underline"
@@ -121,7 +128,7 @@ function ProjectWorkspace({ projectId }: { projectId: string }) {
           </nav>
           <div className="my-5 flex flex-wrap items-center justify-between gap-4">
             <div>
-              <h1 className="text-3xl font-semibold">{data.title}</h1>
+              <h1 className="page-title">{data.title}</h1>
               <p className="mt-2 whitespace-pre-wrap text-slate-600 dark:text-slate-300">
                 {data.description}
               </p>

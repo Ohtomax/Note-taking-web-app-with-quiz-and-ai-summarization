@@ -13,7 +13,10 @@ export const generationParamsSchema = z
 export const summaryGenerationSchema = z
   .object({
     operation: z.literal('SUMMARY'),
-    source: sourceRequestSchema,
+    source: sourceRequestSchema.refine(
+      (source) => source.scope !== 'SUMMARY',
+      'Choose notes or a project for a summary',
+    ),
     settings: summarySettingsSchema,
   })
   .strict();
@@ -31,12 +34,12 @@ export const storedGenerationSchema = z.object({
   manifest: z.object({
     projectId: z.string().uuid(),
     projectRevision: z.number().int(),
-    scope: z.enum(['NOTE', 'EXCERPT', 'NOTES', 'PROJECT']),
+    scope: z.enum(['NOTE', 'EXCERPT', 'NOTES', 'PROJECT', 'SUMMARY']),
     sources: z
       .array(
         z.object({
           sourceKey: z.string(),
-          noteId: z.string().uuid(),
+          noteId: z.string().uuid().nullable(),
           noteTitle: z.string(),
           revision: z.number().int(),
           text: z.string(),

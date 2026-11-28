@@ -1,6 +1,6 @@
 # Quiz scoring and history
 
-A Quiz owns immutable numbered QuizVersions. Generation, author edits and regeneration create a fresh version. Each attempt pins one version and stores question and option order by stable IDs. A retake creates another attempt and reads the same saved version without an AI call. Old source revisions, questions, options and grading keys remain fixed.
+A Quiz owns immutable numbered QuizVersions. Generation, author edits and regeneration create a fresh version. Each attempt pins one version and stores question and option order by stable IDs. A retake creates a separately numbered attempt from the same saved version without an AI call. A focused retake includes only incorrect answers from the selected completed attempt. Old source revisions, questions, options and grading keys remain fixed.
 
 ```mermaid
 stateDiagram-v2
@@ -27,13 +27,13 @@ Every question has one point and no partial credit. Unanswered questions earn ze
 | View | Open practice | Open exam | Completed |
 | --- | --- | --- | --- |
 | Player question | Prompt/options | Prompt/options | Immutable prompt/options |
-| Submitted question feedback | Correct answer and enabled explanation only after answer commit | No key, correctness or explanation | Correctness and enabled explanation |
+| Submitted question feedback | No key, correctness or explanation | No key, correctness or explanation | Correctness and enabled explanation |
 | Results endpoint | Unavailable | Unavailable | Full permitted answer review |
 | Explicit owner authoring | Full keys | Full keys | Full keys |
 
-The author owns the material and can inspect it through authoring. Exam mode controls the study player's disclosure and does not provide proctoring. Keep authoring query data outside player caches.
+Owners inspect and edit their questions through authoring. Authoring data uses a separate cache from player queries.
 
-Practice locks each recorded answer and handles repeats idempotently. Exam drafts use optimistic answer revisions and stay editable until finalization. The final submit transaction serializes with writes, scores stored answers, sets completion and timestamps once, then returns results. Repeat finalization returns identical results. Wrong-owner, wrong-version questions/options and post-completion writes fail.
+Practice and exam drafts use optimistic answer revisions and stay editable until finalization. An answer write can update the current question index in the same transaction. The final submit transaction serializes with writes, scores stored answers, sets completion and timestamps once, then returns results. Repeat finalization returns identical results. Wrong-owner, wrong-version questions/options and post-completion writes fail.
 
 ## Reviewed history fixture
 
@@ -45,4 +45,4 @@ quiz-scoring.service.ts is pure and runs only on trusted immutable version quest
 
 ## Phase 6 history integrity acceptance
 
-The P6-T06 real-routing/database scenario answers the four question types with the fixed key in both modes, including full-width identification normalization. Practice reveals only committed feedback; exam payloads withhold keys through intermediate reloads. Both scores are 100%. Concurrent duplicate finalizations return identical answers, finish timestamps and scores. A valid post-completion answer write is rejected. Publishing a changed answer key on version 2 leaves both version-1 reviews byte-for-byte equivalent as JSON. A replayed shuffled retake creates one new attempt, pins version 1, preserves order on reload and invokes no AI. The pure scorer and existing incorrect/skip/race fixtures remain active.
+The P6-T06 real-routing/database scenario answers the four question types with the fixed key in both modes, including full-width identification normalization. Both modes withhold feedback and answer keys through intermediate reloads. Both scores are 100%. Concurrent duplicate finalizations return identical answers, finish timestamps and scores. A valid post-completion answer write is rejected. Publishing a changed answer key on version 2 leaves both version-1 reviews byte-for-byte equivalent as JSON. A replayed shuffled retake creates one new attempt, pins version 1, preserves order on reload and invokes no AI. The pure scorer and existing incorrect/skip/race fixtures remain active.

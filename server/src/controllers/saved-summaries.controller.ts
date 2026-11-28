@@ -1,3 +1,4 @@
+import { summaryStream } from './summary-stream.js';
 import type { Response, NextFunction } from 'express';
 import type { AuthRequest } from '@/types/auth.type.js';
 import type { SummariesService } from '@/services/summaries.service.js';
@@ -80,6 +81,7 @@ export const removeSummary =
 export const regenerateSummary =
   (service: SummariesService) =>
   async (req: AuthRequest, res: Response, next: NextFunction) => {
+    const stream = summaryStream(req, res);
     try {
       const key = idempotencyKeySchema.safeParse(req.get('Idempotency-Key'));
       if (!key.success)
@@ -88,15 +90,17 @@ export const regenerateSummary =
           'A valid Idempotency-Key header is required.',
           400,
         );
-      res.status(201).json({
-        data: await service.regenerate(
+      stream.finish(
+        await service.regenerate(
           req.account!.id,
           req.params.summaryId!,
           key.data,
           req.body as SummaryGenerationInput,
+          stream.progress,
         ),
-      });
+      );
     } catch (error) {
+      if (stream.fail(error)) return;
       AIHandleError(error, next);
     }
   };

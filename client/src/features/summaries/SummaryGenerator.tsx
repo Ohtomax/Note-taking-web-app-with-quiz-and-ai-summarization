@@ -202,7 +202,17 @@ export function SummaryGenerator({
           </button>
         )}
       </div>
-      {generation.pending && <AsyncState loading error={null} retry={() => {}} />}
+      {generation.pending && (
+        <div className="mt-4">
+          {generation.partial && (
+            <Suspense fallback={null}>
+              <h3 className="mb-3 text-lg font-semibold">{generation.partial.title}</h3>
+              <SummaryReader content={generation.partial} sources={[]} />
+            </Suspense>
+          )}
+          <AsyncState loading error={null} retry={() => {}} />
+        </div>
+      )}
       {generation.error && (
         <p role="alert" className="mt-3 text-sm text-red-700 dark:text-red-300">
           {generation.error.message} Retry uses the same request key.

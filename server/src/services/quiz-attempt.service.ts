@@ -61,6 +61,7 @@ export function playerAttempt(row: AttemptRow) {
       sourceKeys: z.array(z.string()).parse(question.sourceKeys),
       ...(reveal
         ? {
+            topic: question.topic,
             feedback: {
               isCorrect: answer?.isCorrect ?? false,
               correctOptionIds: question.options
@@ -71,6 +72,13 @@ export function playerAttempt(row: AttemptRow) {
                   ? z.array(z.string()).parse(question.acceptedAnswers)
                   : [],
               explanation: row.version.includeExplanations ? question.explanation : null,
+              incorrectOptions: row.version.includeExplanations
+                ? question.options.flatMap((option) =>
+                    !option.isCorrect && option.rationale
+                      ? [{ optionId: option.id, reason: option.rationale }]
+                      : [],
+                  )
+                : [],
             },
           }
         : {}),

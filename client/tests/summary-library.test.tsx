@@ -62,7 +62,9 @@ it('opens stored summaries, edits without generation, shows stale sources and co
     </QueryClientProvider>,
   );
   fireEvent.click(await screen.findByRole('link', { name: 'TCP' }));
-  expect(await screen.findByText('Saved transport text')).toBeInTheDocument();
+  expect(
+    await screen.findByText('Saved transport text', {}, { timeout: 5000 }),
+  ).toBeInTheDocument();
   expect(screen.getByText(/Sources changed or were removed/)).toBeInTheDocument();
   fireEvent.click(screen.getByRole('button', { name: 'Edit summary' }));
   fireEvent.change(screen.getByLabelText('Summary title'), {

@@ -3,11 +3,15 @@ import { createGoogleGenerativeAI } from '@ai-sdk/google';
 import {
   APICallError,
   generateObject,
+  streamObject,
+  type LanguageModel,
   NoObjectGeneratedError,
   wrapLanguageModel,
 } from 'ai';
 import type { parseAIConfig } from '@/ai/config.js';
 import { ServiceError } from '@/utils/error-handler/ServiceError.js';
+
+import { observeGeminiStream, streamUsage } from '@/ai/gemini-stream.js';
 
 const geminiTokenUsageSchema = z.object({
   usageMetadata: z.object({ totalTokenCount: z.number().int().nonnegative() }),
@@ -22,6 +26,7 @@ export interface AIRequest<T> {
   schema: z.ZodType<T>;
   maxOutputTokens: number;
   signal: AbortSignal;
+  onPartial?: (value: unknown) => void;
 }
 export interface AIResult<T> {
   object: T;
@@ -46,13 +51,50 @@ export class AIProviderError extends ServiceError {
     );
   }
 }
+async function generateStreaming<T>(
+  model: LanguageModel,
+  request: AIRequest<T>,
+): Promise<AIResult<T>> {
+  const meter: { input?: number; total?: number } = {};
+  const usage = () => ({
+    inputTokens: meter.input ?? null,
+    outputTokens:
+      meter.input !== undefined && meter.total !== undefined && meter.total >= meter.input
+        ? meter.total - meter.input
+        : null,
+  });
+  return streamUsage.run(meter, async () => {
+    const result = streamObject({
+      model,
+      system: request.system,
+      prompt: request.prompt,
+      schema: request.schema,
+      mode: 'json',
+      maxTokens: request.maxOutputTokens,
+      abortSignal: request.signal,
+      maxRetries: 0,
+      onError: () => {},
+      experimental_telemetry: { isEnabled: false },
+    });
+    const final = Promise.allSettled([result.object, result.usage]);
+    for await (const partial of result.partialObjectStream) request.onPartial?.(partial);
+    const [object] = await final;
+    if (object.status === 'rejected') {
+      if (NoObjectGeneratedError.isInstance(object.reason))
+        throw new AIProviderError('INVALID', 0, usage());
+      throw object.reason;
+    }
+    return { object: object.value, usage: usage() };
+  });
+}
+
 export function createAIClient(
   config: ReturnType<typeof parseAIConfig>,
   transport?: typeof fetch,
 ): AIClient {
   const gemini = createGoogleGenerativeAI({
     apiKey: config.apiKey ?? 'unconfigured',
-    ...(transport ? { fetch: transport } : {}),
+    fetch: observeGeminiStream(transport),
   });
   const model = wrapLanguageModel({
     model: gemini(config.model),
@@ -84,6 +126,7 @@ export function createAIClient(
       if (!config.enabled)
         throw new ServiceError('AI_UNAVAILABLE', 'AI generation is not configured.', 503);
       try {
+        if (request.onPartial) return await generateStreaming(model, request);
         const result = await generateObject({
           model,
           system: request.system,
@@ -107,6 +150,7 @@ export function createAIClient(
           },
         };
       } catch (error) {
+        if (error instanceof AIProviderError) throw error;
         if (NoObjectGeneratedError.isInstance(error))
           throw new AIProviderError('INVALID', 0, {
             inputTokens: Number.isFinite(error.usage?.promptTokens)

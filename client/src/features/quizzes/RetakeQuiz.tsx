@@ -105,7 +105,7 @@ export function RetakeQuiz({ attempt }: { attempt: PlayerAttempt }) {
         To create new questions from current notes,{' '}
         <Link
           className="text-teal-800 dark:text-teal-300 underline"
-          to={'/quizzes/' + attempt.quizId + '?regenerate=true'}
+          to={'/projects/' + attempt.projectId + '?study=quiz'}
         >
           generate a new quiz
         </Link>

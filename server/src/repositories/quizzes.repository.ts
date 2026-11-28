@@ -39,12 +39,19 @@ export const versionSelect = {
       position: true,
       type: true,
       prompt: true,
+      topic: true,
       explanation: true,
       acceptedAnswers: true,
       sourceKeys: true,
       options: {
         orderBy: { position: 'asc' },
-        select: { id: true, position: true, text: true, isCorrect: true },
+        select: {
+          id: true,
+          position: true,
+          text: true,
+          isCorrect: true,
+          rationale: true,
+        },
       },
     },
   },
@@ -77,6 +84,7 @@ export function versionData(
         position: index + 1,
         type: question.type,
         prompt: question.prompt,
+        topic: question.topic ?? null,
         explanation: question.explanation,
         acceptedAnswers: jsonValue(
           question.type === 'IDENTIFICATION' ? question.acceptedAnswers : [],
@@ -90,6 +98,11 @@ export function versionData(
                   position: position + 1,
                   text: option.text,
                   isCorrect: question.correctOptionIds.includes(option.id),
+                  rationale:
+                    settings.includeExplanations &&
+                    !question.correctOptionIds.includes(option.id)
+                      ? (option.rationale ?? null)
+                      : null,
                 })),
               },
             }),
@@ -252,6 +265,7 @@ export const createQuizzesRepository = (db: PrismaClient) => ({
         questions: latest.questions.map((question) => ({
           type: question.type,
           prompt: question.prompt,
+          topic: question.topic ?? null,
           explanation: question.explanation,
           sourceKeys: question.sourceKeys,
           ...(question.type === 'IDENTIFICATION'
@@ -260,6 +274,7 @@ export const createQuizzesRepository = (db: PrismaClient) => ({
                 options: question.options.map((option) => ({
                   id: option.id,
                   text: option.text,
+                  rationale: option.rationale,
                 })),
                 correctOptionIds: question.options
                   .filter((option) => option.isCorrect)
@@ -375,7 +390,7 @@ export const createQuizzesRepository = (db: PrismaClient) => ({
       ).parse(input.content ?? stored!.output);
       const available = await tx.note.findMany({
         where: {
-          id: { in: sources.map((source) => source.noteId).filter(Boolean) },
+          id: { in: sources.flatMap((source) => (source.noteId ? [source.noteId] : [])) },
           project: { ownerId },
         },
         select: { id: true },
@@ -454,7 +469,11 @@ export const createQuizzesRepository = (db: PrismaClient) => ({
       ).parse(edited?.content ?? stored.output);
       const available = await tx.note.findMany({
         where: {
-          id: { in: stored.manifest.sources.map((source) => source.noteId) },
+          id: {
+            in: stored.manifest.sources.flatMap((source) =>
+              source.noteId ? [source.noteId] : [],
+            ),
+          },
           project: { ownerId },
         },
         select: { id: true },

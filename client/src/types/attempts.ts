@@ -18,6 +18,7 @@ export const playerQuestionSchema = z
     position: z.number().int(),
     type: questionTypeSchema,
     prompt: z.string(),
+    topic: z.string().nullable().optional(),
     options: z.array(z.object({ id: z.string().uuid(), text: z.string() }).strict()),
     sourceKeys: z.array(z.string()),
     feedback: z
@@ -26,6 +27,9 @@ export const playerQuestionSchema = z
         correctOptionIds: z.array(z.string().uuid()),
         acceptedAnswers: z.array(z.string()),
         explanation: z.string().nullable(),
+        incorrectOptions: z
+          .array(z.object({ optionId: z.string().uuid(), reason: z.string() }))
+          .optional(),
       })
       .strict()
       .optional(),
@@ -72,7 +76,7 @@ export const attemptSchema = z
         message: 'Attempt result does not match its terminal state',
       });
     for (const question of value.questions)
-      if (question.feedback && value.status !== 'COMPLETED')
+      if ((question.feedback || question.topic) && value.status !== 'COMPLETED')
         context.addIssue({
           code: 'custom',
           message: 'Unexpected answer disclosure in player response',

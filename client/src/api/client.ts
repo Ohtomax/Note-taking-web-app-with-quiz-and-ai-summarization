@@ -24,23 +24,39 @@ export const cancelSessionRequests = (): void => {
 
 export const apiRequest = async <T>(
   path: string,
-  options: RequestInit = {},
+  options: RequestInit & {
+    timeoutMs?: number;
+    onTextProgress?: (text: string) => void;
+  } = {},
 ): Promise<T> => {
   const { user, version } = useSession.getState();
   if (!user) throw new ApiError(401, 'UNAUTHORIZED', 'Sign in to continue.');
   const signal = sessionController.signal;
   const token = await user.getIdToken();
-  const idempotencyKey = new Headers(options.headers).get('Idempotency-Key');
+  const headers = new Headers(options.headers);
+  const idempotencyKey = headers.get('Idempotency-Key');
+  const accept = headers.get('Accept');
   if (useSession.getState().version !== version)
     throw new DOMException('Session changed', 'AbortError');
   try {
     const response = await apiClient.request<T>({
       url: path,
+      ...(options.timeoutMs ? { timeout: options.timeoutMs } : {}),
+      ...(options.onTextProgress
+        ? {
+            onDownloadProgress: ({ event }) => {
+              if (useSession.getState().version !== version) return;
+              if (event?.target instanceof XMLHttpRequest)
+                options.onTextProgress?.(event.target.responseText);
+            },
+          }
+        : {}),
       method: options.method ?? 'GET',
       ...(options.body ? { data: options.body } : {}),
       signal: options.signal ? AbortSignal.any([signal, options.signal]) : signal,
       headers: {
         'Content-Type': 'application/json',
+        ...(accept ? { Accept: accept } : {}),
         Authorization: 'Bearer ' + token,
         ...(idempotencyKey ? { 'Idempotency-Key': idempotencyKey } : {}),
       },

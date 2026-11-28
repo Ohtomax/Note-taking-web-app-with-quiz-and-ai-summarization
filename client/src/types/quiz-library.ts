@@ -26,6 +26,7 @@ export const quizVersionSchema = z.object({
       position: z.number().int(),
       type: questionTypeSchema,
       prompt: z.string(),
+      topic: z.string().nullable().optional(),
       explanation: z.string().nullable(),
       acceptedAnswers: z.array(z.string()),
       sourceKeys: z.array(z.string()),
@@ -35,6 +36,7 @@ export const quizVersionSchema = z.object({
           position: z.number().int(),
           text: z.string(),
           isCorrect: z.boolean(),
+          rationale: z.string().nullable().optional(),
         }),
       ),
     }),
@@ -61,6 +63,7 @@ export function authoringDraft(
       questions: version.questions.map((question) => {
         const base = {
           prompt: question.prompt,
+          topic: question.topic,
           explanation: question.explanation,
           sourceKeys: question.sourceKeys,
         };
@@ -72,6 +75,7 @@ export function authoringDraft(
               options: question.options.map((option) => ({
                 id: option.id,
                 text: option.text,
+                rationale: option.rationale,
               })),
               correctOptionIds: question.options
                 .filter((option) => option.isCorrect)

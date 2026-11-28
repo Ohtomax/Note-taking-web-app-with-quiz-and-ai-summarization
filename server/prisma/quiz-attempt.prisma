@@ -32,5 +32,6 @@ model QuizAttempt {
   @@unique([id, versionId])
   @@index([versionId, startedAt, id])
   @@index([status, startedAt])
+  @@index([status, finishedAt, id])
   @@index([status, completedDay, versionId])
 }

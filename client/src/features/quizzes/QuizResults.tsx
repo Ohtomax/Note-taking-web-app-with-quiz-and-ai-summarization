@@ -131,6 +131,12 @@ function AnswerReview({ attempt }: { attempt: PlayerAttempt }) {
                       option.id,
                     );
                     const chosen = selected.includes(option.id);
+                    const rationale =
+                      chosen &&
+                      !correct &&
+                      question.feedback?.incorrectOptions?.find(
+                        (item) => item.optionId === option.id,
+                      );
                     return (
                       <li
                         className={
@@ -151,6 +157,14 @@ function AnswerReview({ attempt }: { attempt: PlayerAttempt }) {
                           <span className="text-xs font-semibold text-emerald-800 dark:text-emerald-300">
                             Correct choice
                           </span>
+                        )}
+                        {rationale && (
+                          <p className="basis-full text-sm text-muted">
+                            <span className="font-semibold">
+                              Why this choice was incorrect:
+                            </span>{' '}
+                            {rationale.reason}
+                          </p>
                         )}
                       </li>
                     );
@@ -188,14 +202,38 @@ function AnswerReview({ attempt }: { attempt: PlayerAttempt }) {
 function TopicPerformance({ attempt }: { attempt: PlayerAttempt }) {
   const topics = new Map<
     string,
-    { source: PlayerAttempt['sources'][number]; assigned: number; correct: number }
+    {
+      label: string;
+      sources: Map<string, PlayerAttempt['sources'][number]>;
+      assigned: number;
+      correct: number;
+    }
   >();
   for (const row of reviewQuestions(attempt)) {
-    for (const source of row.sources) {
-      const topic = topics.get(source.sourceKey) ?? { source, assigned: 0, correct: 0 };
+    const groups = row.question.topic
+      ? [
+          {
+            key: 'topic:' + row.question.topic.toLocaleLowerCase('en-US'),
+            label: row.question.topic,
+            sources: row.sources,
+          },
+        ]
+      : row.sources.map((source) => ({
+          key: source.sourceKey,
+          label: source.noteTitle,
+          sources: [source],
+        }));
+    for (const { key, label, sources } of groups) {
+      const topic = topics.get(key) ?? {
+        label,
+        sources: new Map(),
+        assigned: 0,
+        correct: 0,
+      };
       topic.assigned++;
       topic.correct += Number(row.status === 'Correct answers');
-      topics.set(source.sourceKey, topic);
+      for (const source of sources) topic.sources.set(source.sourceKey, source);
+      topics.set(key, topic);
     }
   }
   if (!topics.size) return null;
@@ -203,17 +241,26 @@ function TopicPerformance({ attempt }: { attempt: PlayerAttempt }) {
     <section className="surface p-5">
       <h2 className="flex items-center gap-2 font-semibold">
         <BookOpen size={18} aria-hidden="true" className="text-brand-text" />
-        Performance by study source
+        Performance by topic
       </h2>
       <ul className="mt-4 grid gap-3">
-        {[...topics.values()]
-          .sort((a, b) => a.correct / a.assigned - b.correct / b.assigned)
-          .map(({ source, assigned, correct }) => (
+        {[...topics.entries()]
+          .sort(([, a], [, b]) => a.correct / a.assigned - b.correct / b.assigned)
+          .map(([key, { label, sources, assigned, correct }]) => (
             <li
               className="flex flex-wrap items-center justify-between gap-2 border-t border-edge pt-3 text-sm"
-              key={source.sourceKey}
+              key={key}
             >
-              <SourceLink source={source} projectId={attempt.projectId} />
+              <div>
+                <p className="font-medium">{label}</p>
+                <ul className="flex flex-wrap gap-2 text-xs" aria-label="Topic sources">
+                  {[...sources.values()].map((source) => (
+                    <li key={source.sourceKey}>
+                      <SourceLink source={source} projectId={attempt.projectId} />
+                    </li>
+                  ))}
+                </ul>
+              </div>
               <span className="text-muted">
                 {correct} / {assigned} correct
                 {correct < assigned ? ' · Review this material' : ''}
@@ -321,10 +368,11 @@ export default function QuizResults() {
               </a>
             </div>
           </header>
-          <dl className="grid grid-cols-2 gap-2.5 md:grid-cols-5">
+          <dl className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 lg:grid-cols-6">
             {[
               ['Overall score', result.correctCount + ' / ' + result.totalQuestions],
               ['Total questions', result.totalQuestions],
+              ['Correct', result.correctCount],
               ['Incorrect', result.incorrectCount],
               ['Unanswered', result.unansweredCount],
               ['Time spent', formatDuration(result.elapsedMs)],

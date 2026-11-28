@@ -75,6 +75,17 @@ export function QuizEditor({
                 }
               />
             </label>
+            <label className="grid gap-1 text-sm">
+              {prefix} topic
+              <input
+                className="field"
+                maxLength={120}
+                value={question.topic ?? ''}
+                onChange={(event) =>
+                  change(index, { ...question, topic: event.target.value || null })
+                }
+              />
+            </label>
             {question.type === 'IDENTIFICATION' ? (
               <label className="grid gap-1 text-sm">
                 {prefix} accepted answers (one per line)
@@ -126,13 +137,34 @@ export function QuizEditor({
                             ...question,
                             options: question.options.map((item) =>
                               item.id === option.id
-                                ? { ...item, text: event.target.value }
+                                ? { ...item, text: event.target.value, rationale: null }
                                 : item,
                             ),
                           })
                         }
                       />
                     </label>
+                    {settings.includeExplanations &&
+                      !question.correctOptionIds.includes(option.id) && (
+                        <label className="grid gap-1 text-sm sm:col-start-2">
+                          {prefix} option {position + 1} rationale
+                          <input
+                            className="field"
+                            maxLength={1000}
+                            value={option.rationale ?? ''}
+                            onChange={(event) =>
+                              change(index, {
+                                ...question,
+                                options: question.options.map((item) =>
+                                  item.id === option.id
+                                    ? { ...item, rationale: event.target.value || null }
+                                    : item,
+                                ),
+                              })
+                            }
+                          />
+                        </label>
+                      )}
                   </div>
                 ))}
               </div>

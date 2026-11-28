@@ -12,6 +12,7 @@ const samples = {
 };
 const topicSchema = z.object({
   sourceKey: z.string(),
+  topic: z.string().optional(),
   noteId: z.string().uuid().nullable(),
   noteTitle: z.string(),
   projectId: z.string().uuid(),

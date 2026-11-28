@@ -3,6 +3,7 @@ import { ArrowLeft, ArrowRight, BookOpen, Check, LogOut } from 'lucide-react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useAttempt } from './attemptQueries';
+import { ApiError } from '@/api/client';
 import { attemptsApi } from '@/api/attempts';
 import { useSession } from '@/store/session';
 import { useDrafts } from '@/store/drafts';
@@ -27,7 +28,7 @@ function QuestionPane({
   const heading = useRef<HTMLHeadingElement>(null);
   const [confirmation, setConfirmation] = useState<'submit' | 'exit' | null>(null);
   const recorded = attempt.answers.find((answer) => answer.questionId === question.id);
-  const draftKey = [attempt.id, question.id, recorded?.revision ?? 0].join(':');
+  const draftKey = attempt.id + ':' + question.id;
   const draft = useDrafts((state) => state.quizAnswers[draftKey]);
   const options = draft?.optionIds ?? recorded?.selectedOptionIds ?? [];
   const text = draft?.text ?? recorded?.text ?? '';
@@ -51,12 +52,10 @@ function QuestionPane({
       ),
     );
   const updateDraft = (value: Pick<SaveAnswerInput, 'optionIds' | 'text'>) =>
-    useDrafts
-      .getState()
-      .setQuizAnswer(draftKey, {
-        ...value,
-        expectedAnswerRevision: recorded?.revision ?? 0,
-      });
+    useDrafts.getState().setQuizAnswer(draftKey, {
+      ...value,
+      expectedAnswerRevision: draft?.expectedAnswerRevision ?? recorded?.revision ?? 0,
+    });
 
   useEffect(() => {
     heading.current?.focus();
@@ -244,9 +243,24 @@ function QuestionPane({
           </div>
         </form>
         {advance.error && !confirmation && (
-          <p role="alert" className="mt-4 text-sm text-red-700 dark:text-red-300">
-            {advance.error.message}
-          </p>
+          <div role="alert" className="mt-4 text-sm text-red-700 dark:text-red-300">
+            <p>{advance.error.message}</p>
+            {advance.error instanceof ApiError &&
+              advance.error.code === 'ANSWER_REVISION_CONFLICT' && (
+                <button
+                  className="mt-2 font-semibold underline"
+                  onClick={() => {
+                    useDrafts.getState().removeQuizAnswer(draftKey);
+                    advance.reset();
+                    void cache.invalidateQueries({
+                      queryKey: [uid, 'player-attempt', attempt.id],
+                    });
+                  }}
+                >
+                  Reload saved answer
+                </button>
+              )}
+          </div>
         )}
       </div>
       {confirmation && (

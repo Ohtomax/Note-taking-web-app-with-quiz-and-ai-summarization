@@ -12,6 +12,7 @@ model QuizQuestion {
   version         QuizVersion          @relation(fields: [versionId], references: [id], onDelete: Restrict)
   position        Int
   type            QuestionType
+  topic           String?              @db.VarChar(120)
   prompt          String               @db.Text
   explanation     String?              @db.Text
   acceptedAnswers Json                 @default("[]")
