@@ -1,103 +1,144 @@
 import { useState } from 'react';
+import {
+  Activity,
+  ArrowRight,
+  BookOpen,
+  ClipboardCheck,
+  FilePlus2,
+  FileText,
+  Folder,
+  Plus,
+  Sparkles,
+  type LucideIcon,
+} from 'lucide-react';
 import { AIUsage } from './AIUsage';
-import { Link, useNavigate } from 'react-router-dom';
+import { CreateStudyNote } from './CreateStudyNote';
+import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { useSession } from '@/store/session';
 import { dashboardApi } from '@/api/dashboard';
-import { PerformanceOverview } from '@/features/analytics/AnalyticsPage';
 import { AsyncState } from '@/components/ui/AsyncState';
-import { Modal } from '@/components/ui/Modal';
-import { Pagination } from '@/components/ui/Pagination';
-import { useProjects } from '@/features/projects/useProjects';
-import { initialQuery } from '@/features/projects/project-display';
-import { notesApi } from '@/api/notes';
-import { useNoteMutation } from '@/features/notes/useNotes';
-function CreateStudyNote({ onClose }: { onClose: () => void }) {
-  const [query, setQuery] = useState(initialQuery),
-    projects = useProjects(query),
-    create = useNoteMutation(notesApi.create),
-    navigate = useNavigate();
+import { formatPercent } from '@/utils/display';
+
+interface StudyRow {
+  id: string;
+  title: string;
+  url: string;
+  detail: string;
+}
+
+function RecentCard({
+  title,
+  icon: Icon,
+  rows,
+  empty,
+}: {
+  title: string;
+  icon: LucideIcon;
+  rows: StudyRow[];
+  empty: string;
+}) {
   return (
-    <Modal
-      title="Choose a project for your note"
-      onClose={onClose}
-      busy={create.isPending}
-    >
-      <label>
-        Find project
-        <input
-          type="search"
-          className="m-2 rounded border p-2"
-          value={query.search}
-          onChange={(e) => setQuery({ ...query, search: e.target.value, page: 1 })}
-        />
-      </label>
-      <AsyncState
-        loading={projects.isPending}
-        error={projects.error || create.error}
-        retry={() => void projects.refetch()}
-      />
-      <ul className="my-4 space-y-2">
-        {projects.data?.data
-          .filter((p) => !p.archivedAt)
-          .map((p) => (
-            <li key={p.id}>
-              <button
-                className="w-full rounded border p-3 text-left"
-                disabled={create.isPending}
-                onClick={() =>
-                  create.mutate(p.id, {
-                    onSuccess: (response) =>
-                      navigate('/projects/' + p.id + '/notes/' + response.data.id),
-                  })
-                }
+    <section className="surface min-w-0 p-5">
+      <h2 className="flex items-center gap-2.5 font-semibold">
+        <Icon size={18} className="text-brand-text" aria-hidden="true" />
+        {title}
+      </h2>
+      {rows.length ? (
+        <ul className="mt-3 divide-y divide-edge">
+          {rows.map((row) => (
+            <li key={row.id}>
+              <Link
+                to={row.url}
+                className="group flex items-center gap-2 rounded-lg py-2.5 text-sm transition hover:bg-canvas hover:px-2"
               >
-                {p.title}
-              </button>
+                <span className="min-w-0 flex-1">
+                  <span className="block font-medium group-hover:text-brand-text">
+                    {row.title}
+                  </span>
+                  <span className="text-xs text-muted">{row.detail}</span>
+                </span>
+                <ArrowRight
+                  size={15}
+                  className="shrink-0 text-muted"
+                  aria-hidden="true"
+                />
+              </Link>
             </li>
           ))}
-      </ul>
-      {projects.data && (
-        <Pagination
-          page={query.page}
-          pageSize={query.pageSize}
-          total={projects.data.total}
-          onChange={(page) => setQuery({ ...query, page })}
-        />
+        </ul>
+      ) : (
+        <p className="mt-4 rounded-xl bg-canvas px-4 py-5 text-sm text-muted">{empty}</p>
       )}
-      <Link className="underline" to="/projects/new">
-        Create a project first
-      </Link>
-    </Modal>
+    </section>
   );
 }
+
+const dateLabel = (date: string | null) =>
+  date
+    ? new Date(date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })
+    : '';
+
 export default function Dashboard() {
-  const user = useSession((s) => s.user!),
-    [creating, setCreating] = useState(false);
+  const user = useSession((s) => s.user!);
+  const [creating, setCreating] = useState(false);
   const query = useQuery({
     queryKey: [user.uid, 'dashboard'],
     queryFn: ({ signal }) => dashboardApi.read(signal),
     staleTime: 30000,
   });
   const data = query.data;
+  const currentAttempt = data?.performance.recent.find(
+    (attempt) => attempt.status === 'IN_PROGRESS',
+  );
+  const currentNote = data?.recent.notes[0];
+  const currentSummary = data?.recent.summaries[0];
+  const next = currentAttempt
+    ? {
+        title: currentAttempt.quizTitle,
+        label: 'Resume quiz',
+        to: '/attempts/' + currentAttempt.id,
+      }
+    : currentSummary
+      ? {
+          title: currentSummary.title,
+          label: 'Read summary',
+          to: '/summaries/' + currentSummary.id,
+        }
+      : currentNote
+        ? {
+            title: currentNote.title,
+            label: 'Open note',
+            to: '/projects/' + currentNote.projectId + '/notes/' + currentNote.id,
+          }
+        : null;
+  const date = new Intl.DateTimeFormat(undefined, {
+    weekday: 'long',
+    month: 'long',
+    day: 'numeric',
+  }).format(new Date());
+
   return (
-    <section className="space-y-6">
-      <header>
-        <p className="text-sm text-slate-600 dark:text-slate-300">Your study workspace</p>
-        <h1 className="mt-2 text-3xl font-semibold">
-          Welcome back{user.email ? ', ' + user.email.split('@')[0] : ''}
-        </h1>
+    <section className="space-y-7">
+      <header className="flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <p className="mb-2 text-sm font-medium text-muted">{date}</p>
+          <h1 className="page-title">Study dashboard</h1>
+          <p className="mt-2 text-sm text-muted">
+            Pick up where you left off, or start with a fresh note.
+          </p>
+        </div>
+        <nav aria-label="Study shortcuts" className="flex flex-wrap gap-2">
+          <Link className="action" to="/projects/new">
+            <Plus size={17} aria-hidden="true" />
+            Create project
+          </Link>
+          <button className="action action-primary" onClick={() => setCreating(true)}>
+            <FilePlus2 size={17} aria-hidden="true" />
+            Create note
+          </button>
+        </nav>
       </header>
-      <nav
-        aria-label="Study shortcuts"
-        className="flex flex-wrap gap-4 text-teal-800 dark:text-teal-300 underline"
-      >
-        <Link to="/projects/new">Create project</Link>
-        <button onClick={() => setCreating(true)}>Create note</button>
-        <Link to="/">All projects</Link>
-        <Link to="/history">Study history</Link>
-        <Link to="/analytics">Study analytics</Link>
-      </nav>
       <AsyncState
         loading={query.isPending}
         error={query.error}
@@ -105,104 +146,138 @@ export default function Dashboard() {
       />
       {data && (
         <>
-          <dl className="grid grid-cols-2 gap-4 md:grid-cols-4">
-            {Object.entries(data.performance.workspace)
-              .filter(([key]) => !key.startsWith('archived'))
-              .map(([key, value]) => (
-                <div
-                  className="rounded-xl border bg-white dark:bg-slate-900 p-4"
-                  key={key}
-                >
-                  <dt className="capitalize">{key}</dt>
-                  <dd className="mt-2 text-2xl font-semibold">{value}</dd>
-                </div>
-              ))}
-          </dl>
-          <div className="grid gap-6 md:grid-cols-2">
-            {(
-              [
-                [
-                  'Recently opened notes',
-                  data.recent.notes.map((n) => ({
-                    id: n.id,
-                    title: n.title,
-                    url: '/projects/' + n.projectId + '/notes/' + n.id,
-                  })),
-                ],
-                [
-                  'Newest projects',
-                  data.recent.projects.map((p) => ({
-                    id: p.id,
-                    title: p.title,
-                    url: '/projects/' + p.id,
-                  })),
-                ],
-                [
-                  'Newest summaries',
-                  data.recent.summaries.map((s) => ({
-                    id: s.id,
-                    title: s.title,
-                    url: '/summaries/' + s.id,
-                  })),
-                ],
-                [
-                  'Newest quizzes',
-                  data.recent.quizzes.map((q) => ({
-                    id: q.id,
-                    title: q.title,
-                    url: '/quizzes/' + q.id,
-                  })),
-                ],
-              ] as const
-            ).map(([label, rows]) => (
-              <section
-                className="rounded-xl border bg-white dark:bg-slate-900 p-5"
-                key={label}
-              >
-                <h2 className="font-semibold">{label}</h2>
-                {!rows.length && (
-                  <p className="mt-3 text-sm text-slate-600 dark:text-slate-300">
-                    Nothing here yet.
+          <section className="rounded-2xl border border-edge bg-brand-soft p-5 sm:p-7">
+            <div className="flex flex-wrap items-center justify-between gap-4">
+              <div className="min-w-0">
+                <h2 className="mb-2 flex items-center gap-2 text-sm font-semibold text-brand-text">
+                  <BookOpen size={17} aria-hidden="true" />
+                  Continue studying
+                </h2>
+                <p className="text-xl font-semibold tracking-tight sm:text-2xl">
+                  {next?.title ?? 'Your next study session starts here'}
+                </p>
+                {!next && (
+                  <p className="mt-1 text-sm text-muted">
+                    Create a note in a project to start building your study material.
                   </p>
                 )}
-                <ul className="mt-3 space-y-3">
-                  {rows.map((row) => (
-                    <li key={row.id}>
-                      <Link
-                        className="break-words text-teal-800 dark:text-teal-300 underline"
-                        to={row.url}
-                      >
-                        {row.title}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </section>
-            ))}
-          </div>
-          <section>
-            <h2 className="mb-3 text-lg font-semibold">Recent attempts</h2>
-            {!data.performance.recent.length && (
-              <p>No attempts yet. Save a quiz to start studying.</p>
-            )}
-            <ul className="space-y-3">
-              {data.performance.recent.map((a) => (
-                <li key={a.id}>
-                  <Link
-                    className="text-teal-800 dark:text-teal-300 underline"
-                    to={
-                      '/attempts/' + a.id + (a.status === 'COMPLETED' ? '/results' : '')
-                    }
-                  >
-                    {a.quizTitle} · Version {a.version} · {a.status.replaceAll('_', ' ')}
-                  </Link>
-                </li>
-              ))}
-            </ul>
+              </div>
+              {next ? (
+                <Link className="action action-primary" to={next.to}>
+                  {next.label}
+                  <ArrowRight size={16} aria-hidden="true" />
+                </Link>
+              ) : (
+                <Link className="action" to="/">
+                  Browse projects
+                  <ArrowRight size={16} aria-hidden="true" />
+                </Link>
+              )}
+            </div>
           </section>
-          <h2 className="text-lg font-semibold">Performance in the last 30 days</h2>
-          <AIUsage />
-          <PerformanceOverview data={data.performance} />
+          <section aria-labelledby="performance-heading">
+            <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+              <h2 id="performance-heading" className="font-semibold">
+                Study performance
+              </h2>
+              <Link
+                className="flex items-center gap-1 text-sm font-semibold text-brand-text hover:underline"
+                to="/analytics"
+              >
+                Study analytics
+                <ArrowRight size={15} aria-hidden="true" />
+              </Link>
+            </div>
+            <dl className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+              {(
+                [
+                  ['Notes', data.performance.workspace.notes, FileText],
+                  ['Saved summaries', data.performance.workspace.summaries, Sparkles],
+                  [
+                    'Quizzes completed · 30 days',
+                    data.performance.totals.completedAttempts,
+                    ClipboardCheck,
+                  ],
+                  [
+                    'Average score · 30 days',
+                    data.performance.totals.meanScore === null
+                      ? '—'
+                      : formatPercent(data.performance.totals.meanScore),
+                    Activity,
+                  ],
+                ] as const
+              ).map(([name, value, Icon]) => (
+                <div className="surface p-4" key={name}>
+                  <Icon size={17} aria-hidden="true" className="mb-2 text-brand-text" />
+                  <dt className="text-xs text-muted sm:text-sm">{name}</dt>
+                  <dd className="mt-1 text-2xl font-semibold tabular-nums">{value}</dd>
+                </div>
+              ))}
+            </dl>
+          </section>
+          <div className="grid gap-4 lg:grid-cols-2">
+            <RecentCard
+              title="Recently opened notes"
+              icon={FileText}
+              empty="Open a note to see it here."
+              rows={data.recent.notes.map((n) => ({
+                id: n.id,
+                title: n.title,
+                url: '/projects/' + n.projectId + '/notes/' + n.id,
+                detail: dateLabel(n.lastOpenedAt),
+              }))}
+            />
+            <RecentCard
+              title="Project folders"
+              icon={Folder}
+              empty="Create a project to keep related notes together."
+              rows={data.recent.projects.map((p) => ({
+                id: p.id,
+                title: p.title,
+                url: '/projects/' + p.id,
+                detail: dateLabel(p.createdAt),
+              }))}
+            />
+            <RecentCard
+              title="Recent summaries"
+              icon={Sparkles}
+              empty="Generate and save a summary from your study sources."
+              rows={data.recent.summaries.map((s) => ({
+                id: s.id,
+                title: s.title,
+                url: '/summaries/' + s.id,
+                detail: dateLabel(s.generatedAt),
+              }))}
+            />
+            <RecentCard
+              title="Recent quiz attempts"
+              icon={ClipboardCheck}
+              empty="Start a quiz to track your progress here."
+              rows={data.performance.recent.map((a) => ({
+                id: a.id,
+                title: a.quizTitle,
+                url: '/attempts/' + a.id + (a.status === 'COMPLETED' ? '/results' : ''),
+                detail:
+                  a.status === 'COMPLETED'
+                    ? formatPercent(a.percentage) + ' · ' + dateLabel(a.finishedAt)
+                    : a.status === 'IN_PROGRESS'
+                      ? 'In progress'
+                      : 'Abandoned',
+              }))}
+            />
+            <RecentCard
+              title="Saved quizzes"
+              icon={BookOpen}
+              empty="Save a generated quiz to study it again anytime."
+              rows={data.recent.quizzes.map((q) => ({
+                id: q.id,
+                title: q.title,
+                url: '/quizzes/' + q.id,
+                detail: dateLabel(q.createdAt),
+              }))}
+            />
+            <AIUsage />
+          </div>
         </>
       )}
       {creating && <CreateStudyNote onClose={() => setCreating(false)} />}

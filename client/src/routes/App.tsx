@@ -42,7 +42,9 @@ export function App() {
         <Routes>
           <Route
             path="/auth"
-            element={!loading && user ? <Navigate to="/" replace /> : <AuthPage />}
+            element={
+              !loading && user ? <Navigate to="/dashboard" replace /> : <AuthPage />
+            }
           />
           <Route element={<ProtectedRoute />}>
             <Route element={<WorkspaceLayout />}>

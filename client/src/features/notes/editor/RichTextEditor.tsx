@@ -21,7 +21,7 @@ export function RichTextEditor({ content, disabled, onChange }: RichTextEditorPr
         role: 'textbox',
         'aria-label': 'Note content',
         'aria-multiline': 'true',
-        class: 'min-h-72 rounded-b-lg bg-white dark:bg-slate-900 p-5 outline-none',
+        class: 'min-h-72 rounded-b-xl bg-panel px-4 py-5 leading-relaxed sm:px-7',
       },
     },
     onUpdate: ({ editor: current }) =>
@@ -35,7 +35,14 @@ export function RichTextEditor({ content, disabled, onChange }: RichTextEditorPr
       editor.commands.setContent(content, { emitUpdate: false });
     }
   }, [editor, content]);
-  if (!editor) return <p role="status">Loading editor…</p>;
+  if (!editor)
+    return (
+      <div
+        role="status"
+        aria-label="Loading editor"
+        className="h-72 animate-pulse rounded-xl border border-edge bg-canvas"
+      />
+    );
   const controls = [
     {
       label: 'Paragraph',
@@ -99,18 +106,18 @@ export function RichTextEditor({ content, disabled, onChange }: RichTextEditorPr
     },
   ];
   return (
-    <div className="rounded-lg border border-slate-300 dark:border-slate-600 [&_h1]:text-3xl [&_h2]:text-2xl [&_h3]:text-xl [&_h1]:font-semibold [&_h2]:font-semibold [&_h3]:font-semibold [&_p]:my-3 [&_ul]:ml-5 [&_ul]:list-disc [&_ol]:ml-5 [&_ol]:list-decimal [&_pre]:overflow-auto [&_pre]:rounded [&_pre]:bg-slate-100 [&_pre]:p-4 [&_blockquote]:border-l-4 [&_blockquote]:border-slate-300 [&_blockquote]:pl-4 [&_ul[data-type=taskList]]:list-none [&_li[data-type=taskItem]]:flex [&_li[data-type=taskItem]]:gap-3">
+    <div className="rounded-xl border border-edge [&_h1]:text-3xl [&_h2]:text-2xl [&_h3]:text-xl [&_h1]:font-semibold [&_h2]:font-semibold [&_h3]:font-semibold [&_p]:my-3 [&_ul]:ml-5 [&_ul]:list-disc [&_ol]:ml-5 [&_ol]:list-decimal [&_pre]:overflow-auto [&_pre]:rounded [&_pre]:bg-canvas [&_pre]:p-4 [&_blockquote]:border-l-4 [&_blockquote]:border-slate-300 [&_blockquote]:pl-4 [&_ul[data-type=taskList]]:list-none [&_li[data-type=taskItem]]:flex [&_li[data-type=taskItem]]:gap-3">
       <div
         role="toolbar"
         aria-label="Text formatting"
-        className="flex flex-wrap gap-1 border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 p-2"
+        className="flex flex-wrap gap-1 rounded-t-xl border-b border-edge bg-canvas p-2"
       >
         {controls.map((control) => (
           <button
             key={control.label}
             type="button"
             disabled={disabled}
-            className="rounded px-2 py-1 text-sm hover:bg-slate-200 dark:hover:bg-slate-700 aria-pressed:bg-teal-100 disabled:opacity-40"
+            className="rounded-md px-2.5 py-1.5 text-sm text-muted hover:bg-panel aria-pressed:bg-brand-soft aria-pressed:text-brand-text disabled:opacity-40"
             aria-pressed={control.active}
             onClick={control.run}
           >

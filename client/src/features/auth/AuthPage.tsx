@@ -17,7 +17,7 @@ function AuthForm({ mode, code }: { mode: string; code: string }) {
       ? 'Reset your password'
       : registering
         ? 'Create your account'
-        : 'Sign in to Studyspace';
+        : 'Sign in to QuillQuiz';
 
   const submit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -37,7 +37,7 @@ function AuthForm({ mode, code }: { mode: string; code: string }) {
       } else {
         if (registering) await authService.register(email, password);
         else await authService.signIn(email, password);
-        void navigate('/', { replace: true });
+        void navigate('/dashboard', { replace: true });
       }
     } catch (cause) {
       setError(authService.authError(cause));
@@ -47,10 +47,10 @@ function AuthForm({ mode, code }: { mode: string; code: string }) {
   };
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-slate-50 dark:bg-slate-950 p-6">
-      <section className="w-full max-w-md rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-8 shadow-sm">
+    <main className="flex min-h-screen items-center justify-center bg-canvas p-6">
+      <section className="surface w-full max-w-md p-6 sm:p-8">
         <Link to="/" className="font-semibold text-teal-800 dark:text-teal-300">
-          Studyspace
+          QuillQuiz
         </Link>
         <h1 className="mt-6 text-2xl font-semibold text-slate-900 dark:text-slate-100">
           {title}

@@ -34,7 +34,7 @@ it('links recent notes and creation workflows from a populated dashboard', async
       </MemoryRouter>
     </QueryClientProvider>,
   );
-  expect(await screen.findByRole('link', { name: 'Older note' })).toHaveAttribute(
+  expect(await screen.findByRole('link', { name: /Older note/ })).toHaveAttribute(
     'href',
     '/projects/' + projectId + '/notes/' + id,
   );
@@ -47,5 +47,7 @@ it('links recent notes and creation workflows from a populated dashboard', async
     'href',
     '/analytics',
   );
-  expect(screen.getAllByText('Nothing here yet.')).toHaveLength(3);
+  expect(
+    screen.getByText('Generate and save a summary from your study sources.'),
+  ).toBeInTheDocument();
 });

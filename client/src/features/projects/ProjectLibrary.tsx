@@ -16,7 +16,13 @@ import type {
 
 export default function ProjectLibrary() {
   const [params, setParams] = useSearchParams();
-  const [query, setQuery] = useState(initialQuery);
+  const [filters, setQuery] = useState(initialQuery);
+  const term = params.get('search') ?? '';
+  const query = {
+    ...filters,
+    search: term,
+    page: filters.search === term ? filters.page : 1,
+  };
   const projects = useProjects(query);
   const [editing, setEditing] = useState<Project | null>(null);
   const [preview, setPreview] = useState<DeletionPreview | null>(null);
@@ -48,9 +54,9 @@ export default function ProjectLibrary() {
   return (
     <section>
       <div className="flex flex-wrap items-center justify-between gap-4">
-        <h1 className="text-3xl font-semibold">My projects</h1>
+        <h1 className="page-title">My projects</h1>
         <button
-          className="rounded-lg bg-teal-800 px-4 py-2 text-white"
+          className="action action-primary"
           onClick={() => {
             save.reset();
             setParams({ create: 'true' });
@@ -67,9 +73,11 @@ export default function ProjectLibrary() {
             type="search"
             placeholder="Search projects"
             value={query.search}
-            onChange={(event) =>
-              setQuery({ ...query, search: event.target.value, page: 1 })
-            }
+            onChange={(event) => {
+              const search = event.target.value;
+              setQuery({ ...query, search, page: 1 });
+              setParams(search ? { search } : {}, { replace: true });
+            }}
           />
         </label>
         <label>
