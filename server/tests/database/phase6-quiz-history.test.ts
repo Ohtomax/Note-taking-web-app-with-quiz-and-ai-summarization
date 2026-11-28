@@ -26,7 +26,7 @@ test('P6-T06 every fixed key grades identically in both modes and survives dupli
         });
       assert.equal(started.status, 201);
       const path = '/api/v1/attempts/' + started.body.data.id;
-      for (const [index, question] of version.questions.entries()) {
+      for (const question of version.questions) {
         const input =
           question.type === 'IDENTIFICATION'
             ? { text: '  ＴＣＰ  ' }
@@ -46,10 +46,7 @@ test('P6-T06 every fixed key grades identically in both modes and survives dupli
           feedback?: unknown;
           options: Array<{ isCorrect?: boolean }>;
         }>;
-        assert.equal(
-          questions.filter((q) => q.feedback !== undefined).length,
-          mode === 'PRACTICE' ? index + 1 : 0,
-        );
+        assert.equal(questions.filter((q) => q.feedback !== undefined).length, 0);
         assert.ok(
           questions.every((q) => q.options.every((o) => o.isCorrect === undefined)),
         );

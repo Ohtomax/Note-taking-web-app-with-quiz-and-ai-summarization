@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { randomUUID } from 'node:crypto';
 import { withWorkspace } from './workspace.fixture.ts';
 import { seedStudyQuiz } from './study.fixture.ts';
-test('P5-T10 practice races commit one immutable answer and reveal only its feedback after commit', async () => {
+test('P5-T10 practice answer edits respect revisions and keep feedback private', async () => {
   await withWorkspace(async ({ db, project, foreign, api }) => {
     const { quiz, version } = await seedStudyQuiz(db, project.id),
       other = await seedStudyQuiz(db, foreign.id);
@@ -27,14 +27,22 @@ test('P5-T10 practice races commit one immutable answer and reveal only its feed
     assert.deepEqual(results.map((r) => r.status).sort(), [200, 409]);
     const stored = await db.quizAttemptAnswer.findMany({ where: { attemptId: id } });
     assert.equal(stored.length, 1);
-    const selected = stored[0]!.selectedOptionIds as string[];
-    const replay = await answer(selected[0]!);
-    assert.equal(replay.status, 200);
-    assert.equal(replay.body.data.questions[0].feedback.isCorrect, stored[0]!.isCorrect);
+    assert.equal(stored[0]!.isCorrect, null);
+    const revised = await api
+      .put(url)
+      .auth('alice', { type: 'bearer' })
+      .send({
+        expectedAnswerRevision: 1,
+        optionIds: [q.options[1]!.id],
+        questionIndex: 1,
+      });
+    assert.equal(revised.status, 200);
+    assert.equal(revised.body.data.lastQuestionIndex, 1);
+    assert.equal(revised.body.data.answers[0].revision, 2);
     assert.ok(
-      replay.body.data.questions
-        .slice(1)
-        .every((question: { feedback?: unknown }) => !question.feedback),
+      revised.body.data.questions.every(
+        (question: { feedback?: unknown }) => !question.feedback,
+      ),
     );
     assert.equal((await answer(q.options[0]!.id, 'bob')).status, 404);
     assert.equal(

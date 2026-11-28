@@ -6,7 +6,7 @@ import { quizSettingsSchema } from '../../src/utils/input-validators/quizzes.ts'
 import { validQuiz } from '../fixtures/ai.ts';
 const settings = quizSettingsSchema.parse({
   title: 'Session protocols',
-  questionCount: 2,
+  questionCount: 10,
   difficulty: 'EASY',
   questionTypes: ['MULTIPLE_CHOICE'],
   defaultMode: 'PRACTICE',

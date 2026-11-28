@@ -94,3 +94,22 @@
     scroll-behavior: auto !important;
   }
 }
+
+.quiz-progress {
+  appearance: none;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--edge);
+}
+.quiz-progress::-webkit-progress-bar {
+  background: var(--edge);
+}
+.quiz-progress::-webkit-progress-value {
+  border-radius: 999px;
+  background: var(--brand);
+  transition: width 240ms ease;
+}
+.quiz-progress::-moz-progress-bar {
+  border-radius: 999px;
+  background: var(--brand);
+}

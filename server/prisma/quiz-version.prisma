@@ -2,6 +2,7 @@ enum Difficulty {
   EASY
   MEDIUM
   HARD
+  MIXED
 }
 
 enum QuizMode {

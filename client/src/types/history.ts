@@ -9,7 +9,7 @@ export const historyEntrySchema = z.object({
   projectTitle: z.string(),
   quizDeleted: z.boolean(),
   projectDeleted: z.boolean(),
-  difficulty: z.enum(['EASY', 'MEDIUM', 'HARD']),
+  difficulty: z.enum(['EASY', 'MEDIUM', 'HARD', 'MIXED']),
   mode: z.enum(['PRACTICE', 'EXAM']),
   status: z.enum(['IN_PROGRESS', 'COMPLETED', 'ABANDONED']),
   startedAt: z.string().datetime(),

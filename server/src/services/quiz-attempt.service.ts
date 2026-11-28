@@ -49,8 +49,7 @@ export function playerAttempt(row: AttemptRow) {
         text: question.options.find((option) => option.id === optionId)!.text,
       }),
     );
-    const reveal =
-      row.status === 'COMPLETED' || (row.mode === 'PRACTICE' && Boolean(answer));
+    const reveal = row.status === 'COMPLETED';
     return {
       id: question.id,
       position: index + 1,
@@ -154,29 +153,14 @@ export const createQuizAttemptService = (repository: QuizAttemptRepository) => (
     if (!question)
       throw new ServiceError('RESOURCE_NOT_FOUND', 'Resource not found', 404);
     const outcome = scoreAnswer(question, input);
-    if (attempt.mode === 'EXAM')
-      return playerAttempt(
-        await repository.exam(
-          ownerId,
-          id,
-          questionId,
-          input.expectedAnswerRevision,
-          outcome,
-        ),
-      );
-    if (!outcome.answered)
-      throw new ServiceError(
-        'ANSWER_REQUIRED',
-        'Choose an answer before submitting practice feedback.',
-        400,
-      );
     return playerAttempt(
-      await repository.practice(
+      await repository.saveAnswer(
         ownerId,
         id,
         questionId,
         input.expectedAnswerRevision,
         outcome,
+        input.questionIndex,
       ),
     );
   },

@@ -11,7 +11,7 @@ it('validates quiz settings before calls and retains them through same-key retry
   const projectId = '11111111-1111-4111-8111-111111111111';
   const settings = {
     title: 'Protocols',
-    questionCount: 1,
+    questionCount: 5,
     difficulty: 'HARD',
     questionTypes: ['IDENTIFICATION'],
     defaultMode: 'EXAM',
@@ -28,15 +28,13 @@ it('validates quiz settings before calls and retains them through same-key retry
       settings,
       output: {
         title: 'Protocols',
-        questions: [
-          {
-            type: 'IDENTIFICATION',
-            prompt: 'Name the transport protocol',
-            acceptedAnswers: ['tcp'],
-            explanation: null,
-            sourceKeys: ['note:a'],
-          },
-        ],
+        questions: Array.from({ length: 5 }, (_, index) => ({
+          type: 'IDENTIFICATION',
+          prompt: 'Name transport protocol ' + (index + 1),
+          acceptedAnswers: ['tcp'],
+          explanation: null,
+          sourceKeys: ['note:a'],
+        })),
       },
       sources: [
         {
@@ -71,12 +69,12 @@ it('validates quiz settings before calls and retains them through same-key retry
   fireEvent.change(screen.getByLabelText('Quiz title'), {
     target: { value: 'Protocols' },
   });
-  fireEvent.click(screen.getByLabelText('MULTIPLE CHOICE'));
+  fireEvent.click(screen.getByLabelText('Multiple choice'));
   fireEvent.click(screen.getByRole('button', { name: 'Generate quiz' }));
   expect(await screen.findByRole('alert')).toBeInTheDocument();
   expect(generate).not.toHaveBeenCalled();
-  fireEvent.click(screen.getByLabelText('IDENTIFICATION'));
-  fireEvent.change(screen.getByLabelText('Questions'), { target: { value: 1 } });
+  fireEvent.click(screen.getByLabelText('Identification'));
+  fireEvent.change(screen.getByLabelText('Questions'), { target: { value: 5 } });
   fireEvent.change(screen.getByLabelText('Difficulty'), { target: { value: 'HARD' } });
   fireEvent.change(screen.getByLabelText('Default mode'), { target: { value: 'EXAM' } });
   fireEvent.click(screen.getByLabelText('Include explanations'));

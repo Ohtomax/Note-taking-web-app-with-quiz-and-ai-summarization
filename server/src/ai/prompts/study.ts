@@ -27,7 +27,7 @@ export function buildStudyPrompt(
     'For MAP/MERGE return sections containing text and sourceKeys. Cover every supplied source, including the last segment. Preserve distinct concepts.',
     operation === 'SUMMARY'
       ? 'For FINAL follow the requested summary length and format.'
-      : 'For FINAL return exactly questionCount questions of the requested types, difficulty and explanation preference. Keys must be unambiguous.',
+      : 'For FINAL return exactly questionCount questions of the requested types, difficulty and explanation preference. For MIXED difficulty balance recall, interpretation, and application. Test distinct concepts and use plausible distractors grounded in the material. Keys must be unambiguous.',
     'Stage: ' + stage + '. Return only an object matching the supplied JSON schema.',
   ].join('\n');
   const prompt = JSON.stringify({

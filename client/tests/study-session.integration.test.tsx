@@ -96,9 +96,7 @@ it.skipIf(!enabled).each([1, 2])(
     fireEvent.change(within(generator).getByLabelText('Quiz title'), {
       target: { value: 'Session protocols' },
     });
-    fireEvent.change(within(generator).getByLabelText('Questions'), {
-      target: { value: '2' },
-    });
+
     fireEvent.click(within(generator).getByRole('button', { name: 'Generate quiz' }));
     const preview = await screen.findByRole('region', { name: 'Quiz preview' });
     fireEvent.click(within(preview).getByRole('button', { name: 'Save quiz' }));
@@ -108,47 +106,38 @@ it.skipIf(!enabled).each([1, 2])(
     const quizId = list.data[0]!.id;
     await visit('/quizzes/' + quizId);
     fireEvent.click(await screen.findByRole('button', { name: 'Practice version 1' }));
-    await screen.findByRole('heading', { name: /Question 1 of 2:/ });
+    await screen.findByText('Question 1 of 10');
     const practiceId = window.location.pathname.split('/')[2]!;
-    const complete = async (mode: 'PRACTICE' | 'EXAM', correct: boolean) => {
-      fireEvent.click(screen.getByRole('radio', { name: correct ? 'TCP' : 'UDP' }));
-      fireEvent.click(
-        screen.getByRole('button', {
-          name: mode === 'EXAM' ? 'Save answer' : 'Submit practice answer',
-        }),
-      );
-      if (mode === 'PRACTICE')
-        await screen.findByRole('heading', { name: correct ? 'Correct' : 'Incorrect' });
-      else {
-        await waitFor(() =>
-          expect(screen.getByRole('button', { name: 'Next question' })).toBeEnabled(),
+    const complete = async (correct: boolean) => {
+      for (let index = 0; index < 10; index++) {
+        await screen.findByText('Question ' + (index + 1) + ' of 10');
+        fireEvent.click(
+          screen.getByRole('radio', { name: correct && index < 5 ? 'TCP' : 'UDP' }),
         );
         expect(screen.queryByText(/Accepted answer:/)).not.toBeInTheDocument();
+        fireEvent.click(
+          screen.getByRole('button', {
+            name: index === 9 ? 'Submit quiz' : 'Next question',
+          }),
+        );
       }
-      fireEvent.click(screen.getByRole('button', { name: 'Next question' }));
-      await screen.findByRole('heading', { name: /Question 2 of 2:/ });
-      fireEvent.click(
-        screen.getByRole('button', {
-          name: mode === 'EXAM' ? 'Submit exam' : 'Finish practice',
-        }),
-      );
       fireEvent.click(screen.getByRole('button', { name: 'Confirm submission' }));
-      await screen.findByRole('heading', { name: 'Attempt completed' });
+      await screen.findByRole('heading', { name: /Session protocols — results/ });
     };
-    await complete('PRACTICE', true);
+    await complete(true);
     await visit('/quizzes/' + quizId);
     fireEvent.click(await screen.findByRole('button', { name: 'Exam version 1' }));
-    await screen.findByRole('heading', { name: /Question 1 of 2:/ });
+    await screen.findByText('Question 1 of 10');
     const examId = window.location.pathname.split('/')[2]!;
-    await complete('EXAM', false);
+    await complete(false);
     await visit('/attempts/' + practiceId + '/results');
     await screen.findByRole('heading', { name: /Session protocols — results/ });
     expect(screen.getByText('50.00%')).toBeInTheDocument();
     fireEvent.click(screen.getByRole('button', { name: 'Retake this version' }));
-    await screen.findByRole('heading', { name: /Question 1 of 2:/ });
+    await screen.findByText('Question 1 of 10');
     const retakeId = window.location.pathname.split('/')[2]!;
     expect(new Set([practiceId, examId, retakeId]).size).toBe(3);
-    await complete('PRACTICE', true);
+    await complete(true);
     const history = await historyApi.list({ page: 1 });
     expect(history.total).toBe(3);
     expect((await attemptsApi.results(examId)).data.result!.percentage).toBe(0);
@@ -156,8 +145,8 @@ it.skipIf(!enabled).each([1, 2])(
       const report = await analyticsApi.read(scope, {});
       expect(report.totals.completedAttempts).toBe(3);
       expect(report.totals.meanScore).toBeCloseTo(100 / 3);
-      expect(report.totals.accuracy).toBeCloseTo(200 / 3);
-      expect(report.totals.skipped).toBe(3);
+      expect(report.totals.accuracy).toBeCloseTo(100 / 3);
+      expect(report.totals.skipped).toBe(0);
     }
     const dashboard = await dashboardApi.read();
     expect(dashboard.performance.workspace).toMatchObject({

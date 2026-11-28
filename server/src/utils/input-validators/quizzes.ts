@@ -10,7 +10,7 @@ export const quizSettingsSchema = z
   .object({
     title: z.string().trim().min(1).max(200),
     questionCount: z.number().int().min(1).max(50),
-    difficulty: z.enum(['EASY', 'MEDIUM', 'HARD']),
+    difficulty: z.enum(['EASY', 'MEDIUM', 'HARD', 'MIXED']),
     questionTypes: z
       .array(questionTypeSchema)
       .min(1)

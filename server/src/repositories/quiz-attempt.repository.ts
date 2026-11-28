@@ -104,12 +104,6 @@ export async function lockAttempt(
     throw new ServiceError('RESOURCE_NOT_FOUND', 'Resource not found', 404);
   return tx.quizAttempt.findUniqueOrThrow({ where: { id }, select: attemptSelect });
 }
-function sameAnswer(answer: AttemptRow['answers'][number], outcome: AnswerOutcome) {
-  return (
-    JSON.stringify(answer.selectedOptionIds) ===
-      JSON.stringify(outcome.selectedOptionIds) && answer.text === outcome.text
-  );
-}
 function shuffled<T>(items: T[], enabled: boolean): T[] {
   const result = [...items];
   if (enabled)
@@ -280,23 +274,26 @@ export const createQuizAttemptRepository = (db: PrismaClient) => ({
         select: attemptSelect,
       });
     }),
-  exam: (
+  saveAnswer: (
     ownerId: string,
     id: string,
     questionId: string,
     expectedRevision: number,
     outcome: AnswerOutcome,
+    questionIndex?: number,
   ) =>
     serializable(db, async (tx) => {
       const attempt = await lockAttempt(tx, ownerId, id);
-      if (attempt.status !== 'IN_PROGRESS' || attempt.mode !== 'EXAM')
-        throw new ServiceError(
-          'ATTEMPT_CLOSED',
-          'This exam attempt cannot be changed.',
-          409,
-        );
+      if (attempt.status !== 'IN_PROGRESS')
+        throw new ServiceError('ATTEMPT_CLOSED', 'This attempt cannot be changed.', 409);
       if (!attempt.version.questions.some((question) => question.id === questionId))
         throw new ServiceError('RESOURCE_NOT_FOUND', 'Resource not found', 404);
+      if (questionIndex !== undefined && questionIndex >= attempt.totalQuestions)
+        throw new ServiceError(
+          'INVALID_INPUT',
+          'Question location is out of range.',
+          400,
+        );
       const answer = attempt.answers.find((item) => item.questionId === questionId);
       if (expectedRevision !== (answer?.revision ?? 0))
         throw new ServiceError(
@@ -318,50 +315,12 @@ export const createQuizAttemptRepository = (db: PrismaClient) => ({
         await tx.quizAttemptAnswer.create({
           data: { attemptId: id, versionId: attempt.versionId, questionId, ...data },
         });
-      return tx.quizAttempt.findUniqueOrThrow({ where: { id }, select: attemptSelect });
-    }),
-  practice: (
-    ownerId: string,
-    id: string,
-    questionId: string,
-    expectedRevision: number,
-    outcome: AnswerOutcome,
-  ) =>
-    serializable(db, async (tx) => {
-      const attempt = await lockAttempt(tx, ownerId, id);
-      if (attempt.status !== 'IN_PROGRESS' || attempt.mode !== 'PRACTICE')
-        throw new ServiceError(
-          'ATTEMPT_CLOSED',
-          'This practice attempt cannot be changed.',
-          409,
-        );
-      if (!attempt.version.questions.some((question) => question.id === questionId))
-        throw new ServiceError('RESOURCE_NOT_FOUND', 'Resource not found', 404);
-      const existing = attempt.answers.find((answer) => answer.questionId === questionId);
-      if (existing) {
-        if (sameAnswer(existing, outcome)) return attempt;
-        throw new ServiceError(
-          'ANSWER_LOCKED',
-          'A practice answer is already recorded for this question.',
-          409,
-        );
-      }
-      if (expectedRevision !== 0)
-        throw new ServiceError(
-          'ANSWER_REVISION_CONFLICT',
-          'Reload the recorded answer before retrying.',
-          409,
-        );
-      await tx.quizAttemptAnswer.create({
-        data: {
-          attemptId: id,
-          versionId: attempt.versionId,
-          questionId,
-          selectedOptionIds: outcome.selectedOptionIds,
-          text: outcome.text,
-          isCorrect: outcome.isCorrect,
-        },
-      });
+      if (questionIndex !== undefined)
+        return tx.quizAttempt.update({
+          where: { id },
+          data: { lastQuestionIndex: questionIndex },
+          select: attemptSelect,
+        });
       return tx.quizAttempt.findUniqueOrThrow({ where: { id }, select: attemptSelect });
     }),
   start: async (

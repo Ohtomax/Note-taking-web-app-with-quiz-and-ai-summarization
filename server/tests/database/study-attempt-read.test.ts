@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { randomUUID } from 'node:crypto';
 import { withWorkspace } from './workspace.fixture.ts';
 import { seedStudyQuiz } from './study.fixture.ts';
-test('P5-T08 exam player payloads never disclose keys and practice only reveals committed questions', async () => {
+test('P5-T08 open player payloads never disclose keys for either mode', async () => {
   await withWorkspace(async ({ db, project, api }) => {
     const { quiz, version } = await seedStudyQuiz(db, project.id);
     await api
@@ -33,17 +33,8 @@ test('P5-T08 exam player payloads never disclose keys and practice only reveals 
       });
       const resumed = await api.get(url).set('Authorization', 'Bearer alice');
       assert.equal(resumed.status, 200);
-      if (mode === 'EXAM') {
-        assert.ok(!JSON.stringify(resumed.body).includes('isCorrect'));
-        assert.ok(!JSON.stringify(resumed.body).includes('explanation'));
-      } else {
-        assert.equal(resumed.body.data.questions[0].feedback.isCorrect, true);
-        assert.ok(
-          resumed.body.data.questions
-            .slice(1)
-            .every((q: { feedback?: unknown }) => !q.feedback),
-        );
-      }
+      assert.ok(!JSON.stringify(resumed.body).includes('isCorrect'));
+      assert.ok(!JSON.stringify(resumed.body).includes('explanation'));
       assert.equal((await api.get(url).set('Authorization', 'Bearer bob')).status, 404);
     }
   });

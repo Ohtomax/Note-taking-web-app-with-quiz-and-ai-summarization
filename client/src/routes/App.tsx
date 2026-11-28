@@ -47,6 +47,7 @@ export function App() {
             }
           />
           <Route element={<ProtectedRoute />}>
+            <Route path="/attempts/:attemptId" element={<QuizPlayer />} />
             <Route element={<WorkspaceLayout />}>
               <Route path="/" element={<ProjectLibrary />} />
               <Route path="/dashboard" element={<Dashboard />} />
@@ -54,7 +55,6 @@ export function App() {
               <Route path="/projects/:projectId/summaries" element={<SummaryLibrary />} />
               <Route path="/projects/:projectId/quizzes" element={<QuizLibrary />} />
               <Route path="/quizzes/:quizId" element={<QuizDetail />} />
-              <Route path="/attempts/:attemptId" element={<QuizPlayer />} />
               <Route path="/attempts/:attemptId/results" element={<QuizResults />} />
               <Route path="/history" element={<QuizHistory />} />
               <Route path="/analytics" element={<AnalyticsPage />} />

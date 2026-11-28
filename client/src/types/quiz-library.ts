@@ -14,7 +14,7 @@ export const quizVersionSchema = z.object({
   id: z.string().uuid(),
   quizId: z.string().uuid(),
   version: z.number().int().positive(),
-  difficulty: z.enum(['EASY', 'MEDIUM', 'HARD']),
+  difficulty: z.enum(['EASY', 'MEDIUM', 'HARD', 'MIXED']),
   defaultMode: z.enum(['PRACTICE', 'EXAM']),
   includeExplanations: z.boolean(),
   generatedAt: z.string().datetime(),
@@ -85,7 +85,7 @@ export function authoringDraft(
 export const versionHeaderSchema = z.object({
   id: z.string().uuid(),
   version: z.number().int(),
-  difficulty: z.enum(['EASY', 'MEDIUM', 'HARD']),
+  difficulty: z.enum(['EASY', 'MEDIUM', 'HARD', 'MIXED']),
   generatedAt: z.string().datetime(),
   _count: z.object({ questions: z.number().int() }),
 });

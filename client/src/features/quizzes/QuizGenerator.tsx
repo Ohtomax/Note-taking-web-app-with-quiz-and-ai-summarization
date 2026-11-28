@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import { Sparkles } from 'lucide-react';
+import { AsyncState } from '@/components/ui/AsyncState';
 import { AIUsage } from '@/features/dashboard/AIUsage';
 import { useGeneration } from '@/features/summaries/useGeneration';
 import {
@@ -9,6 +11,19 @@ import {
 import { GeneratedQuizEditor } from './GeneratedQuizEditor';
 import type { SourceChoice } from '@/types/study-sources';
 import type { QuizRegenerationTarget } from '@/types/quiz-library';
+
+const counts = [5, 10, 15, 20, 30];
+const types = {
+  MULTIPLE_CHOICE: 'Multiple choice',
+  TRUE_FALSE: 'True or false',
+  IDENTIFICATION: 'Identification',
+  MULTIPLE_SELECT: 'Multiple select',
+};
+const mixedTypes: QuizSettings['questionTypes'] = [
+  'MULTIPLE_CHOICE',
+  'TRUE_FALSE',
+  'IDENTIFICATION',
+];
 
 export function QuizGenerator({
   projectId,
@@ -25,9 +40,9 @@ export function QuizGenerator({
     initialSettings ?? {
       title: '',
       questionCount: 10,
-      difficulty: 'EASY',
+      difficulty: 'MEDIUM',
       questionTypes: ['MULTIPLE_CHOICE'],
-      defaultMode: 'PRACTICE',
+      defaultMode: 'EXAM',
       includeExplanations: true,
     },
   );
@@ -48,11 +63,11 @@ export function QuizGenerator({
     );
   };
   return (
-    <section
-      className="mt-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-4"
-      aria-label="Generate quiz"
-    >
-      <h2 className="font-semibold">Generate a quiz</h2>
+    <section className="surface p-5 sm:p-6" aria-label="Generate quiz">
+      <h2 className="flex items-center gap-2 text-lg font-semibold">
+        <Sparkles size={18} aria-hidden="true" className="text-brand-text" />
+        Generate a quiz
+      </h2>
       <AIUsage compact />
       <form
         className="mt-4 grid gap-4"
@@ -64,7 +79,7 @@ export function QuizGenerator({
         <label className="grid gap-1 text-sm">
           Quiz title
           <input
-            className="rounded border border-slate-300 dark:border-slate-600 p-2"
+            className="field"
             required
             maxLength={200}
             value={settings.title}
@@ -74,22 +89,25 @@ export function QuizGenerator({
         <div className="grid gap-3 sm:grid-cols-3">
           <label className="grid gap-1 text-sm">
             Questions
-            <input
-              className="rounded border border-slate-300 dark:border-slate-600 p-2"
-              type="number"
-              min={1}
-              max={50}
-              required
+            <select
+              className="field"
               value={settings.questionCount}
               onChange={(event) =>
                 setSettings({ ...settings, questionCount: Number(event.target.value) })
               }
-            />
+            >
+              {!counts.includes(settings.questionCount) && (
+                <option>{settings.questionCount}</option>
+              )}
+              {counts.map((count) => (
+                <option key={count}>{count}</option>
+              ))}
+            </select>
           </label>
           <label className="grid gap-1 text-sm">
             Difficulty
             <select
-              className="rounded border border-slate-300 dark:border-slate-600 p-2"
+              className="field"
               value={settings.difficulty}
               onChange={(event) =>
                 setSettings({
@@ -98,15 +116,17 @@ export function QuizGenerator({
                 })
               }
             >
-              {['EASY', 'MEDIUM', 'HARD'].map((value) => (
-                <option key={value}>{value}</option>
+              {['EASY', 'MEDIUM', 'HARD', 'MIXED'].map((value) => (
+                <option key={value} value={value}>
+                  {value[0] + value.slice(1).toLowerCase()}
+                </option>
               ))}
             </select>
           </label>
           <label className="grid gap-1 text-sm">
             Default mode
             <select
-              className="rounded border border-slate-300 dark:border-slate-600 p-2"
+              className="field"
               value={settings.defaultMode}
               onChange={(event) =>
                 setSettings({
@@ -120,10 +140,24 @@ export function QuizGenerator({
             </select>
           </label>
         </div>
-        <fieldset className="grid gap-2">
+        <fieldset className="flex flex-wrap gap-2">
           <legend className="mb-2 text-sm font-medium">Question types</legend>
+          <button
+            type="button"
+            className="action aria-pressed:border-brand aria-pressed:bg-brand-soft aria-pressed:text-brand-text"
+            aria-pressed={
+              settings.questionTypes.length === mixedTypes.length &&
+              mixedTypes.every((type) => settings.questionTypes.includes(type))
+            }
+            onClick={() => setSettings({ ...settings, questionTypes: mixedTypes })}
+          >
+            Mixed
+          </button>
           {questionTypeSchema.options.map((type) => (
-            <label className="flex items-center gap-2 text-sm" key={type}>
+            <label
+              className="action cursor-pointer has-checked:border-brand has-checked:bg-brand-soft has-checked:text-brand-text"
+              key={type}
+            >
               <input
                 type="checkbox"
                 checked={settings.questionTypes.includes(type)}
@@ -136,7 +170,7 @@ export function QuizGenerator({
                   })
                 }
               />
-              {type.replaceAll('_', ' ')}
+              {types[type]}
             </label>
           ))}
         </fieldset>
@@ -155,7 +189,7 @@ export function QuizGenerator({
           allowance and preserves saved notes.
         </p>
         <button
-          className="w-fit rounded bg-teal-800 px-4 py-2 text-white disabled:opacity-50"
+          className="action action-primary w-fit"
           disabled={!ready || generation.pending}
         >
           {generation.pending
@@ -175,11 +209,7 @@ export function QuizGenerator({
           {generation.error.message} The same request key is retained.
         </p>
       )}
-      {generation.pending && (
-        <p role="status" className="mt-3">
-          Quiz generation is running. Your form is retained.
-        </p>
-      )}
+      {generation.pending && <AsyncState loading error={null} retry={() => {}} />}
       {generation.data && ['FAILED', 'UNCERTAIN'].includes(generation.data.status) && (
         <p role="alert" className="mt-3">
           Generation {generation.data.status.toLowerCase()}. Your form and sources are

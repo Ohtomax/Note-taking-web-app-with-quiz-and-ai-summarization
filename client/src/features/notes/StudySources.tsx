@@ -6,11 +6,11 @@ import { QuizGenerator } from '@/features/quizzes/QuizGenerator';
 export function StudySources(props: Omit<SourcePickerProps, 'onChange'>) {
   const [choice, setChoice] = useState<SourceChoice | null>(null);
   return (
-    <details className="my-5">
-      <summary className="cursor-pointer font-medium text-teal-800 dark:text-teal-300">
+    <details className="surface my-5 p-4 sm:p-5">
+      <summary className="cursor-pointer font-semibold text-brand-text">
         Choose study sources
       </summary>
-      <div className="mt-3">
+      <div className="mt-4 grid gap-4">
         <SourcePicker {...props} onChange={setChoice} />
         <SummaryGenerator projectId={props.projectId} choice={choice} />
         <QuizGenerator projectId={props.projectId} choice={choice} />

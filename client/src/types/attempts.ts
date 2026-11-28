@@ -50,7 +50,7 @@ export const attemptSchema = z
     quizTitle: z.string(),
     versionId: z.string().uuid(),
     version: z.number().int(),
-    difficulty: z.enum(['EASY', 'MEDIUM', 'HARD']),
+    difficulty: z.enum(['EASY', 'MEDIUM', 'HARD', 'MIXED']),
     mode: z.enum(['PRACTICE', 'EXAM']),
     status: z.enum(['IN_PROGRESS', 'COMPLETED', 'ABANDONED']),
     startedAt: z.string().datetime(),
@@ -70,12 +70,7 @@ export const attemptSchema = z
         message: 'Attempt result does not match its terminal state',
       });
     for (const question of value.questions)
-      if (
-        question.feedback &&
-        value.status !== 'COMPLETED' &&
-        (value.mode === 'EXAM' ||
-          !value.answers.some((answer) => answer.questionId === question.id))
-      )
+      if (question.feedback && value.status !== 'COMPLETED')
         context.addIssue({
           code: 'custom',
           message: 'Unexpected answer disclosure in player response',
@@ -92,6 +87,7 @@ export interface StartAttemptInput {
 }
 export interface SaveAnswerInput {
   expectedAnswerRevision: number;
+  questionIndex?: number | undefined;
   optionIds?: string[] | undefined;
   text?: string | undefined;
 }
@@ -103,7 +99,7 @@ export const openAttemptSchema = z.object({
   versionId: z.string().uuid(),
   quizTitle: z.string(),
   version: z.number().int(),
-  difficulty: z.enum(['EASY', 'MEDIUM', 'HARD']),
+  difficulty: z.enum(['EASY', 'MEDIUM', 'HARD', 'MIXED']),
   mode: z.enum(['PRACTICE', 'EXAM']),
   status: z.literal('IN_PROGRESS'),
   startedAt: z.string().datetime(),

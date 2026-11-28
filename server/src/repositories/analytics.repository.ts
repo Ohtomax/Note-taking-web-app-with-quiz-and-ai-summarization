@@ -182,7 +182,7 @@ export const createAnalyticsRepository = (db: PrismaClient) => ({
       ...completedWhere(resolved.version, window),
       scoreRatio: { not: null },
     };
-    const difficultyLevels: Difficulty[] = ['EASY', 'MEDIUM', 'HARD'];
+    const difficultyLevels: Difficulty[] = ['EASY', 'MEDIUM', 'HARD', 'MIXED'];
     const [typeRows, difficulty] = await Promise.all([
       db.quizAttemptTypeMetric.groupBy({
         by: ['type'],

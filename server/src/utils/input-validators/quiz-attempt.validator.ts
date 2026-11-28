@@ -17,6 +17,7 @@ export const answerParamsSchema = attemptParamsSchema
 export const answerInputSchema = z
   .object({
     expectedAnswerRevision: z.number().int().min(0).max(100000000).default(0),
+    questionIndex: z.number().int().min(0).max(49).optional(),
     optionIds: z.array(z.string().uuid()).max(8).optional(),
     text: z.string().max(500).optional(),
   })

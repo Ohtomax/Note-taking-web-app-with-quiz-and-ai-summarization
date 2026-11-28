@@ -8,7 +8,7 @@ import { attemptsApi } from '@/api/attempts';
 import { resolveSession } from '@/features/auth/session.service';
 import { attemptFixture } from './fixtures/attempt';
 it.each(['PRACTICE', 'EXAM'] as const)(
-  'plays all question types by keyboard and reveals feedback according to %s mode',
+  'requires answers and withholds feedback throughout %s mode',
   async (mode) => {
     resolveSession({ uid: 'alice', email: null, getIdToken: async () => 'token' });
     let current = { ...attemptFixture(mode), lastQuestionIndex: 0 };
@@ -28,19 +28,7 @@ it.each(['PRACTICE', 'EXAM'] as const)(
               submittedAt: '2026-01-01T00:00:01.000Z',
             },
           ],
-          questions: current.questions.map((question) =>
-            question.id === questionId && mode === 'PRACTICE'
-              ? {
-                  ...question,
-                  feedback: {
-                    isCorrect: true,
-                    correctOptionIds: input.optionIds ?? [],
-                    acceptedAnswers: input.text ? [input.text] : [],
-                    explanation: 'Grounded feedback',
-                  },
-                }
-              : question,
-          ),
+          lastQuestionIndex: input.questionIndex ?? current.lastQuestionIndex,
         };
         return { data: current };
       });
@@ -70,15 +58,20 @@ it.each(['PRACTICE', 'EXAM'] as const)(
         <MemoryRouter initialEntries={['/attempts/' + current.id]}>
           <Routes>
             <Route path="/attempts/:attemptId" element={<QuizPlayer />} />
+            <Route
+              path="/attempts/:attemptId/results"
+              element={<h1>Recorded results</h1>}
+            />
           </Routes>
         </MemoryRouter>
       </QueryClientProvider>,
     );
     const user = userEvent.setup();
     for (let index = 0; index < 4; index++) {
-      await screen.findByRole('heading', {
-        name: new RegExp('Question ' + (index + 1) + ' of 4:'),
-      });
+      await screen.findByText('Question ' + (index + 1) + ' of 4');
+      const action = index === 3 ? 'Submit quiz' : 'Next question';
+      expect(screen.getByRole('button', { name: action })).toBeDisabled();
+      expect(screen.queryByText('Correct')).not.toBeInTheDocument();
       if (index === 3) {
         screen.getByLabelText('Identification answer').focus();
         await user.keyboard('TCP');
@@ -91,40 +84,15 @@ it.each(['PRACTICE', 'EXAM'] as const)(
         screen.getByRole('radio', { name: index === 0 ? 'TCP' : 'True' }).focus();
         await user.keyboard('[Space]');
       }
-      screen
-        .getByRole('button', {
-          name: mode === 'PRACTICE' ? 'Submit practice answer' : 'Save answer',
-        })
-        .focus();
+      screen.getByRole('button', { name: action }).focus();
       await user.keyboard('[Enter]');
-      await waitFor(() => expect(save).toHaveBeenCalledTimes(index + 1));
-      await waitFor(() =>
-        expect(
-          screen.getByRole('button', {
-            name: mode === 'PRACTICE' ? 'Answer recorded' : 'Save answer',
-          }),
-        ).toBeDisabled(),
-      );
-      if (mode === 'PRACTICE')
-        expect(await screen.findByText('Correct')).toBeInTheDocument();
-      else expect(screen.queryByText('Grounded feedback')).not.toBeInTheDocument();
-      if (index < 3) {
-        await waitFor(() =>
-          expect(screen.getByRole('button', { name: 'Next question' })).toBeEnabled(),
-        );
-        screen.getByRole('button', { name: 'Next question' }).focus();
-        await user.keyboard('[Enter]');
-      }
+      if (index < 3) await waitFor(() => expect(save).toHaveBeenCalledTimes(index + 1));
     }
-    screen
-      .getByRole('button', { name: mode === 'EXAM' ? 'Submit exam' : 'Finish practice' })
-      .focus();
-    await user.keyboard('[Enter]');
     await screen.findByRole('dialog');
     screen.getByRole('button', { name: 'Confirm submission' }).focus();
     await user.keyboard('[Enter]');
-    expect(await screen.findByText('Attempt completed')).toBeInTheDocument();
-    expect(screen.getByText('Score: 100.00%')).toBeInTheDocument();
+    expect(await screen.findByText('Recorded results')).toBeInTheDocument();
+
     expect(save).toHaveBeenCalledTimes(4);
   },
 );
