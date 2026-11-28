@@ -1048,8 +1048,8 @@ Use this checklist to take the [study platform brief](./PROJECT_BRIEF.md) from d
   - **Accept when** Every release-blocking finding has a verified fix or an explicitly approved disposition.
   - **Verify** Repeat the audit against the final lockfiles, then rebuild and rerun tests for any packages changed.
 
-- [ ] **P6-T13 · Build the backend runtime image** (MVP)
-  - **Status 2026-11-28** Skipped under the owner rule to defer deployment-associated work. No Dockerfile/image build or TLS runtime deployment validation was performed.
+- [x] **P6-T13 · Build the backend runtime image** (MVP)
+  - **Status 2026-11-28** Docker work is now owner-authorized. Built a digest-pinned, multi-stage Node 24 image with a non-root runtime, excluded credentials/build tools and an explicit migration target. Added bounded environment inputs for a two-connection pool and one concurrent generation. Disposable production-mode container acceptance passes at 0.1 CPU / 512 MiB: authenticated database read over verified TLS, untrusted CA rejection, readiness, missing-token 401 and CORS. Sampled API memory 84.66–85 MiB; 25 readiness requests p95 11 ms; startup 7.832 s. See DEPLOYMENT.md and evidence/render-free.json. Real Firebase owner access and Render deployment remain unverified; P6-T12 dependency findings remain unresolved.
   - **Work and purpose** Build TypeScript and generate Prisma in a build stage. Package the compiled entry point, required runtime libraries, and CA certificate in a non-root image. Exclude private environment files and credentials from the context.
   - **Files** `server/Dockerfile`, `server/.dockerignore`, `docs/DEPLOYMENT.md` · **Depends on** P6-T12
   - **Output** A reproducible backend image with a documented start command.

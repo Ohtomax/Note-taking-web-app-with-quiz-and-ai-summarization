@@ -13,3 +13,6 @@ firebase-service-account*.json
 .vercel/
 playwright-report/
 test-results/
+# Synthetic Docker build-context probes, removed after image construction.
+server/context-probe-*
+server/config/context-probe-*

@@ -1,0 +1,30 @@
+{
+  "date": "2026-11-28",
+  "environment": "Local Docker Linux; synthetic credentials; disposable PostgreSQL 18 with TLS and Redis 8",
+  "command": "node scripts/test-render-docker.mjs",
+  "image": "quillquiz-api:render-free",
+  "imageBytes": 524116754,
+  "nodeUser": "node:node",
+  "cpuLimit": 0.1,
+  "memoryLimitMiB": 512,
+  "oldSpaceLimitMiB": 256,
+  "databasePoolMax": 2,
+  "startupToReadinessMs": 7832,
+  "readinessSample": { "requests": 25, "concurrency": 5, "p95Ms": 11 },
+  "memorySamplesMiB": [84.66, 84.91, 85, 85, 84.78, 84.78],
+  "checks": {
+    "nonRoot": "passed",
+    "excludedEnvironmentAndProbeFiles": "passed",
+    "noTypeScriptOrPrismaCLIInRuntime": "passed",
+    "authenticatedDatabaseReadOverVerifiedTLS": "passed",
+    "untrustedDatabaseCA": "rejected",
+    "missingFirebaseToken": 401,
+    "allowedAndUnlistedCorsOrigins": "passed",
+    "outOfMemoryKilled": false
+  },
+  "limits": [
+    "Readiness samples do not establish real-user or AI generation capacity.",
+    "No hosted Firebase login, Supabase, Render deployment or production migration was performed.",
+    "Dependency audit findings remain unresolved."
+  ]
+}

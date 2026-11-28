@@ -1,0 +1,22 @@
+# Allow only build inputs. Render also puts secret files in the context root.
+**
+!package.json
+!package-lock.json
+!tsconfig.json
+!prisma.config.ts
+!server.ts
+!prisma/
+!prisma/**
+!config/
+!config/**
+!src/
+!src/**
+src/generated/
+# Keep accidental secrets out even when placed below an allowed source folder.
+**/.env
+**/.env.*
+**/*.pem
+**/*.key
+**/*.crt
+**/*serviceAccount*.json
+**/*service-account*.json

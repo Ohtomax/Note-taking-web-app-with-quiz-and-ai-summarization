@@ -1,57 +1,90 @@
-# Deployment design
+# Docker and Render Free deployment
 
-Host the static React bundle on Vercel, the Docker Node API on Render, PostgreSQL on Supabase and identity in Firebase. Redis backs shared rate counters. Provider keys, Firebase Admin credentials, database and Redis URLs belong in backend secret storage. Firebase browser configuration is public configuration.
+The API runs in one Docker container on Render Free (0.1 CPU, 512 MB). The React frontend remains a separate deployment. Supabase stores application data, Firebase provides identity, and a separate free Render Key Value instance stores rate-limit counters. Redis does not run inside the API container.
 
-The browser calls Firebase for identity and Express for application data. Production network traffic uses HTTPS or verified TLS. The API alone connects to PostgreSQL and the AI provider. Application and migration database privileges should be separated.
+The owner authorized Docker/Render preparation on 2026-11-28. Repository configuration and local container verification do not establish a live Render deployment. See [task.md](./task.md) for status. The remaining [dependency audit findings](./DEPENDENCY_AUDIT.md) still require resolution before production release.
 
-## Release and recovery sequence
+## Container configuration
 
-1. Provision staging targets and inject secrets through hosting settings.
-2. Build and test a multi-stage Docker image with Node 24, compiled TypeScript, Prisma generation and the trusted CA. Run as a non-root user.
-3. Rehearse migration against a disposable restoration, verify indexes and constraints, and confirm rollback compatibility.
-4. Back up the production database using an authorized process and apply migrations through a designated runner.
-5. Deploy the API to Render, check liveness/readiness and verify a scoped authenticated request.
-6. Build the client with public settings and deploy to Vercel with SPA route fallback.
-7. Configure Firebase authorized/reset domains and production CORS. Test login, recovery, generation, retake and analytics with synthetic content.
-8. Record release IDs, migration state and smoke results. Monitor request failures, dependency health, generation latency and quota consumption with content-free structured logs.
+| Setting               | Render Free value                 | Purpose                                                    |
+| --------------------- | --------------------------------- | ---------------------------------------------------------- |
+| Runtime               | One Node 24 process, UID/GID 1000 | Avoid cluster overhead; permit Render secret-file access   |
+| PORT                  | 10000, bound to 0.0.0.0           | Render's HTTP listener                                     |
+| NODE_OPTIONS          | --max-old-space-size=256          | Leave memory for native libraries, buffers and the process |
+| UV_THREADPOOL_SIZE    | 2                                 | Bound native worker overhead                               |
+| MALLOC_ARENA_MAX      | 2                                 | Bound Linux allocator arenas                               |
+| DB_POOL_MAX           | 2                                 | Limit connections per process                              |
+| AI_GLOBAL_CONCURRENCY | 1                                 | Serialize generation admission in the database             |
+| AI_ENABLED            | false                             | Use notes and saved study features without a provider key  |
 
-Use daily database backups retained 7 days as an initial policy, subject to the owner's selected Supabase plan and retention needs. Initial recovery objectives propose RPO 24 hours and RTO 4 hours. Rehearse a timed restore and revise these targets from measurements. Firebase identities/configuration and provider settings are separate from SQL backups and must be inventoried.
+The heap limit is not a total RSS cap. Render enforces the container memory limit. TypeScript/Prisma run in the build stage; the web process executes compiled JavaScript. No watch server, compiler, Prisma CLI, local Redis or migration runs in the runtime image. The migration target retains the CLI for an explicit release operation.
 
-A failed schema change stops release promotion. Revert the application only to a schema-compatible build. An incompatible change uses the rehearsed restore or forward-fix procedure. A provider outage disables new generation while saved notes and study records remain available. Redis loss follows the documented fail-closed policy for protected request admission.
+The image uses a digest-pinned Node 24 Debian base, installs system CA certificates, and copies compiled output and production dependencies. Update the base digest with future Node security releases. The Docker context uses an allowlist; environment files, certificates, Firebase JSON and generated/test artifacts are excluded. Credentials are supplied at runtime.
 
-## Owner setup deferred
+## Build and validate locally
 
-The owner requested that account/credential-dependent steps be skipped. Firebase project registration and keys, Supabase database/CA access, Redis provisioning, provider billing/keys, Render and Vercel project setup remain owner actions for later phases. Local Phase 1 checks require no external secrets.
+Run from the repository root:
 
-## Environment reference
+```powershell
+docker build --target runtime -t quillquiz-api:render-free ./server
+node scripts/test-render-docker.mjs
+```
 
-| Settings | Purpose | First needed |
-| --- | --- | --- |
-| PORT | Bootstrap listener, default 3001 | Phase 1 |
-| NODE_ENV | Runtime policy | Phase 2 |
-| CORS_ORIGINS | Explicit allowed frontend origins | Phase 2 |
-| DATABASE_URL, DIRECT_URL | Pooled runtime and migration connection | Phase 2 |
-| DATABASE_CA_PATH | Trusted Supabase CA for verified TLS | Phase 2 |
-| FIREBASE_SERVICE_ACCOUNT | Admin credential JSON held server-side | Phase 2 |
-| REDIS_URL | Shared route counters | Phase 2 |
-| VITE_API_BASE_URL | Browser-to-Express URL | Phase 3 |
-| VITE_FIREBASE_* | Firebase browser project settings | Phase 3 |
-| AI_PROVIDER, AI_MODEL, AI_API_KEY | Provider/model and backend credential | Phase 4 |
-| AI_DAILY_GENERATIONS, AI_USER_CONCURRENCY, AI_GLOBAL_CONCURRENCY | Generation admission limits | Phase 4 |
-| AI_CALL_TIMEOUT_MS, AI_TOTAL_TIMEOUT_MS, AI_MAX_SOURCE_TOKENS | Cost and deadline bounds | Phase 4 |
+The acceptance script builds both image targets and creates uniquely named disposable Docker volumes, a network and containers. It generates synthetic credentials and TLS certificates, migrates its own PostgreSQL database, and starts the API with --cpus 0.1 --memory 512m. It checks non-root execution, excluded build/secret files, database authentication and CA rejection, readiness, missing-token rejection and CORS. It records sampled memory and readiness latency. It removes only its own Docker resources and retains synthetic fixture files in the printed temporary directory. It never loads the project's .env or contacts hosted Firebase, Supabase or an AI provider.
 
-Copy each .env.example to a local .env when that phase needs it. Values in examples are placeholders. Render supplies server secrets through its environment settings. Vercel receives only VITE-prefixed public settings. Tests use isolated test values. The Phase 1 bootstrap starts with PORT's default and needs no account setup.
+Temporary context-probe files contain synthetic markers, are Git-ignored, and are removed immediately after image construction. They must not be committed.
 
-Never prefix privileged keys with VITE_. Phase 2 will implement runtime schema validation, secure connection construction and certificate loading. Example variables beyond PORT are documented future inputs.
+## Runtime secrets
 
-## Deferred Phase 2 infrastructure
+Provide these through Render's Environment page, without surrounding .env quotes:
 
-Per the owner's instruction, collecting URLs/keys, connecting to hosted Supabase/Firebase/Redis and deployment are skipped. prisma.config.ts uses an explicit unconfigured localhost placeholder for offline schema commands only. No automatic migration or schema push runs on app startup. Runtime database construction requires an actual supplied connection string and trusted CA. URL SSL override parameters are removed before pg receives the verified TLS object. The live certificate acceptance/rejection check remains pending.
+| Variable                 | Value to supply                                              |
+| ------------------------ | ------------------------------------------------------------ |
+| DATABASE_URL             | Supabase pooled runtime URL with sslmode=verify-full         |
+| DATABASE_CA_PATH         | /etc/secrets/supabase-ca.crt                                 |
+| FIREBASE_SERVICE_ACCOUNT | Replacement Firebase Admin service-account JSON              |
+| REDIS_URL                | Key Value's internal URL, same workspace and region          |
+| CORS_ORIGINS             | Exact frontend origin(s), comma separated, no trailing slash |
 
-## Initial migration rehearsal
+Under Environment > Secret Files add supabase-ca.crt containing the certificate downloaded from Supabase's Database > Settings > SSL configuration. The application reads it at runtime and verifies the database certificate and hostname. This Linux path replaces the Windows certificate path. Do not put certificate contents in DATABASE_CA_PATH.
 
-The initial migration was generated with prisma migrate diff --from-empty --to-schema ./prisma --script. It was applied to a new empty disposable local database using prisma migrate deploy. A second run reported no pending migrations, and the database fixture suite passed against the migrated schema. No hosted or production migration was attempted. Before a later hosted deployment, supply DIRECT_URL locally through the approved secret mechanism, review the migration, back up the target and run the documented Phase 6 release procedure.
+Revoke and replace the Firebase private key previously shared in chat. Supply the replacement directly in Render; never commit it or paste it in chat. A Firebase JSON file is unnecessary when FIREBASE_SERVICE_ACCOUNT is set.
 
-## Phase 6 owner exclusion and handover
+AI_API_KEY is optional while AI_ENABLED=false. The implemented provider is Groq. AI_MODEL=gemini-3.5-flash-lite does not switch the adapter to Google; leave AI disabled until Gemini support is implemented. Daily quota, per-user concurrency, source limits and deadlines other than AI_GLOBAL_CONCURRENCY remain code policies. The environment example lists only inputs the runtime reads.
 
-Deployment-associated tasks remain deferred at the owner request: no container/image deployment, hosted identity/database/Redis setup, production migration, Render/Vercel command or paid smoke generation was performed. The [local handover](./HANDOVER.md), [dependency audit](./DEPENDENCY_AUDIT.md) and [recovery runbook](./RECOVERY.md) distinguish tested local contracts from release work requiring owner settings and later authorization. Local eight-migration replay does not establish a production migration or application rollback rehearsal.
+DIRECT_URL belongs only to the migration runner. Keep it out of the web service. Frontend VITE_* settings belong to the separate client deployment; never expose backend credentials with a VITE_ prefix.
+
+## Explicit migrations
+
+The web image never migrates automatically. Back up the intended database and inspect migration status before applying a release. Prefer a distinct database role for migrations and a restricted application role for runtime queries.
+
+Build the separate runner:
+
+```powershell
+docker build --target migration -t quillquiz-api:migration ./server
+```
+
+Create an ignored server/.env.migration locally containing DIRECT_URL with the Supabase direct/session migration URL, using sslmode=verify-full&sslrootcert=/etc/secrets/supabase-ca.crt. If the direct IPv6 host is unreachable, use Supabase's session pooler for the runner, not the transaction pooler. Keep credentials out of shell arguments and history.
+
+```powershell
+$caFile = (Resolve-Path -LiteralPath ./server/certs/supabase-ca.crt).Path
+docker run --rm --env-file ./server/.env.migration --mount "type=bind,source=$caFile,target=/etc/secrets/supabase-ca.crt,readonly" quillquiz-api:migration migrate status
+docker run --rm --env-file ./server/.env.migration --mount "type=bind,source=$caFile,target=/etc/secrets/supabase-ca.crt,readonly" quillquiz-api:migration migrate deploy
+```
+
+These commands operate on the supplied target database. The acceptance script uses its own synthetic target automatically. Do not use migrate dev or db push for hosted releases. A failed schema change stops deployment; revert only to a schema-compatible image or use the rehearsed [recovery procedure](./RECOVERY.md).
+
+## Free-tier behavior
+
+Free web services sleep after 15 minutes without inbound traffic and can take about one minute to wake. Their filesystem is ephemeral. Free Key Value has no persistence, so rate counters can reset on restart; notes, quizzes and AI usage remain in PostgreSQL. Admission stays fail-closed if Redis is unavailable. Key Value is a separate resource and does not consume the API's 512 MB allocation.
+
+Use one API instance and avoid periodic keep-alive traffic. The free plan is suitable for hobby/testing use; the small local readiness sample does not establish concurrent-user capacity or uptime.
+
+## Sources
+
+- [Render compute plans](https://render.com/docs/compute-plans)
+- [Docker on Render](https://render.com/docs/docker)
+- [Docker secret files and group 1000](https://render.com/docs/docker-secrets)
+- [Render Free limits](https://render.com/docs/free)
+- [Key Value](https://render.com/docs/key-value)
+- [Health checks](https://render.com/docs/health-checks)

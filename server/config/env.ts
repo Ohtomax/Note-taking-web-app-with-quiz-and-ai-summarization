@@ -47,6 +47,7 @@ const environmentSchema = z
     DATABASE_URL: postgresUrl,
     DIRECT_URL: postgresUrl,
     DATABASE_CA_PATH: optionalValue,
+    DB_POOL_MAX: z.coerce.number().int().min(1).max(10).default(5),
     REDIS_URL: optionalValue.refine((value) => {
       if (!value) return true;
       try {
@@ -57,6 +58,7 @@ const environmentSchema = z
     }),
     FIREBASE_SERVICE_ACCOUNT: optionalValue,
     AI_API_KEY: optionalValue,
+    AI_GLOBAL_CONCURRENCY: z.coerce.number().int().min(1).max(4).default(4),
     AI_ENABLED: z
       .enum(['true', 'false'])
       .default('false')

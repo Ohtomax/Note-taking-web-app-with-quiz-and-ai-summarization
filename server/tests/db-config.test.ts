@@ -12,8 +12,10 @@ test('pg options preserve explicit certificate verification over URL overrides',
     const config = createPoolConfig(
       'postgresql://test@localhost/test?sslmode=no-verify&sslrootcert=wrong',
       path,
+      2,
     );
     assert.deepEqual(config.ssl, { ca: 'synthetic-ca', rejectUnauthorized: true });
+    assert.equal(config.max, 2);
     assert.equal(new URL(config.connectionString!).searchParams.has('sslmode'), false);
     assert.throws(() =>
       createPoolConfig('postgres://test@localhost/test', join(directory, 'absent')),

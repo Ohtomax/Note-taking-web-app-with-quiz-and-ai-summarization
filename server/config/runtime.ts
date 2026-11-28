@@ -18,12 +18,17 @@ import { createNotesRepository } from '@/repositories/notes.repository.js';
 import { createStudyServices } from './ai.ts';
 import { createAIClient, parseAIConfig } from '@/ai/client.js';
 import { createAIGenerationLimiter } from '@/utils/rate-limiter/ai.js';
+import { quotaPolicy } from '@/repositories/ai-admission.repository.js';
 
 export const createRuntime = async (environment: Environment) => {
   const firebase = createFirebaseVerifier(environment);
   const database =
     environment.DATABASE_URL && environment.DATABASE_CA_PATH
-      ? createDatabase(environment.DATABASE_URL, environment.DATABASE_CA_PATH)
+      ? createDatabase(
+          environment.DATABASE_URL,
+          environment.DATABASE_CA_PATH,
+          environment.DB_POOL_MAX,
+        )
       : undefined;
   const redis = environment.REDIS_URL ? createRedis(environment.REDIS_URL) : undefined;
   if (redis) {
@@ -41,6 +46,12 @@ export const createRuntime = async (environment: Environment) => {
             model: environment.AI_MODEL,
           }),
         ),
+        {
+          quota: {
+            ...quotaPolicy,
+            globalConcurrency: environment.AI_GLOBAL_CONCURRENCY,
+          },
+        },
       ),
       aiLimiter: createAIGenerationLimiter(createRedisStore(redis, 'generation')),
       notesService: createNotesService(createNotesRepository(database)),
