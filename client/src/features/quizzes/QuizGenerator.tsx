@@ -47,7 +47,10 @@ export function QuizGenerator({
     },
   );
   const [validation, setValidation] = useState('');
-  const generation = useGeneration(projectId, target?.quizId);
+  const generation = useGeneration(
+    projectId,
+    target ? { quizId: target.quizId } : undefined,
+  );
   const ready = choice?.projectId === projectId;
   const submit = (fresh = false) => {
     const parsed = quizSettingsSchema.safeParse(settings);

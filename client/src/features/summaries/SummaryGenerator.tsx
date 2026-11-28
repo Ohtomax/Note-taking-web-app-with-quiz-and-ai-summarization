@@ -1,9 +1,16 @@
-import { useState } from 'react';
+import { lazy, Suspense, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { Sparkles } from 'lucide-react';
 import { AIUsage } from '@/features/dashboard/AIUsage';
+import { AsyncState } from '@/components/ui/AsyncState';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useGeneration } from './useGeneration';
+import { SummaryFields } from './SummaryFields';
+import { SummaryCopyExport } from './SummaryCopyExport';
 import {
   summaryContentSchema,
+  summaryFormats,
+  summaryLengths,
   type SummaryContent,
   type SummarySettings,
   type Generation,
@@ -11,14 +18,23 @@ import {
 import type { SourceChoice } from '@/types/study-sources';
 import { studyApi } from '@/api/study';
 import { useSession } from '@/store/session';
-function SummaryPreview({ generation }: { generation: Generation }) {
+
+const SummaryReader = lazy(() => import('./SummaryReader'));
+
+function SummaryPreview({
+  generation,
+  linkSaved,
+}: {
+  generation: Generation;
+  linkSaved: boolean;
+}) {
   const initial = summaryContentSchema.safeParse(generation.result?.output);
   const [content, setContent] = useState<SummaryContent | null>(
     initial.success ? initial.data : null,
   );
-  const [copyMessage, setCopyMessage] = useState('');
-  const uid = useSession((state) => state.user!.uid),
-    cache = useQueryClient();
+  const [editing, setEditing] = useState(false);
+  const uid = useSession((state) => state.user!.uid);
+  const cache = useQueryClient();
   const save = useMutation({
     mutationFn: () =>
       studyApi.saveSummary(
@@ -26,82 +42,24 @@ function SummaryPreview({ generation }: { generation: Generation }) {
         generation.id,
         summaryContentSchema.parse(content),
       ),
-    onSuccess: () => {
+    onSuccess: (response) => {
+      if (useSession.getState().user?.uid !== uid) return;
+      cache.setQueryData([uid, 'summary', response.data.id], response);
       for (const domain of ['summaries', 'dashboard', 'analytics'])
         void cache.invalidateQueries({ queryKey: [uid, domain] });
-      void cache.invalidateQueries({ queryKey: [uid, 'dashboard'] });
     },
   });
-  if (!content)
-    return (
-      <p role="alert">
-        The returned summary could not be read. Your notes were not changed.
-      </p>
-    );
+  if (!content || !generation.result)
+    return <p role="alert">The generated summary could not be read.</p>;
   return (
-    <section className="mt-5 grid gap-4" aria-label="Summary preview">
-      <h3 className="text-lg font-semibold">Summary preview</h3>
-      <label className="grid gap-1 text-sm">
-        Summary title
-        <input
-          className="rounded border border-slate-300 dark:border-slate-600 p-2"
-          maxLength={200}
-          value={content.title}
-          onChange={(event) => setContent({ ...content, title: event.target.value })}
-        />
-      </label>
-      {content.sections.map((section, index) => (
-        <div
-          key={index}
-          className="grid gap-2 rounded border border-slate-200 dark:border-slate-700 p-3"
-        >
-          <label className="grid gap-1 text-sm">
-            Section {index + 1} heading
-            <input
-              className="rounded border border-slate-300 dark:border-slate-600 p-2"
-              maxLength={200}
-              value={section.heading ?? ''}
-              onChange={(event) =>
-                setContent({
-                  ...content,
-                  sections: content.sections.map((item, i) =>
-                    i === index ? { ...item, heading: event.target.value || null } : item,
-                  ),
-                })
-              }
-            />
-          </label>
-          <label className="grid gap-1 text-sm">
-            Section {index + 1} text
-            <textarea
-              className="min-h-28 rounded border border-slate-300 dark:border-slate-600 p-2"
-              maxLength={16000}
-              value={section.text}
-              onChange={(event) =>
-                setContent({
-                  ...content,
-                  sections: content.sections.map((item, i) =>
-                    i === index ? { ...item, text: event.target.value } : item,
-                  ),
-                })
-              }
-            />
-          </label>
-          <p className="text-xs text-slate-600 dark:text-slate-300">
-            Sources:{' '}
-            {section.sourceKeys
-              .map(
-                (key) =>
-                  generation.result!.sources.find((source) => source.sourceKey === key)
-                    ?.noteTitle ?? key,
-              )
-              .join(', ')}
-          </p>
-        </div>
-      ))}
-      <div className="flex flex-wrap gap-3">
+    <section
+      className="mt-5 grid gap-4 border-t border-edge pt-5"
+      aria-label="Summary preview"
+    >
+      <h3 className="text-xl font-semibold">{content.title}</h3>
+      <div className="flex flex-wrap items-center gap-2">
         <button
-          className="rounded bg-teal-800 px-4 py-2 text-white disabled:opacity-50"
+          className="action action-primary"
           disabled={
             save.isPending ||
             save.isSuccess ||
@@ -109,67 +67,81 @@ function SummaryPreview({ generation }: { generation: Generation }) {
           }
           onClick={() => save.mutate()}
         >
-          {save.isSuccess ? 'Summary saved' : 'Save summary'}
+          {save.isSuccess ? 'Summary saved' : save.isPending ? 'Saving…' : 'Save summary'}
         </button>
-        <button
-          className="rounded border border-slate-300 dark:border-slate-600 px-4 py-2"
-          onClick={() =>
-            void navigator.clipboard
-              .writeText(
-                [
-                  content.title,
-                  ...content.sections.map((section) =>
-                    [section.heading, section.text].filter(Boolean).join('\n'),
-                  ),
-                ].join('\n\n'),
-              )
-              .then(() => setCopyMessage('Summary copied.'))
-              .catch(() =>
-                setCopyMessage('Copy is unavailable. Select and copy the preview text.'),
-              )
-          }
-        >
-          Copy summary
-        </button>
+        {save.data && linkSaved && (
+          <Link to={'/summaries/' + save.data.data.id} className="action">
+            Open saved summary
+          </Link>
+        )}
+        {!save.isSuccess && (
+          <button
+            className="action"
+            disabled={save.isPending}
+            onClick={() => setEditing(!editing)}
+          >
+            {editing ? 'Show reading preview' : 'Edit preview'}
+          </button>
+        )}
+        <SummaryCopyExport content={content} />
       </div>
-      {copyMessage && <p role="status">{copyMessage}</p>}
       {save.error && (
-        <p role="alert" className="text-red-700 dark:text-red-300">
+        <p role="alert" className="text-sm text-red-700 dark:text-red-300">
           {save.error.message}
         </p>
+      )}
+      {editing && !save.isSuccess ? (
+        <SummaryFields content={content} onChange={setContent} />
+      ) : (
+        <Suspense fallback={<AsyncState loading error={null} retry={() => {}} />}>
+          <SummaryReader content={content} sources={generation.result.sources} />
+        </Suspense>
       )}
     </section>
   );
 }
+
 export function SummaryGenerator({
   projectId,
   choice,
+  initialSettings,
+  regenerateSummaryId,
+  linkSaved = false,
 }: {
   projectId: string;
   choice: SourceChoice | null;
+  initialSettings?: SummarySettings | undefined;
+  regenerateSummaryId?: string | undefined;
+  linkSaved?: boolean | undefined;
 }) {
-  const [settings, setSettings] = useState<SummarySettings>({
-    length: 'MEDIUM',
-    format: 'BULLETS',
-  });
-  const generation = useGeneration(projectId);
+  const [settings, setSettings] = useState<SummarySettings>(
+    initialSettings ?? { length: 'MEDIUM', format: 'BULLETS' },
+  );
+  const generation = useGeneration(
+    projectId,
+    regenerateSummaryId ? { summaryId: regenerateSummaryId } : undefined,
+  );
   const request =
     choice?.projectId === projectId
       ? { operation: 'SUMMARY' as const, source: choice.source, settings }
       : null;
+  const terminal =
+    generation.data &&
+    ['SUCCEEDED', 'FAILED', 'UNCERTAIN'].includes(generation.data.status);
   return (
-    <section
-      className="mt-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-4"
-      aria-label="Generate summary"
-    >
-      <h2 className="font-semibold">Generate a summary</h2>
+    <section className="surface p-4 sm:p-6" aria-label="Generate summary">
+      <h2 className="flex items-center gap-2 text-lg font-semibold">
+        <Sparkles size={19} aria-hidden="true" className="text-brand-text" />
+        {regenerateSummaryId ? 'Generate a new version' : 'Generate a summary'}
+      </h2>
       <AIUsage compact />
       <div className="my-4 grid gap-3 sm:grid-cols-2">
-        <label className="grid gap-1 text-sm">
+        <label className="grid gap-1 text-sm font-medium">
           Summary length
           <select
-            className="rounded border border-slate-300 dark:border-slate-600 p-2"
+            className="field"
             value={settings.length}
+            disabled={generation.pending}
             onChange={(event) =>
               setSettings({
                 ...settings,
@@ -177,16 +149,19 @@ export function SummaryGenerator({
               })
             }
           >
-            {['SHORT', 'MEDIUM', 'DETAILED'].map((value) => (
-              <option key={value}>{value}</option>
+            {Object.entries(summaryLengths).map(([value, label]) => (
+              <option value={value} key={value}>
+                {label}
+              </option>
             ))}
           </select>
         </label>
-        <label className="grid gap-1 text-sm">
+        <label className="grid gap-1 text-sm font-medium">
           Summary format
           <select
-            className="rounded border border-slate-300 dark:border-slate-600 p-2"
+            className="field"
             value={settings.format}
+            disabled={generation.pending}
             onChange={(event) =>
               setSettings({
                 ...settings,
@@ -194,56 +169,57 @@ export function SummaryGenerator({
               })
             }
           >
-            {['PARAGRAPHS', 'BULLETS', 'KEY_CONCEPTS', 'STUDY_GUIDE'].map((value) => (
-              <option key={value}>{value}</option>
+            {Object.entries(summaryFormats).map(([value, label]) => (
+              <option value={value} key={value}>
+                {label}
+              </option>
             ))}
           </select>
         </label>
       </div>
-      <p className="mb-3 text-sm text-slate-600 dark:text-slate-300">
-        {choice?.description ?? 'Choose sources first.'} Generation uses your AI allowance
-        and keeps your notes unchanged.
+      <p className="mb-3 text-sm text-muted">
+        {choice?.description ?? 'Choose sources first.'}
       </p>
-      <button
-        className="rounded bg-teal-800 px-4 py-2 text-white disabled:opacity-50"
-        disabled={!request || generation.pending}
-        onClick={() => request && generation.generate(request)}
-      >
-        {generation.pending
-          ? 'Generating…'
-          : generation.error
-            ? 'Retry original request'
-            : 'Generate summary'}
-      </button>
-      {generation.data &&
-        ['SUCCEEDED', 'FAILED', 'UNCERTAIN'].includes(generation.data.status) && (
+      <div className="flex flex-wrap gap-2">
+        <button
+          className="action action-primary"
+          disabled={!request || generation.pending}
+          onClick={() => request && generation.generate(request)}
+        >
+          {generation.pending
+            ? 'Generating…'
+            : generation.error
+              ? 'Retry original request'
+              : 'Generate summary'}
+        </button>
+        {terminal && (
           <button
-            className="ml-3 rounded border border-slate-300 dark:border-slate-600 px-3 py-2 disabled:opacity-50"
+            className="action"
             disabled={!request || generation.pending}
             onClick={() => request && generation.generate(request, true)}
           >
             Generate another version (uses allowance)
           </button>
         )}
-      {generation.pending && (
-        <p role="status" className="mt-3">
-          Generation is running. Your source and settings are retained.
-        </p>
-      )}
+      </div>
+      {generation.pending && <AsyncState loading error={null} retry={() => {}} />}
       {generation.error && (
-        <p role="alert" className="mt-3 text-red-700 dark:text-red-300">
-          {generation.error.message} Retry keeps the same request key to avoid duplicate
-          usage.
+        <p role="alert" className="mt-3 text-sm text-red-700 dark:text-red-300">
+          {generation.error.message} Retry uses the same request key.
         </p>
       )}
       {generation.data && ['FAILED', 'UNCERTAIN'].includes(generation.data.status) && (
-        <p role="alert" className="mt-3 text-amber-800 dark:text-amber-200">
-          Generation {generation.data.status.toLowerCase()}. Your notes and settings are
-          retained. A new version may use additional allowance.
+        <p role="alert" className="mt-3 text-sm text-amber-800 dark:text-amber-200">
+          Generation {generation.data.status.toLowerCase()}. A new version may use
+          additional allowance.
         </p>
       )}
       {generation.data?.status === 'SUCCEEDED' && (
-        <SummaryPreview key={generation.data.id} generation={generation.data} />
+        <SummaryPreview
+          key={generation.data.id}
+          generation={generation.data}
+          linkSaved={linkSaved}
+        />
       )}
     </section>
   );

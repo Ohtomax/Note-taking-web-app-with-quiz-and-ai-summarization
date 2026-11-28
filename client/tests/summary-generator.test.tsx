@@ -85,6 +85,7 @@ it('retains summary settings after quota/network failures, reuses the key and sa
   expect(generate.mock.calls[0]![1]).toBe(generate.mock.calls[1]![1]);
   expect(generate.mock.calls[1]![1]).toBe(generate.mock.calls[2]![1]);
   expect(generate.mock.calls[2]![2].settings.length).toBe('SHORT');
+  fireEvent.click(screen.getByRole('button', { name: 'Edit preview' }));
   fireEvent.change(screen.getByLabelText('Section 1 text'), {
     target: { value: 'Edited preview' },
   });

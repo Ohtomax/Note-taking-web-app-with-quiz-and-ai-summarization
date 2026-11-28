@@ -2,10 +2,32 @@ import { z } from 'zod';
 export const summarySettingsSchema = z
   .object({
     length: z.enum(['SHORT', 'MEDIUM', 'DETAILED']),
-    format: z.enum(['PARAGRAPHS', 'BULLETS', 'KEY_CONCEPTS', 'STUDY_GUIDE']),
+    format: z.enum([
+      'QUICK',
+      'PARAGRAPHS',
+      'STUDY_GUIDE',
+      'BULLETS',
+      'KEY_CONCEPTS',
+      'SIMPLIFIED',
+      'EXAM_REVIEWER',
+    ]),
   })
   .strict();
 export type SummarySettings = z.infer<typeof summarySettingsSchema>;
+export const summaryFormats: Record<SummarySettings['format'], string> = {
+  QUICK: 'Quick summary',
+  PARAGRAPHS: 'Detailed summary',
+  STUDY_GUIDE: 'Study guide',
+  BULLETS: 'Bullet points',
+  KEY_CONCEPTS: 'Key concepts',
+  SIMPLIFIED: 'Simplified explanation',
+  EXAM_REVIEWER: 'Exam reviewer',
+};
+export const summaryLengths: Record<SummarySettings['length'], string> = {
+  SHORT: 'Short',
+  MEDIUM: 'Medium',
+  DETAILED: 'Detailed',
+};
 export const summaryContentSchema = z
   .object({
     title: z.string().trim().min(1).max(200),

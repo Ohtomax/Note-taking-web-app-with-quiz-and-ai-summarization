@@ -12,7 +12,7 @@ export function StudySources(props: Omit<SourcePickerProps, 'onChange'>) {
       </summary>
       <div className="mt-4 grid gap-4">
         <SourcePicker {...props} onChange={setChoice} />
-        <SummaryGenerator projectId={props.projectId} choice={choice} />
+        <SummaryGenerator projectId={props.projectId} choice={choice} linkSaved />
         <QuizGenerator projectId={props.projectId} choice={choice} />
         {choice?.projectId === props.projectId && (
           <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">

@@ -11,6 +11,14 @@ export interface GenerateInput {
   settings: Record<string, unknown>;
 }
 export const studyApi = {
+  regenerateSummary: async (summaryId: string, key: string, input: GenerateInput) =>
+    generationResponseSchema.parse(
+      await apiRequest<unknown>('/summaries/' + summaryId + '/regenerate', {
+        method: 'POST',
+        headers: { 'Idempotency-Key': key },
+        body: JSON.stringify(input),
+      }),
+    ),
   regenerateQuiz: async (quizId: string, key: string, input: GenerateInput) =>
     generationResponseSchema.parse(
       await apiRequest<unknown>('/quizzes/' + quizId + '/regenerate', {

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { lazy, Suspense, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { summariesApi } from '@/api/summaries';
@@ -11,33 +11,45 @@ import {
   type SummaryContent,
   type SavedSummary,
 } from '@/types/study';
-function SummaryText({ summary }: { summary: SavedSummary }) {
-  return (
-    <div className="grid gap-4">
-      {summary.content.sections.map((section, index) => (
-        <section
-          key={index}
-          className="rounded border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-4"
-        >
-          {section.heading && <h2 className="mb-2 font-semibold">{section.heading}</h2>}
-          <p className="whitespace-pre-wrap">
-            {summary.settings.format === 'BULLETS' ? '• ' : ''}
-            {section.text}
-          </p>
-          <p className="mt-3 text-xs text-slate-500 dark:text-slate-400">
-            Sources:{' '}
-            {section.sourceKeys
-              .map(
-                (key) =>
-                  summary.sources.find((source) => source.sourceKey === key)?.noteTitle ??
-                  key,
-              )
-              .join(', ')}
-          </p>
-        </section>
-      ))}
-    </div>
-  );
+import { BookOpen, FileText, Pencil, RefreshCw, Trash2 } from 'lucide-react';
+import { SummaryCopyExport } from './SummaryCopyExport';
+import { SummaryFields } from './SummaryFields';
+import { SummaryGenerator } from './SummaryGenerator';
+import { summaryFormats, summaryLengths, type SummarySettings } from '@/types/study';
+import type { SourceChoice } from '@/types/study-sources';
+
+const SummaryReader = lazy(() => import('./SummaryReader'));
+
+function rebuildChoice(summary: SavedSummary): SourceChoice | null {
+  const { sources, projectId } = summary;
+  const noteIds = [
+    ...new Set(sources.flatMap((source) => (source.noteId ? [source.noteId] : []))),
+  ];
+  if (!sources.length || sources.some((source) => !source.noteId)) return null;
+  const first = sources[0];
+  if (
+    sources.length === 1 &&
+    first?.noteId &&
+    first.rangeStart !== null &&
+    first.rangeEnd !== null
+  ) {
+    return {
+      projectId,
+      source: {
+        scope: 'EXCERPT',
+        noteId: first.noteId,
+        revision: first.revision,
+        start: first.rangeStart,
+        end: first.rangeEnd,
+      },
+      description: 'Original passage from ' + first.noteTitle,
+    };
+  }
+  return {
+    projectId,
+    source: { scope: 'NOTES', noteIds },
+    description: 'Current text of the original study notes',
+  };
 }
 function SummaryEdit({
   summary,
@@ -68,35 +80,7 @@ function SummaryEdit({
         save.mutate();
       }}
     >
-      <label className="grid gap-1 text-sm">
-        Summary title
-        <input
-          className="rounded border border-slate-300 dark:border-slate-600 p-2"
-          required
-          maxLength={200}
-          value={content.title}
-          onChange={(event) => setContent({ ...content, title: event.target.value })}
-        />
-      </label>
-      {content.sections.map((section, index) => (
-        <label key={index} className="grid gap-1 text-sm">
-          Section {index + 1} text
-          <textarea
-            className="min-h-28 rounded border border-slate-300 dark:border-slate-600 p-2"
-            required
-            maxLength={16000}
-            value={section.text}
-            onChange={(event) =>
-              setContent({
-                ...content,
-                sections: content.sections.map((item, i) =>
-                  i === index ? { ...item, text: event.target.value } : item,
-                ),
-              })
-            }
-          />
-        </label>
-      ))}
+      <SummaryFields content={content} onChange={setContent} />
       <div className="flex gap-3">
         <button
           className="rounded bg-teal-800 px-4 py-2 text-white disabled:opacity-50"
@@ -128,6 +112,7 @@ export function SummaryDetail() {
     navigate = useNavigate();
   const [editing, setEditing] = useState(false),
     [deleting, setDeleting] = useState(false);
+  const [generating, setGenerating] = useState<SummarySettings | null>(null);
   const summary = useQuery({
     queryKey: [uid, 'summary', summaryId],
     queryFn: ({ signal }) => summariesApi.find(summaryId, signal),
@@ -136,13 +121,18 @@ export function SummaryDetail() {
   const remove = useMutation({
     mutationFn: () => summariesApi.remove(summaryId),
     onSuccess: async () => {
-      await cache.invalidateQueries({ queryKey: [uid, 'summaries'] });
+      await Promise.all(
+        ['summaries', 'summary', 'dashboard', 'analytics'].map((domain) =>
+          cache.invalidateQueries({ queryKey: [uid, domain] }),
+        ),
+      );
       void navigate('/projects/' + summary.data!.data.projectId + '/summaries');
     },
   });
   const data = summary.data?.data;
+  const choice = data ? rebuildChoice(data) : null;
   return (
-    <section>
+    <section className="mx-auto max-w-6xl space-y-5">
       <AsyncState
         loading={summary.isPending}
         error={summary.error}
@@ -156,10 +146,11 @@ export function SummaryDetail() {
           >
             Back to summaries
           </Link>
-          <h1 className="my-4 text-2xl font-semibold">{data.title}</h1>
+          <h1 className="page-title">{data.title}</h1>
           <p className="mb-4 text-sm text-slate-600 dark:text-slate-300">
             Generated {new Date(data.generatedAt).toLocaleString()} ·{' '}
-            {data.settings.length} · {data.settings.format}
+            {summaryLengths[data.settings.length]} ·{' '}
+            {summaryFormats[data.settings.format]}
           </p>
           {data.staleSources && (
             <p
@@ -170,14 +161,64 @@ export function SummaryDetail() {
               revisions.
             </p>
           )}
-          <div className="mb-5 flex gap-4">
-            <button className="underline" onClick={() => setEditing(true)}>
+          <div className="flex flex-wrap items-center gap-2">
+            <SummaryCopyExport content={data.content} />
+            <button className="action" onClick={() => setEditing(true)}>
+              <Pencil size={16} aria-hidden="true" />
               Edit summary
             </button>
-            <button className="underline" onClick={() => setDeleting(true)}>
+            <button className="action" onClick={() => setGenerating(data.settings)}>
+              <RefreshCw size={16} aria-hidden="true" />
+              Regenerate or change format
+            </button>
+            <button
+              className="action"
+              onClick={() => setGenerating({ length: 'SHORT', format: 'SIMPLIFIED' })}
+            >
+              Simplify
+            </button>
+            <button
+              className="action"
+              onClick={() => setGenerating({ length: 'DETAILED', format: 'PARAGRAPHS' })}
+            >
+              Expand
+            </button>
+            <button
+              className="action text-red-700 dark:text-red-300"
+              onClick={() => setDeleting(true)}
+            >
+              <Trash2 size={16} aria-hidden="true" />
               Delete summary
             </button>
           </div>
+          {generating && (
+            <div className="grid gap-3">
+              <button className="action w-fit" onClick={() => setGenerating(null)}>
+                Close generation settings
+              </button>
+              {choice ? (
+                <SummaryGenerator
+                  key={generating.format + ':' + generating.length}
+                  projectId={data.projectId}
+                  regenerateSummaryId={data.id}
+                  choice={choice}
+                  initialSettings={generating}
+                  linkSaved
+                />
+              ) : (
+                <p role="status" className="surface p-4">
+                  Choose current notes in the{' '}
+                  <Link
+                    className="text-brand-text underline"
+                    to={'/projects/' + data.projectId}
+                  >
+                    source project
+                  </Link>{' '}
+                  to generate a new version.
+                </p>
+              )}
+            </div>
+          )}
           {editing ? (
             <SummaryEdit
               key={data.updatedAt}
@@ -185,16 +226,18 @@ export function SummaryDetail() {
               onClose={() => setEditing(false)}
             />
           ) : (
-            <SummaryText summary={data} />
+            <Suspense fallback={<AsyncState loading error={null} retry={() => {}} />}>
+              <SummaryReader
+                content={data.content}
+                sources={data.sources}
+                projectId={data.projectId}
+              />
+            </Suspense>
           )}
-          <ul className="mt-5 text-xs text-slate-600 dark:text-slate-300">
-            {data.sources.map((source) => (
-              <li key={source.sourceKey}>
-                {source.noteTitle} · revision {source.revision}
-                {source.stale ? ' · changed' : ''}
-              </li>
-            ))}
-          </ul>
+          <Link className="action w-fit" to={'/projects/' + data.projectId}>
+            <BookOpen size={16} aria-hidden="true" />
+            Open source project
+          </Link>
           {deleting && (
             <Modal
               title={'Delete ' + data.title + '?'}
@@ -240,14 +283,14 @@ export default function SummaryLibrary() {
     staleTime: 30000,
   });
   return (
-    <section>
+    <section className="mx-auto max-w-6xl space-y-5">
       <Link
         className="text-sm text-teal-800 dark:text-teal-300 underline"
         to={'/projects/' + projectId}
       >
         Back to project
       </Link>
-      <h1 className="my-5 text-2xl font-semibold">Saved summaries</h1>
+      <h1 className="page-title">Saved summaries</h1>
       <AsyncState
         loading={history.isPending}
         error={history.error}
@@ -260,14 +303,12 @@ export default function SummaryLibrary() {
       />
       <ul className="grid gap-3">
         {history.data?.data.map((summary) => (
-          <li
-            key={summary.id}
-            className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-4"
-          >
+          <li key={summary.id} className="surface p-5">
             <Link
               className="font-semibold text-teal-800 dark:text-teal-300 underline"
               to={'/summaries/' + summary.id}
             >
+              <FileText size={17} aria-hidden="true" className="mr-1.5 inline" />
               {summary.title}
             </Link>
             <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">

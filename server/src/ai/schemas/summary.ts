@@ -18,7 +18,10 @@ export const summaryResultSchema = (settings: SummarySettings, sourceKeys: strin
         new Set(section.sourceKeys).size !== section.sourceKeys.length
       )
         context.addIssue({ code: 'custom', message: 'Summary cites an invalid source' });
-      if (['KEY_CONCEPTS', 'STUDY_GUIDE'].includes(settings.format) && !section.heading)
+      if (
+        ['KEY_CONCEPTS', 'STUDY_GUIDE', 'EXAM_REVIEWER'].includes(settings.format) &&
+        !section.heading
+      )
         context.addIssue({
           code: 'custom',
           message: 'This format requires section headings',

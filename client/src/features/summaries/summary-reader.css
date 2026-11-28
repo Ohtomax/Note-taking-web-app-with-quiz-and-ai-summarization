@@ -1,0 +1,76 @@
+.study-markdown {
+  overflow-wrap: anywhere;
+  line-height: 1.75;
+}
+.study-markdown :where(p, ul, ol, pre, blockquote, table, h1, h2, h3, h4) {
+  margin-block: 0.8rem;
+}
+.study-markdown :where(h1, h2, h3, h4) {
+  font-size: 1.1rem;
+  font-weight: 650;
+}
+.study-markdown ul {
+  list-style: disc;
+  padding-inline-start: 1.4rem;
+}
+.study-markdown ol {
+  list-style: decimal;
+  padding-inline-start: 1.4rem;
+}
+.study-markdown strong {
+  color: var(--brand-text);
+}
+.study-markdown a {
+  color: var(--brand-text);
+  text-decoration: underline;
+}
+.study-markdown blockquote {
+  border-inline-start: 3px solid var(--brand);
+  padding-inline-start: 0.9rem;
+  color: var(--muted);
+}
+.study-markdown pre,
+.study-markdown .katex-display {
+  max-inline-size: 100%;
+  overflow-x: auto;
+  overflow-wrap: normal;
+}
+.study-markdown pre,
+.study-markdown :not(pre) > code {
+  border-radius: 0.45rem;
+  background: var(--canvas);
+}
+.study-markdown pre {
+  border: 1px solid var(--edge);
+  padding: 0.85rem;
+}
+.study-markdown :not(pre) > code {
+  padding: 0.12rem 0.3rem;
+}
+.study-markdown :where(th, td) {
+  border: 1px solid var(--edge);
+  padding: 0.45rem 0.65rem;
+  text-align: start;
+}
+.study-markdown th {
+  background: var(--canvas);
+}
+.study-markdown :where(.hljs-keyword, .hljs-type, .hljs-built_in) {
+  color: var(--brand-text);
+  font-weight: 600;
+}
+.study-markdown :where(.hljs-string, .hljs-regexp) {
+  color: #047857;
+}
+.study-markdown :where(.hljs-comment, .hljs-quote) {
+  color: var(--muted);
+}
+.study-markdown :where(.hljs-number, .hljs-literal) {
+  color: #ae431f;
+}
+.dark .study-markdown :where(.hljs-string, .hljs-regexp) {
+  color: #8de1b9;
+}
+.dark .study-markdown :where(.hljs-number, .hljs-literal) {
+  color: #f9ad8c;
+}

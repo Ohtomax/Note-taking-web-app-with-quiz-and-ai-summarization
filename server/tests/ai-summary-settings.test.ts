@@ -5,7 +5,10 @@ import { summaryResultSchema } from '../src/ai/schemas/summary.ts';
 test('P4-T11 all summary lengths/formats validate and invented citations or oversized output fail', () => {
   for (const length of ['SHORT', 'MEDIUM', 'DETAILED'] as const)
     for (const format of [
+      'QUICK',
       'PARAGRAPHS',
+      'SIMPLIFIED',
+      'EXAM_REVIEWER',
       'BULLETS',
       'KEY_CONCEPTS',
       'STUDY_GUIDE',

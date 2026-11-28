@@ -2,16 +2,21 @@ import { useEffect, useRef, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { studyApi, type GenerateInput } from '@/api/study';
 import { useSession } from '@/store/session';
-export function useGeneration(projectId: string, regenerateQuizId?: string) {
+export function useGeneration(
+  projectId: string,
+  target?: { quizId: string } | { summaryId: string },
+) {
   const uid = useSession((state) => state.user!.uid),
     cache = useQueryClient();
   const attempt = useRef<{ signature: string; key: string } | null>(null);
   const [id, setId] = useState<string | null>(null);
   const mutation = useMutation({
     mutationFn: (input: { key: string; request: GenerateInput }) =>
-      regenerateQuizId
-        ? studyApi.regenerateQuiz(regenerateQuizId, input.key, input.request)
-        : studyApi.generate(projectId, input.key, input.request),
+      !target
+        ? studyApi.generate(projectId, input.key, input.request)
+        : 'quizId' in target
+          ? studyApi.regenerateQuiz(target.quizId, input.key, input.request)
+          : studyApi.regenerateSummary(target.summaryId, input.key, input.request),
     onSuccess: (response) => {
       if (useSession.getState().user?.uid === uid) {
         cache.setQueryData([uid, 'generation', response.data.id], response);
@@ -27,7 +32,7 @@ export function useGeneration(projectId: string, regenerateQuizId?: string) {
     queryKey: [uid, 'generation', id],
     queryFn: ({ signal }) => studyApi.status(id!, signal),
     enabled: Boolean(id),
-    staleTime: 0,
+    staleTime: Infinity,
     refetchInterval: (query) =>
       query.state.data && ['RESERVED', 'RUNNING'].includes(query.state.data.data.status)
         ? 1000

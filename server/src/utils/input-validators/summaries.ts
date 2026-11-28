@@ -3,7 +3,15 @@ import { saveGenerationSchema } from './saved-artifacts.js';
 export const summarySettingsSchema = z
   .object({
     length: z.enum(['SHORT', 'MEDIUM', 'DETAILED']),
-    format: z.enum(['PARAGRAPHS', 'BULLETS', 'KEY_CONCEPTS', 'STUDY_GUIDE']),
+    format: z.enum([
+      'QUICK',
+      'PARAGRAPHS',
+      'STUDY_GUIDE',
+      'BULLETS',
+      'KEY_CONCEPTS',
+      'SIMPLIFIED',
+      'EXAM_REVIEWER',
+    ]),
   })
   .strict();
 export type SummarySettings = z.infer<typeof summarySettingsSchema>;
