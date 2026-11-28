@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { apiRequest, ApiError } from './client';
+import { apiRequest, ApiError, GENERATION_TIMEOUT_MS } from './client';
 import {
   generationResponseSchema,
   summaryContentSchema,
@@ -58,7 +58,7 @@ export async function requestSummary(
     method: 'POST',
     headers: { 'Idempotency-Key': key, Accept: 'text/event-stream, application/json' },
     body: JSON.stringify(input),
-    timeoutMs: 65_000,
+    timeoutMs: GENERATION_TIMEOUT_MS,
     onTextProgress: read,
   });
   if (typeof response !== 'string') return generationResponseSchema.parse(response);
