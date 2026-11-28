@@ -1,17 +1,23 @@
 import { useEffect } from 'react';
+import { Moon, Sun } from 'lucide-react';
 import { useTheme } from '@/store/theme';
+
 export function ThemeToggle() {
   const { theme, toggle } = useTheme();
+  const dark = theme === 'dark';
   useEffect(() => {
-    document.documentElement.classList.toggle('dark', theme === 'dark');
-  }, [theme]);
+    document.documentElement.classList.toggle('dark', dark);
+  }, [dark]);
+  const Icon = dark ? Sun : Moon;
   return (
     <button
-      className="rounded-lg border border-slate-300 dark:border-slate-600 px-3 py-2 text-sm"
+      className="action w-10 px-0"
       onClick={toggle}
-      aria-pressed={theme === 'dark'}
+      aria-pressed={dark}
+      aria-label="Dark theme"
+      title={dark ? 'Switch to light theme' : 'Switch to dark theme'}
     >
-      Dark theme
+      <Icon aria-hidden="true" size={17} />
     </button>
   );
 }

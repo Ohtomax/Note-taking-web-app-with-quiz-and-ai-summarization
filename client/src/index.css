@@ -1,17 +1,48 @@
 @import 'tailwindcss';
 @custom-variant dark (&:where(.dark, .dark *));
 
+@theme {
+  --font-sans: 'Inter', 'Segoe UI', ui-sans-serif, system-ui, sans-serif;
+  --color-canvas: var(--canvas);
+  --color-panel: var(--panel);
+  --color-edge: var(--edge);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-brand: var(--brand);
+  --color-brand-soft: var(--brand-soft);
+  --color-brand-text: var(--brand-text);
+  --color-teal-800: #5148c7;
+  --color-teal-700: #655bdb;
+  --color-teal-300: #c1baff;
+}
+
 @layer base {
-  html {
+  :root {
     color-scheme: light;
+    --canvas: #f8f9fd;
+    --panel: #fff;
+    --edge: #e1e4ef;
+    --ink: #191b32;
+    --muted: #555e76;
+    --brand: #574bd2;
+    --brand-soft: #efedff;
+    --brand-text: #483cb6;
+    background: var(--canvas);
+    color: var(--ink);
   }
   html.dark {
     color-scheme: dark;
-    background: #020617;
-    color: #f1f5f9;
+    --canvas: #111321;
+    --panel: #1a1d30;
+    --edge: #353a54;
+    --ink: #f1f0fb;
+    --muted: #b7bed6;
+    --brand: #7265e8;
+    --brand-soft: #2c2750;
+    --brand-text: #d0c9ff;
   }
   :focus-visible {
-    outline: 3px solid #0d9488;
+    outline: 2px solid var(--brand-text);
     outline-offset: 3px;
   }
   input,
@@ -36,6 +67,24 @@
     padding-right: 1rem;
   }
 }
+
+@layer components {
+  .surface {
+    @apply rounded-2xl border border-edge bg-panel shadow-xs;
+  }
+  .page-title {
+    @apply text-3xl font-semibold tracking-tight text-ink sm:text-4xl;
+  }
+  .action {
+    @apply inline-flex min-h-10 items-center justify-center gap-2 rounded-lg border border-edge bg-panel px-3.5 py-2 text-sm font-semibold text-ink transition hover:bg-canvas disabled:cursor-not-allowed disabled:opacity-50;
+  }
+  .action-primary {
+    @apply border-transparent bg-brand text-white hover:bg-brand/85;
+  }
+  .field {
+    @apply min-h-10 min-w-0 rounded-lg border border-edge bg-panel px-3 py-2 text-ink placeholder:text-muted;
+  }
+}
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -44,8 +93,4 @@
     transition: none !important;
     scroll-behavior: auto !important;
   }
-}
-
-@theme {
-  --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
 }

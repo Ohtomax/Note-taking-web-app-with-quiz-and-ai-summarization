@@ -1,4 +1,5 @@
 import { useEffect, useId, useRef, type ReactNode } from 'react';
+import { X } from 'lucide-react';
 
 interface ModalProps {
   title: string;
@@ -24,23 +25,23 @@ export function Modal({ title, children, onClose, busy = false }: ModalProps) {
     <dialog
       ref={ref}
       aria-labelledby={id}
-      className="m-auto max-h-[90dvh] overflow-y-auto w-[calc(100%-2rem)] max-w-lg rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-6 text-slate-900 dark:text-slate-100 shadow-xl backdrop:bg-slate-900/30"
+      className="surface m-auto max-h-[90dvh] w-[calc(100%-2rem)] max-w-lg overflow-y-auto p-5 text-ink shadow-xl backdrop:bg-slate-950/50 sm:p-6"
       onCancel={(event) => {
         event.preventDefault();
         if (!busy) onClose();
       }}
     >
-      <div className="mb-5 flex items-center justify-between gap-4">
-        <h2 id={id} className="text-xl font-semibold">
+      <div className="mb-5 flex items-start justify-between gap-4">
+        <h2 id={id} className="pt-1 text-xl font-semibold tracking-tight">
           {title}
         </h2>
         <button
-          className="rounded border border-slate-300 dark:border-slate-600 px-3 py-1"
+          className="action w-10 shrink-0 px-0"
           aria-label="Close dialog"
           disabled={busy}
           onClick={onClose}
         >
-          Close
+          <X aria-hidden="true" size={18} />
         </button>
       </div>
       {children}
